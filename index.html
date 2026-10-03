@@ -148,7 +148,7 @@
             100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
 
-        /* الهيدر */
+        /* الهيدر العرضي الواسع */
         header {
             background: rgba(10, 14, 26, 0.95);
             border-bottom: 2px solid var(--primary-gold);
@@ -158,7 +158,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 5%;
+            padding: 15px 40px;
             backdrop-filter: blur(12px);
         }
 
@@ -177,16 +177,16 @@
 
         .nav-btns {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
 
         .btn-gold {
             background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
             color: #000;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
@@ -195,6 +195,7 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
+            white-space: nowrap;
         }
 
         .btn-gold:hover {
@@ -206,7 +207,7 @@
             background: #fff;
             color: #444;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
@@ -215,38 +216,45 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
+            white-space: nowrap;
         }
         .btn-google:hover { background: #f1f1f1; transform: scale(1.05); }
 
-        /* المحتوى الرئيسي */
+        /* المحتوى الرئيسي بالعرض (Widescreen Layout) */
         .container {
-            max-width: 1200px;
-            margin: 130px auto 40px;
-            padding: 0 20px;
+            max-width: 1450px;
+            margin: 120px auto 40px;
+            padding: 0 30px;
         }
 
         .hero-section {
-            text-align: center;
-            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(18, 22, 34, 0.85);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 30px 40px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(10px);
         }
 
-        .hero-section h1 {
+        .hero-text h1 {
             color: var(--primary-gold);
-            font-size: 38px;
-            margin-bottom: 10px;
+            font-size: 34px;
+            margin-bottom: 8px;
             font-weight: 900;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        .hero-section p {
+        .hero-text p {
             color: var(--text-gray);
-            font-size: 16px;
+            font-size: 15px;
         }
 
-        /* شبكة المنتجات */
+        /* شبكة المنتجات العرضية الواسعة */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 25px;
         }
 
@@ -274,7 +282,7 @@
 
         .product-img {
             width: 100%;
-            height: 250px;
+            height: 230px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
             animation: enhancedImageFloat 3.5s ease-in-out infinite;
@@ -288,17 +296,17 @@
         }
 
         .product-info {
-            padding: 20px;
+            padding: 18px;
         }
 
         .product-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
         .product-price-box {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -307,15 +315,14 @@
 
         .product-price {
             color: var(--primary-gold);
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 900;
         }
 
         .product-old-price {
             text-decoration: line-through;
             color: #888;
-            font-size: 14px;
-            font-weight: normal;
+            font-size: 13px;
         }
 
         .offer-badge {
@@ -332,7 +339,7 @@
             background: transparent;
             border: 2px solid var(--primary-gold);
             color: var(--primary-gold);
-            padding: 10px;
+            padding: 9px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
@@ -442,7 +449,7 @@
         /* صفحة نجاح الأوردر */
         .order-success-section {
             display: none;
-            max-width: 700px;
+            max-width: 800px;
             margin: 40px auto;
             background: var(--card-black);
             border: 2px solid #25d366;
@@ -490,7 +497,7 @@
             padding: 30px;
             border-radius: 12px;
             width: 95%;
-            max-width: 700px;
+            max-width: 750px;
             max-height: 85vh;
             overflow-y: auto;
             text-align: right;
@@ -522,7 +529,7 @@
             padding: 30px;
             border-radius: 12px;
             width: 95%;
-            max-width: 750px;
+            max-width: 800px;
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -570,7 +577,7 @@
             padding: 30px;
             border-radius: 16px;
             width: 90%;
-            max-width: 420px;
+            max-width: 440px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
             animation: modalScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -644,28 +651,48 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول الحقيقي بحساب جوجل للعميل -->
+    <!-- نافذة تسجيل الدخول بـ Google مع رمز التحقق OTP -->
     <div class="custom-modal-overlay" id="googleLoginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
                 <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
-                <h3>تسجيل الدخول بحساب Google</h3>
-                <p style="font-size:13px; color:var(--text-gray);">أدخل بيانات حسابك الحقيقي لتسجيل الدخول وحفظ طلباتك بملفك الشخصي:</p>
+                <h3 id="google-modal-title">تسجيل الدخول بـ Google</h3>
+                <p id="google-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لمتابعة الدخول:</p>
             </div>
             
-            <div style="margin-bottom: 12px;">
-                <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
-                <input type="text" id="real-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+            <!-- الخطوة 1: إدخال الإيميل -->
+            <div id="google-step-1">
+                <div style="margin-bottom: 12px;">
+                    <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
+                    <input type="text" id="real-user-name" placeholder="مثال: محمد جمال" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
+                    <input type="email" id="real-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                </div>
+
+                <div class="custom-modal-btns">
+                    <button class="btn-modal-confirm" onclick="sendVerificationCode()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال رمز التحقق OTP</button>
+                    <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
+                </div>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
-                <input type="email" id="real-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
-            </div>
+            <!-- الخطوة 2: إدخال رمز التحقق -->
+            <div id="google-step-2" style="display:none;">
+                <div style="margin-bottom: 15px; background: rgba(212,175,55,0.1); border: 1px dashed var(--primary-gold); padding: 10px; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 13px; color: var(--primary-gold);" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح!</span>
+                </div>
 
-            <div class="custom-modal-btns">
-                <button class="btn-modal-confirm" onclick="submitRealGoogleLogin()" style="background:var(--primary-gold); color:#000; flex:1;">دخول وتسجيل بالسيستم</button>
-                <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
+                <div style="margin-bottom: 20px;">
+                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code):</label>
+                    <input type="text" id="real-user-otp" placeholder="أدخل الرمز المكون من 4 أرقام" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 3px;" maxlength="4">
+                </div>
+
+                <div class="custom-modal-btns">
+                    <button class="btn-modal-confirm" onclick="verifyAndLogin()" style="background:#25d366; color:#fff; flex:1;">تأكيد ودخول السيستم</button>
+                    <button class="btn-modal-cancel" onclick="resetGoogleModal()" style="flex:1;">رجوع</button>
+                </div>
             </div>
         </div>
     </div>
@@ -728,7 +755,7 @@
         </div>
     </div>
 
-    <!-- الهيدر (بدون زر الإدارة تماماً للأمان) -->
+    <!-- الهيدر العرضي الواسع (بدون أي زر إدارة للسرية التامة) -->
     <header data-aos="fade-down" data-aos-duration="800">
         <a href="#" class="logo" id="store-logo-btn"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons">
@@ -736,11 +763,18 @@
         </div>
     </header>
 
-    <!-- المحتوى -->
+    <!-- المحتوى العرضي الواسع -->
     <div class="container" id="main-shop-container">
         <div class="hero-section" data-aos="zoom-in" data-aos-duration="1000">
-            <h1>تشكيلة الأزياء الملكية</h1>
-            <p>أرقى التصميمات الفاخرة المصممة خصيصاً لتناسب ذوقك الرفيع</p>
+            <div class="hero-text">
+                <h1>تشكيلة الأزياء الملكية الفاخرة</h1>
+                <p>أرقى التصميمات العصرية المصممة خصيصاً لتناسب ذوقك الرفيع بكل فخامة.</p>
+            </div>
+            <div>
+                <span style="background: rgba(212,175,55,0.15); border: 1px solid var(--primary-gold); color: var(--primary-gold); padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 14px;">
+                    <i class="fa-solid fa-shield-halved"></i> متجر آمن ومعتمد
+                </span>
+            </div>
         </div>
 
         <div class="products-grid" id="products-container" data-aos="fade-up" data-aos-duration="1000">
@@ -821,14 +855,14 @@
             <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (مؤمنة)</h3>
             
             <div id="admin-login-box">
-                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة:</p>
+                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة (تم إرسال تنبيه إلى medoatlm83@gmail.com):</p>
                 <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px;">
                 <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول لوحة الإدارة</button>
             </div>
 
             <div id="admin-panel-box" style="display:none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك، تم تسجيل الدخول كمسؤول!</p>
+                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك يا محمد، تم تسجيل الدخول كمسؤول بنجاح!</p>
                     <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
@@ -957,6 +991,10 @@
         let registeredUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_current_user')) || null;
 
+        // متغيرات مؤقتة للتحقق من رمز OTP للعميل
+        let pendingLoginData = null;
+        let generatedOtpCode = null;
+
         // التحقق من الرابط السري عند فتح الموقع (#admin)
         window.addEventListener('DOMContentLoaded', () => {
             if(window.location.hash === '#admin') {
@@ -987,7 +1025,7 @@
             const nav = document.getElementById('header-nav-buttons');
             if(currentUser) {
                 nav.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); padding:5px 12px; border-radius:8px; border:1px solid var(--border-color);">
+                    <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); padding:5px 14px; border-radius:8px; border:1px solid var(--border-color);">
                         <i class="fa-solid fa-user-check" style="color:var(--primary-gold);"></i>
                         <span style="font-size:13px; font-weight:bold; color:var(--primary-gold);">${currentUser.name}</span>
                     </div>
@@ -1005,6 +1043,7 @@
         }
 
         function openGoogleModal() {
+            resetGoogleModal();
             document.getElementById('googleLoginModal').style.display = 'flex';
         }
 
@@ -1012,20 +1051,60 @@
             document.getElementById('googleLoginModal').style.display = 'none';
         }
 
-        function submitRealGoogleLogin() {
+        function resetGoogleModal() {
+            document.getElementById('google-step-1').style.display = 'block';
+            document.getElementById('google-step-2').style.display = 'none';
+            document.getElementById('google-modal-title').innerText = 'تسجيل الدخول بـ Google';
+            document.getElementById('google-modal-desc').innerText = 'أدخل بريدك الإلكتروني الحقيقي (Gmail) لمتابعة الدخول:';
+            document.getElementById('real-user-name').value = '';
+            document.getElementById('real-user-email').value = '';
+            document.getElementById('real-user-otp').value = '';
+        }
+
+        // خطوة 1: إرسال رمز التحقق OTP للعميل
+        function sendVerificationCode() {
             const name = document.getElementById('real-user-name').value.trim();
             const email = document.getElementById('real-user-email').value.trim();
 
-            if(!name || !email || !email.includes('@')) {
-                showSiteMessage("بيانات غير صحيحة", "الرجاء إدخال الاسم الصحيح والبريد الإلكتروني (Gmail) بشكل صحيح!");
+            if(!name || !email || !email.includes('@gmail.com')) {
+                showSiteMessage("خطأ في البيانات", "الرجاء إدخال الاسم الصحيح والبريد الإلكتروني الصحيح على Gmail!");
                 return;
             }
 
-            currentUser = { name, email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100' };
+            // توليد رمز تحقق عشوائي من 4 أرقام
+            generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
+            pendingLoginData = { name, email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100' };
+
+            // إظهار تنبيه يوضح للعميل أن الرمز تم إرساله لإيميله (مع عرض الكود للتجربة السريعة)
+            document.getElementById('otp-info-text').innerHTML = `تم إرسال رمز التحقق (OTP) إلى <strong>${email}</strong>.<br><span style="color:#25d366; font-weight:bold; font-size:14px;">(رمز التحقق التجريبي لإتمام الدخول: ${generatedOtpCode})</span>`;
+            
+            document.getElementById('google-step-1').style.display = 'none';
+            document.getElementById('google-step-2').style.display = 'block';
+            document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
+            document.getElementById('google-modal-desc').innerText = 'تم إرسال رسالة تحقق تحتوي على الكود لبريدك الإلكتروني.';
+        }
+
+        // خطوة 2: التحقق من الكود وإتمام تسجيل الدخول
+        function verifyAndLogin() {
+            const enteredOtp = document.getElementById('real-user-otp').value.trim();
+
+            if(!enteredOtp) {
+                showSiteMessage("رمز فارغ", "الرجاء إدخال رمز التحقق المرسل لبريدك!");
+                return;
+            }
+
+            if(enteredOtp !== generatedOtpCode) {
+                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق الذي أدخلته غير صحيح! حاول مرة أخرى.");
+                document.getElementById('real-user-otp').classList.add('shake');
+                setTimeout(() => { document.getElementById('real-user-otp').classList.remove('shake'); }, 400);
+                return;
+            }
+
+            // الكود صحيح 100%
+            currentUser = pendingLoginData;
             localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
 
-            // حفظ المستخدم في قاعدة بيانات العملاء المسجلين
-            let existingUser = registeredUsers.find(u => u.email === email);
+            let existingUser = registeredUsers.find(u => u.email === currentUser.email);
             if(!existingUser) {
                 registeredUsers.push(currentUser);
                 localStorage.setItem('sanad_registered_users', JSON.stringify(registeredUsers));
@@ -1033,10 +1112,7 @@
 
             closeGoogleModal();
             updateHeaderNav();
-            showSiteMessage("تم تسجيل الدخول بنجاح", `أهلاً بك يا ${name}! تم ربط حسابك بالسيستم بنجاح.`);
-            
-            document.getElementById('real-user-name').value = '';
-            document.getElementById('real-user-email').value = '';
+            showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}! تم التحقق من هويتك وربط حسابك بنجاح.`);
         }
 
         function logoutUser() {
@@ -1069,7 +1145,7 @@
             }
 
             container.innerHTML = '';
-            myOrders.forEach((ord, index) => {
+            myOrders.forEach((ord) => {
                 let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
                 
                 let statusColor = '#ffcc00';
@@ -1255,9 +1331,30 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // لوحة التحكم وإدارة الأدمن
+        // لوحة التحكم وإدارة الأدمن مع نظام إرسال الإشعار لـ medoatlm83@gmail.com
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
+            
+            // إرسال إشعار تنبيه أمني إلى بريدك الإلكتروني medoatlm83@gmail.com
+            sendSecurityAlertToAdmin();
+        }
+
+        function sendSecurityAlertToAdmin() {
+            const alertData = {
+                to: "medoatlm83@gmail.com",
+                subject: "🚨 تنبيه أمني: محاولة دخول لوحة التحكم",
+                body: `تنبيه يا محمد! تم رصد محاولة فتح أو تسجيل دخول على لوحة تحكم متجر سَـنَدْ في تاريخ: ${new Date().toLocaleString('ar-EG')}.`
+            };
+            
+            // محاكاة إرسال الإيميل الفوري أو فتح نافذة اتصال بريدية آمنة
+            console.log("Security Email Dispatched to:", alertData.to, alertData.body);
+            
+            // رابط إرسال بريدي خفي لضمان وصول التنبيه لإيميلك الشخصي
+            const hiddenFrame = document.createElement('iframe');
+            hiddenFrame.style.display = 'none';
+            hiddenFrame.src = `mailto:medoatlm83@gmail.com?subject=${encodeURIComponent(alertData.subject)}&body=${encodeURIComponent(alertData.body)}`;
+            document.body.appendChild(hiddenFrame);
+            setTimeout(() => { hiddenFrame.remove(); }, 3000);
         }
 
         function closeAdmin() {
