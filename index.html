@@ -175,14 +175,16 @@
 
         .nav-btns {
             display: flex;
-            gap: 15px;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn-gold {
             background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
             color: #000;
             border: none;
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
@@ -190,12 +192,29 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
         }
 
         .btn-gold:hover {
             opacity: 0.9;
             transform: scale(1.05);
         }
+
+        .btn-google {
+            background: #fff;
+            color: #444;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .btn-google:hover { background: #f1f1f1; transform: scale(1.05); }
 
         /* المحتوى الرئيسي */
         .container {
@@ -451,6 +470,38 @@
             font-size: 15px;
         }
 
+        /* نافذة تتبع طلبات العميل */
+        .tracking-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(6px);
+        }
+
+        .tracking-content {
+            background: var(--card-black);
+            border: 2px solid var(--primary-gold);
+            padding: 30px;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: right;
+        }
+
+        .user-order-card {
+            background: #1a1a1a;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
         /* لوحة التحكم */
         .admin-modal {
             display: none;
@@ -499,20 +550,7 @@
             transition: 0.3s;
         }
 
-        .admin-order-card.status-pending-card {
-            border-right: 5px solid #ffcc00;
-            background: linear-gradient(135deg, rgba(51, 43, 0, 0.3), #1a1a1a);
-        }
-        .admin-order-card.status-processing-card {
-            border-right: 5px solid #00cccc;
-            background: linear-gradient(135deg, rgba(0, 43, 51, 0.3), #1a1a1a);
-        }
-        .admin-order-card.status-completed-card {
-            border-right: 5px solid #25d366;
-            background: linear-gradient(135deg, rgba(0, 51, 17, 0.3), #1a1a1a);
-        }
-
-        /* نافذة المودال المتحركة المخصصة (بديلة رسائل المتصفح) */
+        /* نافذة المودال المتحركة المخصصة */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -604,7 +642,49 @@
         </div>
     </div>
 
-    <!-- نافذة تأكيد العمليات المتحركة (Custom Confirm Modal) -->
+    <!-- نافذة تسجيل الدخول بـ Google المخصصة -->
+    <div class="custom-modal-overlay" id="googleLoginModal">
+        <div class="custom-modal-box" style="text-align:center;">
+            <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 12px;"></i>
+            <h3>تسجيل الدخول بـ Google</h3>
+            <p style="font-size:14px; margin-bottom:15px;">اختر حساب جوجل الخاص بك للمتابعة وربط طلباتك بحسابك الشخصي:</p>
+            
+            <div id="google-accounts-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
+                <!-- حسابات افتراضية للاختيار الفوري -->
+                <div onclick="loginWithGoogleAccount('محمد جمال', 'medo.atlm@gmail.com', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100')" style="background:#252525; padding:10px; border-radius:8px; display:flex; align-items:center; gap:12px; cursor:pointer; border:1px solid #444; text-align:right;">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:bold; font-size:14px; color:#fff;">محمد جمال (حساب أساسي)</div>
+                        <div style="font-size:12px; color:var(--text-gray);">medo.atlm@gmail.com</div>
+                    </div>
+                </div>
+                <div onclick="loginWithGoogleAccount('عميل زائر فخم', 'sanad.customer@gmail.com', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100')" style="background:#252525; padding:10px; border-radius:8px; display:flex; align-items:center; gap:12px; cursor:pointer; border:1px solid #444; text-align:right;">
+                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
+                    <div>
+                        <div style="font-weight:bold; font-size:14px; color:#fff;">حساب عميل آخر</div>
+                        <div style="font-size:12px; color:var(--text-gray);">sanad.customer@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="width:100%;">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- نافذة تتبع طلبات العميل -->
+    <div class="tracking-modal" id="trackingModal">
+        <div class="tracking-content" data-aos="zoom-in" data-aos-duration="400">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <h3 style="color: var(--primary-gold);"><i class="fa-solid fa-box-open"></i> تتبع طلباتي الشخصية</h3>
+                <button onclick="closeTrackingModal()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="user-orders-container">
+                <!-- أوردرات العميل تظهر هنا -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد العمليات المتحركة -->
     <div class="custom-modal-overlay" id="customConfirmModal">
         <div class="custom-modal-box">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 45px; color: #ffcc00; margin-bottom: 12px;"></i>
@@ -617,7 +697,7 @@
         </div>
     </div>
 
-    <!-- نافذة رسائل التنبيه والنجاح المتحركة (Custom Message Modal) -->
+    <!-- نافذة رسائل التنبيه والنجاح المتحركة -->
     <div class="custom-modal-overlay" id="customMessageModal">
         <div class="custom-modal-box">
             <i class="fa-solid fa-circle-check" style="font-size: 48px; color: #25d366; margin-bottom: 12px;"></i>
@@ -627,7 +707,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل الأسعار والعروض المتحركة (Custom Edit Price Modal) -->
+    <!-- نافذة تعديل الأسعار والعروض المتحركة -->
     <div class="custom-modal-overlay" id="customEditModal">
         <div class="custom-modal-box" style="text-align: right;">
             <h3 style="text-align: center; color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> تعديل السعر والعرض</h3>
@@ -652,9 +732,8 @@
     <!-- الهيدر -->
     <header data-aos="fade-down" data-aos-duration="800">
         <a href="#" class="logo"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
-        <div class="nav-btns">
-            <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
-            <button class="btn-gold" onclick="openAdmin()"><i class="fa-solid fa-lock"></i> الإدارة</button>
+        <div class="nav-btns" id="header-nav-buttons">
+            <!-- يتم توليد أزرار الهيدر ديناميكياً حسب حالة تسجيل الدخول -->
         </div>
     </header>
 
@@ -876,6 +955,100 @@
 
         let cart = JSON.parse(localStorage.getItem('sanad_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('sanad_orders')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('sanad_current_user')) || null;
+
+        function updateHeaderNav() {
+            const nav = document.getElementById('header-nav-buttons');
+            if(currentUser) {
+                nav.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); padding:5px 12px; border-radius:8px; border:1px solid var(--border-color);">
+                        <img src="${currentUser.avatar}" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                        <span style="font-size:13px; font-weight:bold; color:var(--primary-gold);">${currentUser.name}</span>
+                    </div>
+                    <button class="btn-gold" onclick="openTrackingModal()"><i class="fa-solid fa-box-open"></i> طلباتي</button>
+                    <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
+                    <button class="btn-gold" onclick="openAdmin()"><i class="fa-solid fa-lock"></i> الإدارة</button>
+                    <button onclick="logoutUser()" style="background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;" title="تسجيل خروج"><i class="fa-solid fa-right-from-bracket"></i></button>
+                `;
+            } else {
+                nav.innerHTML = `
+                    <button class="btn-google" onclick="openGoogleModal()"><i class="fa-brands fa-google" style="color:#4285F4;"></i> تسجيل دخول بـ Google</button>
+                    <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
+                    <button class="btn-gold" onclick="openAdmin()"><i class="fa-solid fa-lock"></i> الإدارة</button>
+                `;
+            }
+            updateCartUI();
+        }
+
+        function openGoogleModal() {
+            document.getElementById('googleLoginModal').style.display = 'flex';
+        }
+
+        function closeGoogleModal() {
+            document.getElementById('googleLoginModal').style.display = 'none';
+        }
+
+        function loginWithGoogleAccount(name, email, avatar) {
+            currentUser = { name, email, avatar };
+            localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
+            closeGoogleModal();
+            updateHeaderNav();
+            showSiteMessage("تم تسجيل الدخول بنجاح", `أهلاً بك يا ${name}! تم ربط حسابك وجاهز لتتبع طلباتك.`);
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('sanad_current_user');
+            updateHeaderNav();
+            showSiteMessage("تسجيل الخروج", "تم تسجيل خروجك من الحساب بنجاح.");
+        }
+
+        function openTrackingModal() {
+            if(!currentUser) {
+                openGoogleModal();
+                return;
+            }
+            renderUserOrders();
+            document.getElementById('trackingModal').style.display = 'flex';
+        }
+
+        function closeTrackingModal() {
+            document.getElementById('trackingModal').style.display = 'none';
+        }
+
+        function renderUserOrders() {
+            const container = document.getElementById('user-orders-container');
+            // فلترة الطلبات الخاصة بالبريد أو اسم المستخدم الحالي
+            const myOrders = orders.filter(o => o.userEmail === currentUser.email || o.name === currentUser.name);
+
+            if(myOrders.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:var(--text-gray); padding:20px;">ليس لديك أي طلبات مسجلة بهذا الحساب حتى الآن.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            myOrders.forEach((ord, index) => {
+                let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
+                
+                // تحديد لون وشكل حالة الأوردر
+                let statusColor = '#ffcc00';
+                if(ord.status.includes('تجهيز')) statusColor = '#00cccc';
+                if(ord.status.includes('التوصيل') || ord.status.includes('خرج')) statusColor = '#ff9900';
+                if(ord.status.includes('تم')) statusColor = '#25d366';
+
+                container.innerHTML += `
+                    <div class="user-order-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <strong style="color:var(--primary-gold);">طلب بتاريخ: ${ord.date}</strong>
+                            <span style="background:rgba(255,255,255,0.08); padding:4px 10px; border-radius:6px; color:${statusColor}; font-weight:bold; font-size:13px;">${ord.status}</span>
+                        </div>
+                        <p><strong>العنوان:</strong> ${ord.gov} - ${ord.city} - ${ord.address}</p>
+                        <p style="margin-top:5px; color:#ddd;"><strong>المنتجات المطلوبة:</strong><br>${itemsList}</p>
+                        <p style="margin-top:8px; color:var(--primary-gold); font-weight:bold;">الإجمالي شامل الشحن: ${ord.grandTotal} جنيه</p>
+                    </div>
+                `;
+            });
+        }
 
         function renderProducts() {
             const container = document.getElementById('products-container');
@@ -935,6 +1108,7 @@
 
         function updateCartUI() {
             const container = document.getElementById('cart-items-container');
+            if(!container) return;
             container.innerHTML = '';
             let total = 0;
             let count = 0;
@@ -953,8 +1127,10 @@
                 `;
             });
 
-            document.getElementById('cart-count').innerText = count;
-            document.getElementById('cart-total').innerText = cart.length > 0 ? total + 50 : 0;
+            const countEl = document.getElementById('cart-count');
+            const totalEl = document.getElementById('cart-total');
+            if(countEl) countEl.innerText = count;
+            if(totalEl) totalEl.innerText = cart.length > 0 ? total + 50 : 0;
         }
 
         function removeItem(index) {
@@ -989,6 +1165,7 @@
                 date: new Date().toLocaleString('ar-EG'),
                 name,
                 phone,
+                userEmail: currentUser ? currentUser.email : (phone + '@sanad.com'),
                 gov,
                 city,
                 address,
@@ -1090,7 +1267,6 @@
             });
         }
 
-        // تعديل السعر عبر نافذة مودال مخصصة داخل الموقع (بدون رسائل المتصفح)
         let currentEditingProductId = null;
 
         function editProductPrice(id) {
@@ -1166,27 +1342,25 @@
             orders.forEach((ord, index) => {
                 let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
                 
-                let cardClass = 'status-pending-card';
-                if(ord.status.includes('جاري')) cardClass = 'status-processing-card';
-                if(ord.status.includes('تم')) cardClass = 'status-completed-card';
-
                 container.innerHTML += `
-                    <div class="admin-order-card ${cardClass}">
+                    <div class="admin-order-card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                             <strong style="color:var(--primary-gold);">طلب #${orders.length - index} (${ord.date})</strong>
                             <div>
+                                <!-- تغيير حالات الطلب لتظهر فوراً عند العميل -->
                                 <select onchange="updateOrderStatus(${index}, this.value)" style="background:#222; color:#fff; border:1px solid var(--primary-gold); padding:4px; border-radius:4px; font-size:12px; cursor:pointer;">
                                     <option value="⏳ قيد المراجعة" ${ord.status === '⏳ قيد المراجعة' ? 'selected' : ''}>⏳ قيد المراجعة</option>
-                                    <option value="🔄 جاري التجهيز والعمل عليه" ${ord.status === '🔄 جاري التجهيز والعمل عليه' ? 'selected' : ''}>🔄 جاري التجهيز والعمل عليه</option>
-                                    <option value="✅ تم التنفيذ والإرسال" ${ord.status === '✅ تم التنفيذ والإرسال' ? 'selected' : ''}>✅ تم التنفيذ والإرسال</option>
+                                    <option value="🔄 جاري التجهيز والعمل عليه" ${ord.status === '🔄 جاري التجهيز والعمل عليه' ? 'selected' : ''}>🔄 جاري التجهيز</option>
+                                    <option value="🚚 خرج للتوصيل (في الطريق)" ${ord.status === '🚚 خرج للتوصيل (في الطريق)' ? 'selected' : ''}>🚚 خرج للتوصيل</option>
+                                    <option value="✅ تم التوصيل بنجاح" ${ord.status === '✅ تم التوصيل بنجاح' ? 'selected' : ''}>✅ تم التوصيل</option>
                                 </select>
                                 <button onclick="confirmDeleteOrder(${index})" style="background:none; border:none; color:#ff4d4d; cursor:pointer; margin-right:10px;"><i class="fa-solid fa-trash"></i> حذف</button>
                             </div>
                         </div>
                         <p><strong>العميل:</strong> ${ord.name} | <strong>الهاتف:</strong> ${ord.phone}</p>
-                        <p><strong>المحافظة:</strong> ${ord.gov} - <strong>الإدارة / المدينة:</strong> ${ord.city}</p>
+                        <p><strong>المحافظة:</strong> ${ord.gov} - <strong>المدينة:</strong> ${ord.city}</p>
                         <p><strong>العنوان:</strong> ${ord.address}</p>
-                        <p><strong>ملاحظات:</strong> ${ord.notes || 'لا توجد'}</p>
+                        <p><strong>الحالة الحالية:</strong> <span style="color:var(--primary-gold);">${ord.status}</span></p>
                         <p style="margin-top:5px; color:#ddd;"><strong>المنتجات:</strong><br>${itemsList}</p>
                         <p style="margin-top:8px; color:var(--primary-gold); font-weight:bold;">الإجمالي بالشحن: ${ord.grandTotal} جنيه</p>
                     </div>
@@ -1200,7 +1374,6 @@
             renderAdminOrders();
         }
 
-        // نافذة التأكيد المخصصة والمتحركة
         function showCustomModal(title, text, onConfirmCallback) {
             document.getElementById('customModalTitle').innerText = title;
             document.getElementById('customModalText').innerText = text;
@@ -1220,7 +1393,6 @@
             document.getElementById('customConfirmModal').style.display = 'none';
         }
 
-        // نافذة رسائل الموقع المخصصة بدلاً من alert المتصفح
         function showSiteMessage(title, text) {
             document.getElementById('msgModalTitle').innerText = title;
             document.getElementById('msgModalText').innerText = text;
@@ -1257,6 +1429,7 @@
         }
 
         renderProducts();
+        updateHeaderNav();
     </script>
 </body>
 </html>
