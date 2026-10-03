@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر سَـنَدْ | Sanad Store</title>
-    <!-- مكتبة الأيقونات والخطوط -->
+    <!-- أيقونة التاج الفاخرة للتبويب (Favicon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23d4af37' d='M256 0c14.7 0 28.5 7.4 36.7 19.8l82.8 124.2 147.2 44.2c16.3 4.9 27.2 20.3 25.5 37s-14.1 30.1-30.8 32.1L405.5 318l22.7 136.2c2.8 16.9-8.4 32.8-25.3 35.6s-34.1-6.1-41.2-21.2L256 384l-105.7 84.6c-7.1 15.1-24.3 24-41.2 21.2s-28.1-18.7-25.3-35.6L106.5 318 19.3 257.3c-16.7-2-29.1-15.4-30.8-32.1s9.2-32.1 25.5-37l147.2-44.2L219.3 19.8C227.5 7.4 241.3 0 256 0z'/></svg>">
+    
+    <!-- الأيقونات والخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- AOS Animation Library -->
@@ -14,8 +17,8 @@
         :root {
             --primary-gold: #d4af37;
             --dark-gold: #aa7c11;
-            --bg-black: #0a0a0a;
-            --card-black: #141414;
+            --bg-black: rgba(10, 10, 10, 0.93);
+            --card-black: rgba(20, 20, 20, 0.95);
             --border-color: #333333;
             --text-light: #f3f3f3;
             --text-gray: #aaaaaa;
@@ -29,9 +32,52 @@
         }
 
         body {
-            background-color: var(--bg-black);
+            background: linear-gradient(rgba(10, 10, 10, 0.92), rgba(10, 10, 10, 0.96)), 
+                        url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') no-repeat center center fixed;
+            background-size: cover;
             color: var(--text-light);
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* شاشة الترحيب الافتتاحية (Intro Splash) */
+        #intro-splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeOutSplash 0.8s ease 2.2s forwards;
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: zoomInSplash 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .splash-content h1 {
+            color: var(--primary-gold);
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .splash-content p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        @keyframes zoomInSplash {
+            0% { transform: scale(0.4); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeOutSplash {
+            100% { opacity: 0; visibility: hidden; }
         }
 
         /* الهيدر */
@@ -39,15 +85,13 @@
             background: rgba(10, 10, 10, 0.95);
             border-bottom: 2px solid var(--primary-gold);
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+            top: 0; left: 0; width: 100%;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 5%;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
 
         .logo {
@@ -56,6 +100,9 @@
             color: var(--primary-gold);
             letter-spacing: 1px;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-btns {
@@ -79,13 +126,13 @@
 
         .btn-gold:hover {
             opacity: 0.9;
-            transform: translateY(-2px);
+            transform: scale(1.05);
         }
 
         /* المحتوى الرئيسي */
         .container {
             max-width: 1200px;
-            margin: 120px auto 40px;
+            margin: 130px auto 40px;
             padding: 0 20px;
         }
 
@@ -96,8 +143,9 @@
 
         .hero-section h1 {
             color: var(--primary-gold);
-            font-size: 36px;
+            font-size: 38px;
             margin-bottom: 10px;
+            font-weight: 900;
         }
 
         .hero-section p {
@@ -117,14 +165,15 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             overflow: hidden;
-            transition: 0.3s;
+            transition: 0.4s;
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
         .product-card:hover {
             border-color: var(--primary-gold);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
         }
 
         .product-img {
@@ -132,6 +181,11 @@
             height: 250px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
+            transition: 0.5s;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
         }
 
         .product-info {
@@ -175,14 +229,15 @@
             right: -400px;
             width: 380px;
             height: 100%;
-            background: #111;
+            background: rgba(15, 15, 15, 0.98);
             border-left: 2px solid var(--primary-gold);
             z-index: 2000;
             box-shadow: -5px 0 25px rgba(0,0,0,0.8);
-            transition: 0.4s ease;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             padding: 20px;
+            backdrop-filter: blur(15px);
         }
 
         .cart-modal.active {
@@ -202,7 +257,7 @@
             background: none;
             border: none;
             color: var(--text-light);
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
         }
 
@@ -216,16 +271,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #1a1a1a;
+            background: rgba(30, 30, 30, 0.6);
             padding: 10px;
             border-radius: 8px;
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
-        }
-
-        .cart-footer {
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
         }
 
         .checkout-form input {
@@ -252,6 +302,12 @@
             align-items: center;
             gap: 8px;
             font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn-checkout:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
         /* صفحة نجاح الأوردر */
@@ -264,6 +320,7 @@
             border-radius: 16px;
             padding: 30px;
             text-align: center;
+            backdrop-filter: blur(10px);
         }
 
         .order-success-section h2 {
@@ -273,7 +330,7 @@
         }
 
         .order-details-box {
-            background: #1a1a1a;
+            background: rgba(25, 25, 25, 0.8);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 20px;
@@ -286,7 +343,7 @@
             font-size: 15px;
         }
 
-        /* لوحة التحكم */
+        /* لوحة التحكم والانيميشن الخاص بالبأسورد الخاطئ */
         .admin-modal {
             display: none;
             position: fixed;
@@ -295,6 +352,7 @@
             z-index: 3000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
         .admin-content {
@@ -305,12 +363,36 @@
             width: 90%;
             max-width: 500px;
         }
+
+        /* كلاس الاهتزاز (Shake Animation) عند خطأ الباسورد */
+        @keyframes shakeAnim {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shakeAnim 0.4s ease;
+            border-color: #ff4d4d !important;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+        }
     </style>
 </head>
 <body>
 
+    <!-- شاشة الترحيب الافتتاحية -->
+    <div id="intro-splash">
+        <div class="splash-content">
+            <h1><i class="fa-solid fa-crown"></i> أهلاً بك في متجر سَـنَدْ</h1>
+            <p>حيث الفخامة والأناقة تلتقي بروح العصر</p>
+        </div>
+    </div>
+
     <!-- الهيدر -->
-    <header>
+    <header data-aos="fade-down" data-aos-duration="800">
         <a href="#" class="logo"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns">
             <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
@@ -320,19 +402,19 @@
 
     <!-- المحتوى -->
     <div class="container" id="main-shop-container">
-        <div class="hero-section" data-aos="fade-down">
+        <div class="hero-section" data-aos="zoom-in" data-aos-duration="1000">
             <h1>تشكيلة الأزياء الملكية</h1>
             <p>أرقى التصميمات الفاخرة المصممة خصيصاً لتناسب ذوقك الرفيع</p>
         </div>
 
-        <div class="products-grid" id="products-container" data-aos="fade-up">
+        <div class="products-grid" id="products-container" data-aos="fade-up" data-aos-duration="1000">
             <!-- المنتجات تولد تلقائياً -->
         </div>
     </div>
 
-    <!-- قسم نجاح الأوردر وعرض تفاصيله (يظهر بعد إتمام الطلب) -->
+    <!-- قسم نجاح الأوردر -->
     <div class="container">
-        <div id="order-success-view" class="order-success-section">
+        <div id="order-success-view" class="order-success-section" data-aos="flip-up">
             <i class="fa-solid fa-circle-check" style="font-size: 60px; color: #25d366; margin-bottom: 15px;"></i>
             <h2>تم إرسال الأوردر بنجاح! 🎉</h2>
             <p style="color: var(--text-gray);">شكراً لتسوقك في متجر سَـنَدْ. تم تحويل طلبك بنجاح عبر الواتساب وهذه هي تفاصيل طلبك الحالي:</p>
@@ -368,10 +450,10 @@
 
     <!-- لوحة التحكم -->
     <div class="admin-modal" id="adminModal">
-        <div class="admin-content">
+        <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
             <h3 style="color: var(--primary-gold); margin-bottom: 15px;">لوحة تحكم المتجر</h3>
             <div id="admin-login-box">
-                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور (09009090)" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; transition: 0.2s;">
                 <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول</button>
             </div>
             <div id="admin-panel-box" style="display:none;">
@@ -388,12 +470,15 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init();
+        AOS.init({
+            once: true,
+            duration: 900
+        });
 
-        // بيانات المنتجات الافتراضية
+        // بيانات المنتجات
         let products = JSON.parse(localStorage.getItem('sanad_products')) || [
             { id: 1, name: 'جاكيت سَـنَدْ الملكي الفاخر', price: 1200, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500' },
-            { id: 2, name: 'بدطة كلاسيكية سوداء', price: 2500, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500' },
+            { id: 2, name: 'بدلة كلاسيكية سوداء', price: 2500, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500' },
             { id: 3, name: 'قميص صيفي قطني فخم', price: 650, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500' }
         ];
 
@@ -404,7 +489,7 @@
             container.innerHTML = '';
             products.forEach(p => {
                 container.innerHTML += `
-                    <div class="product-card" data-aos="zoom-in">
+                    <div class="product-card" data-aos="fade-up">
                         <img src="${p.img}" alt="${p.name}" class="product-img">
                         <div class="product-info">
                             <div class="product-title">${p.name}</div>
@@ -499,15 +584,12 @@
             orderDetailsText += `%0A🚚 *شحن:* ${shipping} ج`;
             orderDetailsText += `%0A💰 *الإجمالي الكلي:* ${grandTotal} جنيه`;
 
-            // فتح الواتساب برقمك
             const waNumber = "201080629789";
             const waUrl = `https://wa.me/${waNumber}?text=${orderDetailsText}`;
             window.open(waUrl, '_blank');
 
-            // عرض تفاصيل الأوردر على صفحة العميل وتحديث الواجهة
             showOrderSuccessView({ name, phone, address, cartItems: [...cart], shipping, grandTotal });
 
-            // تفريغ السلة
             cart = [];
             saveAndRenderCart();
             toggleCart();
@@ -537,7 +619,7 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // لوحة التحكم وتغيير الباسورد
+        // لوحة التحكم والتحقق من كلمة السر مع تأثير الاهتزاز عند الخطأ
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
         }
@@ -547,12 +629,18 @@
         }
 
         function verifyAdmin() {
-            const pass = document.getElementById('admin-pass-input').value;
+            const passInput = document.getElementById('admin-pass-input');
+            const pass = passInput.value;
+            
             if(pass === '09009090') {
                 document.getElementById('admin-login-box').style.display = 'none';
                 document.getElementById('admin-panel-box').style.display = 'block';
+                passInput.classList.remove('shake');
             } else {
-                alert('كلمة المرور غير صحيحة!');
+                passInput.classList.add('shake');
+                setTimeout(() => {
+                    passInput.classList.remove('shake');
+                }, 400);
             }
         }
 
