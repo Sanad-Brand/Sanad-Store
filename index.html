@@ -171,6 +171,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            user-select: none;
         }
 
         .nav-btns {
@@ -642,32 +644,29 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول بـ Google المخصصة -->
+    <!-- نافذة تسجيل الدخول الحقيقي بحساب جوجل للعميل -->
     <div class="custom-modal-overlay" id="googleLoginModal">
-        <div class="custom-modal-box" style="text-align:center;">
-            <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 12px;"></i>
-            <h3>تسجيل الدخول بـ Google</h3>
-            <p style="font-size:14px; margin-bottom:15px;">اختر حساب جوجل الخاص بك للمتابعة وربط طلباتك بحسابك الشخصي:</p>
-            
-            <div id="google-accounts-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
-                <!-- حسابات افتراضية للاختيار الفوري -->
-                <div onclick="loginWithGoogleAccount('محمد جمال', 'medo.atlm@gmail.com', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100')" style="background:#252525; padding:10px; border-radius:8px; display:flex; align-items:center; gap:12px; cursor:pointer; border:1px solid #444; text-align:right;">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
-                    <div>
-                        <div style="font-weight:bold; font-size:14px; color:#fff;">محمد جمال (حساب أساسي)</div>
-                        <div style="font-size:12px; color:var(--text-gray);">medo.atlm@gmail.com</div>
-                    </div>
-                </div>
-                <div onclick="loginWithGoogleAccount('عميل زائر فخم', 'sanad.customer@gmail.com', 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100')" style="background:#252525; padding:10px; border-radius:8px; display:flex; align-items:center; gap:12px; cursor:pointer; border:1px solid #444; text-align:right;">
-                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
-                    <div>
-                        <div style="font-weight:bold; font-size:14px; color:#fff;">حساب عميل آخر</div>
-                        <div style="font-size:12px; color:var(--text-gray);">sanad.customer@gmail.com</div>
-                    </div>
-                </div>
+        <div class="custom-modal-box" style="text-align:right;">
+            <div style="text-align:center; margin-bottom:15px;">
+                <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
+                <h3>تسجيل الدخول بحساب Google</h3>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل بيانات حسابك الحقيقي لتسجيل الدخول وحفظ طلباتك بملفك الشخصي:</p>
             </div>
             
-            <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="width:100%;">إلغاء</button>
+            <div style="margin-bottom: 12px;">
+                <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
+                <input type="text" id="real-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
+                <input type="email" id="real-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+            </div>
+
+            <div class="custom-modal-btns">
+                <button class="btn-modal-confirm" onclick="submitRealGoogleLogin()" style="background:var(--primary-gold); color:#000; flex:1;">دخول وتسجيل بالسيستم</button>
+                <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -729,11 +728,11 @@
         </div>
     </div>
 
-    <!-- الهيدر -->
+    <!-- الهيدر (بدون زر الإدارة تماماً للأمان) -->
     <header data-aos="fade-down" data-aos-duration="800">
-        <a href="#" class="logo"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
+        <a href="#" class="logo" id="store-logo-btn"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons">
-            <!-- يتم توليد أزرار الهيدر ديناميكياً حسب حالة تسجيل الدخول -->
+            <!-- أزرار الهيدر تتغير تلقائياً حسب تسجيل الدخول -->
         </div>
     </header>
 
@@ -816,10 +815,10 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم وإدارة المنتجات والأسعار والطلبات -->
+    <!-- لوحة التحكم السرية للأدمن -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
-            <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر</h3>
+            <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (مؤمنة)</h3>
             
             <div id="admin-login-box">
                 <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة:</p>
@@ -829,7 +828,7 @@
 
             <div id="admin-panel-box" style="display:none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك، تم تسجيل الدخول!</p>
+                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك، تم تسجيل الدخول كمسؤول!</p>
                     <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
@@ -955,26 +954,51 @@
 
         let cart = JSON.parse(localStorage.getItem('sanad_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('sanad_orders')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_current_user')) || null;
+
+        // التحقق من الرابط السري عند فتح الموقع (#admin)
+        window.addEventListener('DOMContentLoaded', () => {
+            if(window.location.hash === '#admin') {
+                openAdmin();
+            }
+        });
+
+        // الطرق السرية لفتح الإدارة (الضغط 5 مرات على الشعار أو Ctrl + Shift + A)
+        let logoClickCount = 0;
+        document.getElementById('store-logo-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            logoClickCount++;
+            if(logoClickCount >= 5) {
+                logoClickCount = 0;
+                openAdmin();
+            }
+            setTimeout(() => { logoClickCount = 0; }, 2000);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if(e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                openAdmin();
+            }
+        });
 
         function updateHeaderNav() {
             const nav = document.getElementById('header-nav-buttons');
             if(currentUser) {
                 nav.innerHTML = `
                     <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.08); padding:5px 12px; border-radius:8px; border:1px solid var(--border-color);">
-                        <img src="${currentUser.avatar}" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                        <i class="fa-solid fa-user-check" style="color:var(--primary-gold);"></i>
                         <span style="font-size:13px; font-weight:bold; color:var(--primary-gold);">${currentUser.name}</span>
                     </div>
                     <button class="btn-gold" onclick="openTrackingModal()"><i class="fa-solid fa-box-open"></i> طلباتي</button>
                     <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
-                    <button class="btn-gold" onclick="openAdmin()"><i class="fa-solid fa-lock"></i> الإدارة</button>
                     <button onclick="logoutUser()" style="background:none; border:none; color:#ff4d4d; cursor:pointer; font-size:16px;" title="تسجيل خروج"><i class="fa-solid fa-right-from-bracket"></i></button>
                 `;
             } else {
                 nav.innerHTML = `
                     <button class="btn-google" onclick="openGoogleModal()"><i class="fa-brands fa-google" style="color:#4285F4;"></i> تسجيل دخول بـ Google</button>
                     <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
-                    <button class="btn-gold" onclick="openAdmin()"><i class="fa-solid fa-lock"></i> الإدارة</button>
                 `;
             }
             updateCartUI();
@@ -988,12 +1012,31 @@
             document.getElementById('googleLoginModal').style.display = 'none';
         }
 
-        function loginWithGoogleAccount(name, email, avatar) {
-            currentUser = { name, email, avatar };
+        function submitRealGoogleLogin() {
+            const name = document.getElementById('real-user-name').value.trim();
+            const email = document.getElementById('real-user-email').value.trim();
+
+            if(!name || !email || !email.includes('@')) {
+                showSiteMessage("بيانات غير صحيحة", "الرجاء إدخال الاسم الصحيح والبريد الإلكتروني (Gmail) بشكل صحيح!");
+                return;
+            }
+
+            currentUser = { name, email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100' };
             localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
+
+            // حفظ المستخدم في قاعدة بيانات العملاء المسجلين
+            let existingUser = registeredUsers.find(u => u.email === email);
+            if(!existingUser) {
+                registeredUsers.push(currentUser);
+                localStorage.setItem('sanad_registered_users', JSON.stringify(registeredUsers));
+            }
+
             closeGoogleModal();
             updateHeaderNav();
-            showSiteMessage("تم تسجيل الدخول بنجاح", `أهلاً بك يا ${name}! تم ربط حسابك وجاهز لتتبع طلباتك.`);
+            showSiteMessage("تم تسجيل الدخول بنجاح", `أهلاً بك يا ${name}! تم ربط حسابك بالسيستم بنجاح.`);
+            
+            document.getElementById('real-user-name').value = '';
+            document.getElementById('real-user-email').value = '';
         }
 
         function logoutUser() {
@@ -1018,7 +1061,6 @@
 
         function renderUserOrders() {
             const container = document.getElementById('user-orders-container');
-            // فلترة الطلبات الخاصة بالبريد أو اسم المستخدم الحالي
             const myOrders = orders.filter(o => o.userEmail === currentUser.email || o.name === currentUser.name);
 
             if(myOrders.length === 0) {
@@ -1030,7 +1072,6 @@
             myOrders.forEach((ord, index) => {
                 let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
                 
-                // تحديد لون وشكل حالة الأوردر
                 let statusColor = '#ffcc00';
                 if(ord.status.includes('تجهيز')) statusColor = '#00cccc';
                 if(ord.status.includes('التوصيل') || ord.status.includes('خرج')) statusColor = '#ff9900';
@@ -1347,7 +1388,6 @@
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                             <strong style="color:var(--primary-gold);">طلب #${orders.length - index} (${ord.date})</strong>
                             <div>
-                                <!-- تغيير حالات الطلب لتظهر فوراً عند العميل -->
                                 <select onchange="updateOrderStatus(${index}, this.value)" style="background:#222; color:#fff; border:1px solid var(--primary-gold); padding:4px; border-radius:4px; font-size:12px; cursor:pointer;">
                                     <option value="⏳ قيد المراجعة" ${ord.status === '⏳ قيد المراجعة' ? 'selected' : ''}>⏳ قيد المراجعة</option>
                                     <option value="🔄 جاري التجهيز والعمل عليه" ${ord.status === '🔄 جاري التجهيز والعمل عليه' ? 'selected' : ''}>🔄 جاري التجهيز</option>
