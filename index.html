@@ -17,7 +17,6 @@
         :root {
             --primary-gold: #d4af37;
             --dark-gold: #aa7c11;
-            --bg-black: rgba(10, 10, 10, 0.93);
             --card-black: rgba(20, 20, 20, 0.95);
             --border-color: #333333;
             --text-light: #f3f3f3;
@@ -32,7 +31,8 @@
         }
 
         body {
-            background: linear-gradient(rgba(10, 10, 10, 0.92), rgba(10, 10, 10, 0.96)), 
+            /* خلفية متعددة الألوان فخمة (مزيج كحلي ملكي، عنابي، وذهبي فوق بوتيك الأزياء) */
+            background: linear-gradient(135deg, rgba(10, 14, 26, 0.91), rgba(30, 10, 20, 0.91), rgba(15, 10, 5, 0.93)), 
                         url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-light);
@@ -40,49 +40,67 @@
             overflow-x: hidden;
         }
 
-        /* شاشة الترحيب الافتتاحية (Intro Splash) */
+        /* شاشة الترحيب الافتتاحية مع أنيميشن الحروف المتحركة */
         #intro-splash {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
+            background: rgba(8, 11, 20, 0.98);
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: fadeOutSplash 0.8s ease 2.2s forwards;
+            animation: fadeOutSplash 0.8s ease 3s forwards;
         }
 
         .splash-content {
             text-align: center;
-            animation: zoomInSplash 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .splash-content h1 {
             color: var(--primary-gold);
-            font-size: 38px;
+            font-size: 42px;
             font-weight: 900;
             letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            flex-wrap: wrap;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* أنيميشن حركة كل حرف لوحده وهو بيظهر */
+        .splash-content h1 span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) scale(0.3);
+            animation: letterBounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes letterBounceIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.3); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .splash-content p {
             color: var(--text-gray);
             font-size: 16px;
+            opacity: 0;
+            animation: fadeInDesc 0.8s ease 1.8s forwards;
         }
 
-        @keyframes zoomInSplash {
-            0% { transform: scale(0.4); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes fadeInDesc {
+            to { opacity: 1; }
         }
 
         @keyframes fadeOutSplash {
+            0% { opacity: 1; visibility: visible; }
             100% { opacity: 0; visibility: hidden; }
         }
 
         /* الهيدر */
         header {
-            background: rgba(10, 10, 10, 0.95);
+            background: rgba(10, 14, 26, 0.95);
             border-bottom: 2px solid var(--primary-gold);
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -146,6 +164,7 @@
             font-size: 38px;
             margin-bottom: 10px;
             font-weight: 900;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .hero-section p {
@@ -343,16 +362,16 @@
             font-size: 15px;
         }
 
-        /* لوحة التحكم والانيميشن الخاص بالبأسورد الخاطئ */
+        /* لوحة التحكم */
         .admin-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.88);
             z-index: 3000;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
         }
 
         .admin-content {
@@ -360,11 +379,13 @@
             border: 2px solid var(--primary-gold);
             padding: 30px;
             border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
+            width: 95%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
-        /* كلاس الاهتزاز (Shake Animation) عند خطأ الباسورد */
+        /* كلاس الاهتزاز عند خطأ الباسورد */
         @keyframes shakeAnim {
             0% { transform: translateX(0); }
             20% { transform: translateX(-10px); }
@@ -379,14 +400,25 @@
             border-color: #ff4d4d !important;
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
         }
+
+        /* جدول طلبات العملاء في الإدارة */
+        .admin-order-card {
+            background: #1a1a1a;
+            border: 1px solid var(--border-color);
+            border-right: 4px solid var(--primary-gold);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
 
-    <!-- شاشة الترحيب الافتتاحية -->
+    <!-- شاشة الترحيب الافتتاحية مع حركة الحروف المتحركة -->
     <div id="intro-splash">
         <div class="splash-content">
-            <h1><i class="fa-solid fa-crown"></i> أهلاً بك في متجر سَـنَدْ</h1>
+            <h1 id="splash-title">أهلاً بك في متجر سَـنَدْ</h1>
             <p>حيث الفخامة والأناقة تلتقي بروح العصر</p>
         </div>
     </div>
@@ -416,8 +448,8 @@
     <div class="container">
         <div id="order-success-view" class="order-success-section" data-aos="flip-up">
             <i class="fa-solid fa-circle-check" style="font-size: 60px; color: #25d366; margin-bottom: 15px;"></i>
-            <h2>تم إرسال الأوردر بنجاح! 🎉</h2>
-            <p style="color: var(--text-gray);">شكراً لتسوقك في متجر سَـنَدْ. تم تحويل طلبك بنجاح عبر الواتساب وهذه هي تفاصيل طلبك الحالي:</p>
+            <h2>تم إرسال الأوردر وحفظه في السيستم بنجاح! 🎉</h2>
+            <p style="color: var(--text-gray);">شكراً لتسوقك في متجر سَـنَدْ. تم تسجيل طلبك بنجاح وهذه هي تفاصيل طلبك الحالي:</p>
             
             <div class="order-details-box" id="latest-order-details">
                 <!-- تفاصيل الأوردر -->
@@ -443,26 +475,49 @@
                 <input type="text" id="cust-name" placeholder="الاسم الكامل">
                 <input type="tel" id="cust-phone" placeholder="رقم الهاتف">
                 <input type="text" id="cust-address" placeholder="عنوان الاستلام بالتفصيل">
-                <button class="btn-checkout" onclick="checkoutOrder()"><i class="fa-brands fa-whatsapp"></i> إتمام الطلب عبر واتساب</button>
+                <button class="btn-checkout" onclick="checkoutOrder()"><i class="fa-solid fa-check-circle"></i> تأكيد وإرسال الطلب للسيستم</button>
             </div>
         </div>
     </div>
 
-    <!-- لوحة التحكم -->
+    <!-- لوحة التحكم وإدارة الطلبات والمنتجات -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
-            <h3 style="color: var(--primary-gold); margin-bottom: 15px;">لوحة تحكم المتجر</h3>
+            <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر</h3>
+            
+            <!-- تسجيل الدخول (كلمة سر آمنة ومخفية type="password") -->
             <div id="admin-login-box">
-                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور (09009090)" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; transition: 0.2s;">
-                <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول</button>
+                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة:</p>
+                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px;">
+                <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول لوحة الإدارة</button>
             </div>
+
+            <!-- لوحة التحكم الرئيسية بعد الدخول -->
             <div id="admin-panel-box" style="display:none;">
-                <p style="color:#25d366; margin-bottom:15px;">تم تسجيل الدخول بنجاح!</p>
-                <input type="text" id="new-p-name" placeholder="اسم المنتج الجديد" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                <input type="number" id="new-p-price" placeholder="السعر (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                <input type="text" id="new-p-img" placeholder="رابط صورة المنتج (URL)" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                <button class="btn-gold" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="addNewProduct()">إضافة المنتج</button>
-                <button class="btn-gold" style="width:100%; justify-content:center; background:#444; color:#fff;" onclick="closeAdmin()">إغلاق</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك، تم تسجيل الدخول!</p>
+                    <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- إضافة منتج جديد -->
+                <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد للمتجر</h4>
+                    <input type="text" id="new-p-name" placeholder="اسم المنتج الجديد" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <input type="number" id="new-p-price" placeholder="السعر (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <input type="text" id="new-p-img" placeholder="رابط صورة المنتج (URL)" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <button class="btn-gold" style="width:100%; justify-content:center;" onclick="addNewProduct()">إضافة المنتج</button>
+                </div>
+
+                <!-- قسم طلبات العملاء المجمعة في السيستم -->
+                <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h4 style="color: var(--primary-gold);">طلبات العملاء الواردة للسيستم (<span id="admin-orders-count">0</span>)</h4>
+                        <button onclick="clearAllOrders()" style="background:#ff4d4d; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:12px;">مسح كل الطلبات</button>
+                    </div>
+                    <div id="admin-orders-container" style="max-height: 300px; overflow-y: auto;">
+                        <!-- الأوردرات هتظهر هنا -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -470,6 +525,13 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // تفعيل أنيميشن الحروف المتحركة في شاشة الترحيب
+        const titleElem = document.getElementById('splash-title');
+        const text = titleElem.innerText;
+        titleElem.innerHTML = text.split('').map((char, index) => 
+            `<span style="animation-delay: ${index * 0.07}s">${char === ' ' ? '&nbsp;' : char}</span>`
+        ).join('');
+
         AOS.init({
             once: true,
             duration: 900
@@ -483,6 +545,7 @@
         ];
 
         let cart = JSON.parse(localStorage.getItem('sanad_cart')) || [];
+        let orders = JSON.parse(localStorage.getItem('sanad_orders')) || [];
 
         function renderProducts() {
             const container = document.getElementById('products-container');
@@ -571,25 +634,25 @@
             let shipping = 50;
             let grandTotal = subtotal + shipping;
 
-            let orderDetailsText = `🛍️ *طلب جديد من متجر سَـنَدْ*%0A`;
-            orderDetailsText += `👤 *الاسم:* ${name}%0A`;
-            orderDetailsText += `📞 *الهاتف:* ${phone}%0A`;
-            orderDetailsText += `📍 *العنوان:* ${address}%0A%0A`;
-            orderDetailsText += `📦 *المنتجات المطلوبة:*%0A`;
-            
-            cart.forEach(item => {
-                orderDetailsText += `- ${item.name} (${item.qty} قطعة) : ${item.price * item.qty} ج%0A`;
-            });
+            // حفظ الطلب في السيستم (LocalStorage)
+            let newOrder = {
+                id: Date.now(),
+                date: new Date().toLocaleString('ar-EG'),
+                name,
+                phone,
+                address,
+                items: [...cart],
+                shipping,
+                grandTotal
+            };
 
-            orderDetailsText += `%0A🚚 *شحن:* ${shipping} ج`;
-            orderDetailsText += `%0A💰 *الإجمالي الكلي:* ${grandTotal} جنيه`;
+            orders.unshift(newOrder);
+            localStorage.setItem('sanad_orders', JSON.stringify(orders));
 
-            const waNumber = "201080629789";
-            const waUrl = `https://wa.me/${waNumber}?text=${orderDetailsText}`;
-            window.open(waUrl, '_blank');
+            // عرض تفاصيل الأوردر للعميل
+            showOrderSuccessView(newOrder);
 
-            showOrderSuccessView({ name, phone, address, cartItems: [...cart], shipping, grandTotal });
-
+            // تفريغ السلة
             cart = [];
             saveAndRenderCart();
             toggleCart();
@@ -600,12 +663,13 @@
             const successView = document.getElementById('order-success-view');
             successView.style.display = 'block';
 
-            let itemsHtml = orderData.cartItems.map(i => `<li>${i.name} (${i.qty} قطعة) - ${i.price * i.qty} جنيه</li>`).join('');
+            let itemsHtml = orderData.items.map(i => `<li>${i.name} (${i.qty} قطعة) - ${i.price * i.qty} جنيه</li>`).join('');
 
             document.getElementById('latest-order-details').innerHTML = `
                 <p><strong>اسم العميل:</strong> ${orderData.name}</p>
                 <p><strong>رقم الهاتـف:</strong> ${orderData.phone}</p>
                 <p><strong>العنـوان:</strong> ${orderData.address}</p>
+                <p><strong>وقت الطلب:</strong> ${orderData.date}</p>
                 <p><strong>المنتجات:</strong></p>
                 <ul style="margin-right: 20px; margin-bottom: 10px; color: var(--text-gray);">${itemsHtml}</ul>
                 <p><strong>رسوم الشحن:</strong> ${orderData.shipping} جنيه</p>
@@ -619,7 +683,7 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // لوحة التحكم والتحقق من كلمة السر مع تأثير الاهتزاز عند الخطأ
+        // لوحة التحكم وإدارة الطلبات
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
         }
@@ -636,11 +700,54 @@
                 document.getElementById('admin-login-box').style.display = 'none';
                 document.getElementById('admin-panel-box').style.display = 'block';
                 passInput.classList.remove('shake');
+                passInput.value = '';
+                renderAdminOrders();
             } else {
                 passInput.classList.add('shake');
                 setTimeout(() => {
                     passInput.classList.remove('shake');
                 }, 400);
+            }
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('admin-orders-container');
+            document.getElementById('admin-orders-count').innerText = orders.length;
+            
+            if(orders.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:var(--text-gray); padding:20px;">لا توجد طلبات واردة حتى الآن.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            orders.forEach((ord, index) => {
+                let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
+                container.innerHTML += `
+                    <div class="admin-order-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="color:var(--primary-gold);">طلب #${orders.length - index} (${ord.date})</strong>
+                            <button onclick="deleteOrder(${index})" style="background:none; border:none; color:#ff4d4d; cursor:pointer;"><i class="fa-solid fa-trash"></i> حذف</button>
+                        </div>
+                        <p><strong>العميل:</strong> ${ord.name} | <strong>الهاتف:</strong> ${ord.phone}</p>
+                        <p><strong>العنوان:</strong> ${ord.address}</p>
+                        <p style="margin-top:5px; color:#ddd;"><strong>المنتجات:</strong><br>${itemsList}</p>
+                        <p style="margin-top:8px; color:var(--primary-gold); font-weight:bold;">الإجمالي بالشحن: ${ord.grandTotal} جنيه</p>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteOrder(index) {
+            orders.splice(index, 1);
+            localStorage.setItem('sanad_orders', JSON.stringify(orders));
+            renderAdminOrders();
+        }
+
+        function clearAllOrders() {
+            if(confirm('هل أنت متأكد من مسح جميع الطلبات؟')) {
+                orders = [];
+                localStorage.setItem('sanad_orders', JSON.stringify(orders));
+                renderAdminOrders();
             }
         }
 
@@ -659,7 +766,9 @@
             localStorage.setItem('sanad_products', JSON.stringify(products));
             renderProducts();
             alert('تم إضافة المنتج بنجاح!');
-            closeAdmin();
+            document.getElementById('new-p-name').value = '';
+            document.getElementById('new-p-price').value = '';
+            document.getElementById('new-p-img').value = '';
         }
 
         renderProducts();
