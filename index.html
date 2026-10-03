@@ -69,7 +69,7 @@
             z-index: 10;
         }
 
-        /* شاشة الترحيب الافتتاحية مع انيميشن مكثف للهدوم */
+        /* شاشة الترحيب الافتتاحية */
         #intro-splash {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -245,7 +245,6 @@
             box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
         }
 
-        /* انيميشن حركي قوي ومميز لصور المنتجات */
         @keyframes enhancedImageFloat {
             0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
             33% { transform: translateY(-7px) scale(1.03) rotate(0.5deg); }
@@ -277,11 +276,34 @@
             margin-bottom: 8px;
         }
 
+        .product-price-box {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .product-price {
             color: var(--primary-gold);
             font-size: 20px;
             font-weight: 900;
-            margin-bottom: 15px;
+        }
+
+        .product-old-price {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .offer-badge {
+            background: #ff4d4d;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
         }
 
         .btn-add-cart {
@@ -301,7 +323,7 @@
             color: #000;
         }
 
-        /* سلة المشتريات وفورم الشراء */
+        /* سلة المشتريات */
         .cart-modal {
             position: fixed;
             top: 0;
@@ -447,7 +469,7 @@
             padding: 30px;
             border-radius: 12px;
             width: 95%;
-            max-width: 700px;
+            max-width: 750px;
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -490,7 +512,7 @@
             background: linear-gradient(135deg, rgba(0, 51, 17, 0.3), #1a1a1a);
         }
 
-        /* رسالة التأكيد المخصصة والمتحركة داخل الموقع بدلاً من المتصفح */
+        /* رسالة التأكيد المخصصة والمتحركة */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -564,14 +586,12 @@
 </head>
 <body>
 
-    <!-- خلفية الملابس المستمرة والمتساقطة في الخلفية -->
+    <!-- خلفية الملابس المستمرة في الخلفية -->
     <div id="persistent-bg-animation"></div>
 
-    <!-- شاشة الترحيب الافتتاحية مع انيميشن مكثف لصور وملابس السقوط -->
+    <!-- شاشة الترحيب الافتتاحية -->
     <div id="intro-splash">
-        <div id="intro-falling-wrapper">
-            <!-- سيتم توليد الهدوم هنا ديناميكياً عند الفتح -->
-        </div>
+        <div id="intro-falling-wrapper"></div>
         <div class="splash-content">
             <h1>
                 <span>أهلاً</span>
@@ -588,10 +608,10 @@
     <div class="custom-modal-overlay" id="customConfirmModal">
         <div class="custom-modal-box">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 45px; color: #ffcc00; margin-bottom: 12px;"></i>
-            <h3 id="customModalTitle">تأكيد الحذف</h3>
-            <p id="customModalText">هل أنت متأكد من رغبتك في حذف هذا الطلب من السيستم؟</p>
+            <h3 id="customModalTitle">تأكيد العملية</h3>
+            <p id="customModalText">هل أنت متأكد من رغبتك في الاستمرار؟</p>
             <div class="custom-modal-btns">
-                <button class="btn-modal-confirm" id="modalConfirmBtn">تأكيد الحذف</button>
+                <button class="btn-modal-confirm" id="modalConfirmBtn">تأكيد</button>
                 <button class="btn-modal-cancel" onclick="closeCustomModal()">تراجع</button>
             </div>
         </div>
@@ -625,22 +645,18 @@
             <h2>تم إرسال الأوردر وحفظه في السيستم بنجاح! 🎉</h2>
             <p style="color: var(--text-gray);">شكراً لتسوقك في متجر سَـنَدْ. تم تسجيل طلبك بنجاح وهذه هي تفاصيل طلبك الحالي:</p>
             
-            <div class="order-details-box" id="latest-order-details">
-                <!-- تفاصيل الأوردر -->
-            </div>
+            <div class="order-details-box" id="latest-order-details"></div>
             <button class="btn-gold" style="margin: 20px auto 0;" onclick="resetToStore()">العودة للمتجر</button>
         </div>
     </div>
 
-    <!-- سلة المشتريات وفورم الشراء مع تحديث المحافظات والإدارات -->
+    <!-- سلة المشتريات وفورم الشراء -->
     <div class="cart-modal" id="cartModal">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
             <button class="close-cart" onclick="toggleCart()">&times;</button>
         </div>
-        <div class="cart-items" id="cart-items-container">
-            <!-- المنتجات المضافة -->
-        </div>
+        <div class="cart-items" id="cart-items-container"></div>
         <div class="cart-footer">
             <p style="margin-bottom: 8px;">تكلفة الشحن الثابتة: <strong>50 جنيه</strong></p>
             <p style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">الإجمالي الكلي: <span id="cart-total" style="color: var(--primary-gold);">0</span> جنيه</p>
@@ -649,7 +665,6 @@
                 <input type="text" id="cust-name" placeholder="الاسم الكامل">
                 <input type="tel" id="cust-phone" placeholder="رقم الهاتف">
                 
-                <!-- المحافظة -->
                 <select id="cust-gov" onchange="updateCitiesList()">
                     <option value="" disabled selected>اختر المحافظة</option>
                     <option value="القاهرة">القاهرة</option>
@@ -678,7 +693,6 @@
                     <option value="مطروح">مطروح</option>
                 </select>
 
-                <!-- الإدارة / المدينة التابعة (تتغير ديناميكياً حسب المحافظة المختارة) -->
                 <select id="cust-city">
                     <option value="" disabled selected>اختر المحافظة أولاً لعرض الإدارات والمدن</option>
                 </select>
@@ -691,32 +705,39 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم وإدارة الطلبات والمنتجات -->
+    <!-- لوحة التحكم وإدارة المنتجات والأسعار والطلبات -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
             <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر</h3>
             
-            <!-- تسجيل الدخول (كلمة سر آمنة ومخفية type="password") -->
             <div id="admin-login-box">
                 <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة:</p>
                 <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px;">
                 <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول لوحة الإدارة</button>
             </div>
 
-            <!-- لوحة التحكم الرئيسية بعد الدخول -->
             <div id="admin-panel-box" style="display:none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك، تم تسجيل الدخول!</p>
                     <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <!-- إضافة منتج جديد -->
+                <!-- إضافة منتج جديد مع خانات السعر والأوفر -->
                 <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد للمتجر</h4>
+                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد (مع إمكانية وضع سعر الأوفر والخصم)</h4>
                     <input type="text" id="new-p-name" placeholder="اسم المنتج الجديد" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                    <input type="number" id="new-p-price" placeholder="السعر (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <input type="number" id="new-p-price" placeholder="السعر الحالي (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <input type="number" id="new-p-old-price" placeholder="السعر القديم قبل الخصم (اختياري - لو فيه أوفر فقط)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="text" id="new-p-img" placeholder="رابط صورة المنتج (URL)" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <button class="btn-gold" style="width:100%; justify-content:center;" onclick="addNewProduct()">إضافة المنتج</button>
+                </div>
+
+                <!-- قسم إدارة وتعديل أسعار المنتجات الحالية -->
+                <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إدارة المنتجات وتغيير الأسعار والعروض</h4>
+                    <div id="admin-products-list" style="max-height: 220px; overflow-y: auto;">
+                        <!-- المنتجات تظهر هنا للتعديل أو الحذف -->
+                    </div>
                 </div>
 
                 <!-- قسم طلبات العملاء -->
@@ -725,9 +746,7 @@
                         <h4 style="color: var(--primary-gold);">طلبات العملاء الواردة للسيستم (<span id="admin-orders-count">0</span>)</h4>
                         <button onclick="confirmClearAllOrders()" style="background:#ff4d4d; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:12px;">مسح كل الطلبات</button>
                     </div>
-                    <div id="admin-orders-container" style="max-height: 350px; overflow-y: auto;">
-                        <!-- الأوردرات هتظهر هنا -->
-                    </div>
+                    <div id="admin-orders-container" style="max-height: 300px; overflow-y: auto;"></div>
                 </div>
             </div>
         </div>
@@ -741,13 +760,12 @@
             duration: 900
         });
 
-        // قاعدة بيانات الإدارات والأحياء لكل محافظة لتسهيل الاختيار على العميل
         const egyptDistricts = {
             "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "هليوبوليس (مصر الجديدة)", "التجمع الخامس", "المقطم", "عين شمس", "المطرية", "الزمالك", "شبرا"],
             "الجيزة": ["الدقي", "المهندسين", "الهرم", "فيصل", "6 أكتوبر", "الشيخ زايد", "العجوزة", "إمبابة", "البدرشين", "أكتوبر الجديدة"],
             "الإسكندرية": ["سموحة", "المنتزه", "سيدي جابر", "العجمي", "الإبراهيمية", "كليوباترا", "محطة الرمل", "الورديان", "المعمورة"],
             "الدقهلية": ["المنصورة", "طلخا", "ميت غمر", "دكرنس", "أجا", "سنفا", "بلقاس", "شربين"],
-            "الشرقية": ["الزقازيق", "بلبيس", "الع العاشر من رمضان", "فاقوس", "أبو كبير", "منيا القمح", "ههيا"],
+            "الشرقية": ["الزقازيق", "بلبيس", "العاشر من رمضان", "فاقوس", "أبو كبير", "منيا القمح", "ههيا"],
             "الغربية": ["طنطا", "المحلة الكبرى", "زفتى", "كفر الزيات", "السنطة", "قطور"],
             "القليوبية": ["بنها", "شبرا الخيمة", "قليوب", "شبين القناطر", "القناطر الخيرية", "الخصوص"],
             "المنوفية": ["شبين الكوم", "منوف", "تلا", "أشمون", "سرس الليان", "بركة السبع"],
@@ -786,9 +804,9 @@
             }
         }
 
-        // توليد انيميشن سقوط الهدوم الكثيف في شاشة الترحيب
+        // انيميشن سقوط الهدوم في شاشة الترحيب
         const introWrapper = document.getElementById('intro-falling-wrapper');
-        const clothingIcons = ['fa-shirt', 'fa-vest', 'fa-socks', 'fa-hat-cowboy', 'fa-mitten', 'fa-socks'];
+        const clothingIcons = ['fa-shirt', 'fa-vest', 'fa-socks', 'fa-hat-cowboy', 'fa-mitten'];
         
         for(let i = 0; i < 22; i++) {
             const item = document.createElement('i');
@@ -800,7 +818,7 @@
             introWrapper.appendChild(item);
         }
 
-        // توليد خلفية الملابس المستمرة والمتساقطة في الخلفية
+        // خلفية الملابس المستمرة
         const bgContainer = document.getElementById('persistent-bg-animation');
         function createBgFallingItem() {
             const item = document.createElement('i');
@@ -816,18 +834,15 @@
             item.style.animationDuration = `${randomDuration}s`;
 
             bgContainer.appendChild(item);
-
-            setTimeout(() => {
-                item.remove();
-            }, randomDuration * 1000);
+            setTimeout(() => { item.remove(); }, randomDuration * 1000);
         }
         setInterval(createBgFallingItem, 500);
 
-        // بيانات المنتجات
+        // بيانات المنتجات (تدعم السعر الحالي و oldPrice القديم للأوفر)
         let products = JSON.parse(localStorage.getItem('sanad_products')) || [
-            { id: 1, name: 'جاكيت سَـنَدْ الملكي الفاخر', price: 1200, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500' },
-            { id: 2, name: 'بدلة كلاسيكية سوداء', price: 2500, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500' },
-            { id: 3, name: 'قميص صيفي قطني فخم', price: 650, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500' }
+            { id: 1, name: 'جاكيت سَـنَدْ الملكي الفاخر', price: 1200, oldPrice: 1500, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500' },
+            { id: 2, name: 'بدلة كلاسيكية سوداء', price: 2500, oldPrice: null, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500' },
+            { id: 3, name: 'قميص صيفي قطني فخم', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500' }
         ];
 
         let cart = JSON.parse(localStorage.getItem('sanad_cart')) || [];
@@ -837,12 +852,30 @@
             const container = document.getElementById('products-container');
             container.innerHTML = '';
             products.forEach(p => {
+                // عرض السعر والأوفر ديناميكياً (لو فيه سعر قديم يظهر، مش موجود يظهر العادي بس)
+                let priceSectionHtml = '';
+                if(p.oldPrice && p.oldPrice > p.price) {
+                    priceSectionHtml = `
+                        <div class="product-price-box">
+                            <span class="product-price">${p.price} جنيه</span>
+                            <span class="product-old-price">${p.oldPrice} جنيه</span>
+                            <span class="offer-badge">خصم خاص</span>
+                        </div>
+                    `;
+                } else {
+                    priceSectionHtml = `
+                        <div class="product-price-box">
+                            <span class="product-price">${p.price} جنيه</span>
+                        </div>
+                    `;
+                }
+
                 container.innerHTML += `
                     <div class="product-card" data-aos="fade-up">
                         <img src="${p.img}" alt="${p.name}" class="product-img">
                         <div class="product-info">
                             <div class="product-title">${p.name}</div>
-                            <div class="product-price">${p.price} جنيه</div>
+                            ${priceSectionHtml}
                             <button class="btn-add-cart" onclick="addToCart(${p.id})"><i class="fa-solid fa-cart-plus"></i> إضافة للسلة</button>
                         </div>
                     </div>
@@ -976,7 +1009,7 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // لوحة التحكم وإدارة الأوردرات
+        // لوحة التحكم وإدارة الأدمن
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
         }
@@ -995,12 +1028,79 @@
                 passInput.classList.remove('shake');
                 passInput.value = '';
                 renderAdminOrders();
+                renderAdminProducts();
             } else {
                 passInput.classList.add('shake');
-                setTimeout(() => {
-                    passInput.classList.remove('shake');
-                }, 400);
+                setTimeout(() => { passInput.classList.remove('shake'); }, 400);
             }
+        }
+
+        function renderAdminProducts() {
+            const container = document.getElementById('admin-products-list');
+            if(!container) return;
+            if(products.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:var(--text-gray); padding:10px;">لا توجد منتجات حالياً.</p>`;
+                return;
+            }
+            container.innerHTML = '';
+            products.forEach((p) => {
+                container.innerHTML += `
+                    <div style="background:#1f1f1f; padding:10px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid #333;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${p.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+                            <div>
+                                <strong style="font-size:14px; color:#fff;">${p.name}</strong>
+                                <div style="font-size:12px; color:var(--primary-gold);">السعر: ${p.price} ج ${p.oldPrice ? `(قبل الخصم: ${p.oldPrice} ج)` : '(بدون خصم)'}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="editProductPrice(${p.id})" style="background:var(--primary-gold); color:#000; border:none; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">تعديل السعر/الأوفر</button>
+                            <button onclick="confirmDeleteProduct(${p.id})" style="background:#ff4d4d; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:11px; cursor:pointer;">حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function editProductPrice(id) {
+            const p = products.find(prod => prod.id === id);
+            if(!p) return;
+            const newPrice = prompt("أدخل السعر الحالي الجديد:", p.price);
+            if(newPrice === null) return;
+            const newOldPrice = prompt("أدخل السعر القديم (قبل الخصم) لو فيه أوفر، أو اتركه فارغاً:", p.oldPrice || '');
+            
+            if(newPrice.trim() !== '') {
+                p.price = parseFloat(newPrice);
+                p.oldPrice = newOldPrice.trim() !== '' ? parseFloat(newOldPrice) : null;
+                localStorage.setItem('sanad_products', JSON.stringify(products));
+                renderProducts();
+                renderAdminProducts();
+                alert('تم تحديث السعر والعرض بنجاح!');
+            }
+        }
+
+        function addNewProduct() {
+            const name = document.getElementById('new-p-name').value.trim();
+            const price = parseFloat(document.getElementById('new-p-price').value);
+            const oldPriceInput = document.getElementById('new-p-old-price').value.trim();
+            const oldPrice = oldPriceInput ? parseFloat(oldPriceInput) : null;
+            const img = document.getElementById('new-p-img').value.trim();
+
+            if(!name || isNaN(price) || !img) {
+                alert('الرجاء إدخال اسم المنتج، السعر الحالي، ورابط الصورة بشكل صحيح');
+                return;
+            }
+
+            const newProd = { id: Date.now(), name, price, oldPrice, img };
+            products.push(newProd);
+            localStorage.setItem('sanad_products', JSON.stringify(products));
+            renderProducts();
+            renderAdminProducts();
+            alert('تم إضافة المنتج بنجاح!');
+            document.getElementById('new-p-name').value = '';
+            document.getElementById('new-p-price').value = '';
+            document.getElementById('new-p-old-price').value = '';
+            document.getElementById('new-p-img').value = '';
         }
 
         function renderAdminOrders() {
@@ -1050,7 +1150,7 @@
             renderAdminOrders();
         }
 
-        // نافذة التأكيد المخصصة بدلاً من المتصفح
+        // نافذة التأكيد المخصصة والمتحركة
         let pendingAction = null;
 
         function showCustomModal(title, text, onConfirmCallback) {
@@ -1059,7 +1159,6 @@
             document.getElementById('customConfirmModal').style.display = 'flex';
             
             const btn = document.getElementById('modalConfirmBtn');
-            // إزالة الأحداث السابقة
             const newBtn = btn.cloneNode(true);
             btn.parentNode.replaceChild(newBtn, btn);
             
@@ -1081,32 +1180,21 @@
             });
         }
 
+        function confirmDeleteProduct(id) {
+            showCustomModal("حذف منتج", "هل أنت متأكد من رغبتك في حذف هذا المنتج نهائياً من المتجر؟", () => {
+                products = products.filter(prod => prod.id !== id);
+                localStorage.setItem('sanad_products', JSON.stringify(products));
+                renderProducts();
+                renderAdminProducts();
+            });
+        }
+
         function confirmClearAllOrders() {
             showCustomModal("مسح كافة الطلبات", "تحذير! هل أنت متأكد تماماً من مسح جميع طلبات العملاء المسجلة؟", () => {
                 orders = [];
                 localStorage.setItem('sanad_orders', JSON.stringify(orders));
                 renderAdminOrders();
             });
-        }
-
-        function addNewProduct() {
-            const name = document.getElementById('new-p-name').value.trim();
-            const price = parseFloat(document.getElementById('new-p-price').value);
-            const img = document.getElementById('new-p-img').value.trim();
-
-            if(!name || isNaN(price) || !img) {
-                alert('الرجاء إدخال بيانات المنتج بشكل صحيح');
-                return;
-            }
-
-            const newProd = { id: Date.now(), name, price, img };
-            products.push(newProd);
-            localStorage.setItem('sanad_products', JSON.stringify(products));
-            renderProducts();
-            alert('تم إضافة المنتج بنجاح!');
-            document.getElementById('new-p-name').value = '';
-            document.getElementById('new-p-price').value = '';
-            document.getElementById('new-p-img').value = '';
         }
 
         renderProducts();
