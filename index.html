@@ -2,768 +2,860 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رسالة اعتذار وحب استثنائية (مزامنة فورية)</title>
-    <!-- Tailwind CSS CDN -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رسالة اعتذار وحب</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Tajawal for authentic Arabic typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #080507;
-            color: #f8f9fa;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1a0b1c, #3a1538);
+            color: white;
             overflow-x: hidden;
-            margin: 0;
-            padding: 0;
+            touch-action: pan-y;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #150810;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e11d48;
-            border-radius: 4px;
-        }
-
-        @keyframes floatRandom {
-            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) translateX(15px) rotate(6deg); }
-            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        .screen {
+            display: none;
+            min-height: 100vh;
+            width: 100vw;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
         }
 
-        @keyframes flyIn {
-            0% { transform: scale(0) translate(var(--startX), var(--startY)) rotate(0deg); opacity: 0; }
-            100% { transform: scale(1) translate(0, 0) rotate(var(--endRot)); opacity: 1; }
+        .screen.active {
+            display: flex;
+            opacity: 1;
+            z-index: 10;
         }
 
-        .flying-photo {
-            animation: flyIn 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, floatRandom 4s ease-in-out infinite 1.5s;
-        }
-
+        /* 3D Book Styles */
         .book-container {
-            perspective: 2000px;
-        }
-        .book-sheet {
+            perspective: 1500px;
+            width: 90%;
+            max-width: 400px;
+            height: 500px;
+            position: relative;
             transform-style: preserve-3d;
-            transform-origin: left center;
-            transition: transform 0.9s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: transform 1s;
+        }
+        
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.3);
+            transform-origin: right center; /* RTL orientation */
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
         }
 
-        canvas.effect-canvas {
-            position: fixed;
+        .page-front, .page-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            background: #fff;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .page-back {
+            transform: rotateY(180deg);
+        }
+
+        .page-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fdfbf7;
+            border: 1px dashed #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .img-frame {
+            width: 100%;
+            height: 250px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .caption {
+            color: #4b5563;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Amiri', serif;
+            line-height: 1.6;
+        }
+
+        /* Page Flipping Classes */
+        .flipped {
+            transform: rotateY(-180deg) !important;
+        }
+        
+        .z-100 { z-index: 100; }
+        .z-90 { z-index: 90; }
+        .z-80 { z-index: 80; }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        .floating-photo {
+            position: absolute;
+            animation: float 4s ease-in-out infinite;
+            border: 4px solid white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .heart-particle {
+            position: absolute;
+            font-size: 2rem;
+            animation: popUp 2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .wahshteny-text {
+            position: absolute;
+            color: #ff4d4d;
+            font-weight: bold;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInOut 3s forwards;
+            pointer-events: none;
+            z-index: 40;
+        }
+
+        @keyframes popUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-200px) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.5); }
+            20% { opacity: 1; transform: scale(1.2); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        /* Canvas for Question Marks */
+        #q-canvas {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 50;
+            z-index: 1;
         }
-
-        .glass-card {
-            background: rgba(22, 9, 18, 0.85);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(244, 63, 94, 0.25);
+        
+        .btn-dodge {
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-rose-950 flex flex-col items-center justify-center relative selection:bg-rose-500 selection:text-white">
-
-    <!-- Audio Player -->
-    <audio id="mainAudio" loop>
-        <source src="" type="audio/mp3">
-        متصفحك لا يدعم تشغيل الصوت.
-    </audio>
-
-    <!-- Custom Toast Notification -->
-    <div id="toastNotification" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 bg-rose-950/95 border border-rose-500/50 text-rose-200 px-6 py-3 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-3">
-        <i id="toastIcon" class="fa-solid fa-circle-info text-rose-400 text-lg"></i>
-        <span id="toastMessage" class="text-sm font-medium">رسالة تنبيه</span>
-    </div>
-
-    <!-- Canvas for particle background effects -->
-    <canvas id="effectCanvas" class="effect-canvas"></canvas>
-
-    <!-- Hidden Settings Gear Icon -->
-    <button onclick="openSettingsModal()" class="fixed top-4 left-4 z-40 p-3 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-full border border-rose-500/20 backdrop-blur-md transition shadow-lg" title="الإعدادات">
-        <i class="fa-solid fa-gear text-lg"></i>
+<body>
+    <!-- Admin Button -->
+    <button id="admin-toggle" class="fixed top-4 left-4 z-50 bg-white/20 p-3 rounded-full hover:bg-white/40 backdrop-blur-sm transition">
+        ⚙️
     </button>
 
-    <!-- Password Prompt Modal -->
-    <div id="passwordModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="glass-card p-6 md:p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl border border-rose-500/40">
-            <div class="w-12 h-12 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-400 text-xl">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <h3 class="text-xl font-bold text-rose-200 mb-2">لوحة إعدادات المشرف</h3>
-            <p class="text-xs text-rose-300/60 mb-4">أدخل كلمة المرور الخاصة باللوحة</p>
-            <input type="password" id="adminPasswordInput" placeholder="كلمة المرور" class="w-full px-4 py-3 bg-rose-950/60 border border-rose-500/30 rounded-xl text-white text-center mb-2 focus:outline-none focus:border-rose-500">
-            <p id="passwordErrorMsg" class="text-xs text-rose-400 mb-4 h-4"></p>
-            <div class="flex gap-2">
-                <button onclick="verifyPassword()" class="flex-1 py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition">دخول</button>
-                <button onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hidden Settings Panel Modal with Global Firebase Sync -->
-    <div id="settingsPanelModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="glass-card p-6 md:p-8 rounded-3xl max-w-2xl w-full shadow-2xl border border-rose-500/40 max-h-[90vh] overflow-y-auto text-right">
-            <div class="flex items-center justify-between mb-6 pb-3 border-b border-rose-500/20">
-                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-cloud-arrow-up ml-2"></i> إدارة الخانات والأغاني (مزامنة فورية عبر السحابة)</h3>
-                <button onclick="closeSettingsPanel()" class="text-rose-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="space-y-6">
-                <!-- Slot-Based Photo Upload Section -->
-                <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
-                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-images ml-1"></i> تخصيص صور الألبوم حسب الخانات (ترتيب ثابت)</h4>
-                    <p class="text-xs text-rose-300/60">الصور المحفوظة ستظهر فوراً لجميع الزوار عبر أي جهاز وفي أي مكان بفضل Firebase.</p>
-
-                    <!-- Slot 1 -->
-                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
-                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الأولى (الصفحة 1):</label>
-                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة."</p>
-                        <input type="file" id="slot1Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
-                    </div>
-
-                    <!-- Slot 2 -->
-                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
-                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الثانية (الصفحة 2):</label>
-                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا."</p>
-                        <input type="file" id="slot2Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
-                    </div>
-
-                    <!-- Slot 3 -->
-                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
-                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الثالثة (الصفحة 3):</label>
-                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."</p>
-                        <input type="file" id="slot3Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
-                    </div>
-                </div>
-
-                <!-- Stage Audio Configuration Section -->
-                <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
-                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-music ml-1"></i> تخصيص الأغاني لكل مرحلة (مزامنة سحابية)</h4>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs text-rose-200/80 mb-1">أغنية مرحلة الاعتذار (الأولى):</label>
-                            <input type="file" id="audioStage1" accept="audio/*" class="w-full text-xs text-rose-200 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-900 file:text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-rose-200/80 mb-1">أغنية مرحلة الألبوم (الثانية/الثالثة):</label>
-                            <input type="file" id="audioStage2" accept="audio/*" class="w-full text-xs text-rose-200 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-900 file:text-white">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs text-rose-200/80 mb-1">أغنية مرحلة الاحتفال النهائية (الرابعة):</label>
-                            <input type="file" id="audioStage3" accept="audio/*" class="w-full text-xs text-rose-200 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-900 file:text-white">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-rose-500/20 flex justify-between items-center">
-                <button onclick="resetToDefaultSlots()" class="px-4 py-2 bg-red-900/40 hover:bg-red-800 text-red-300 text-xs font-bold rounded-xl transition">إعادة الصور الافتراضية</button>
-                <button onclick="saveSettingsToFirebase()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ ومزامنة فورية للجميع</button>
-            </div>
-        </div>
-    </div>
-
-    <main id="appContainer" class="w-full max-w-4xl mx-auto p-4 md:p-6 z-10 flex flex-col items-center justify-center min-h-screen">
-        
-        <!-- ================= STAGE 1: EGYPTIAN APOLOGY MESSAGE ================= -->
-        <section id="screenApology" class="w-full flex flex-col items-center text-center space-y-6 transition-all duration-700">
-            <div class="inline-flex items-center justify-center p-3.5 bg-rose-500/10 rounded-full border border-rose-500/30 mb-2 animate-pulse">
-                <i class="fa-solid fa-heart-crack text-rose-500 text-3xl"></i>
-            </div>
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex-col items-center justify-center p-6 overflow-y-auto">
+        <div class="bg-gray-900 border border-purple-500 rounded-2xl p-6 w-full max-w-lg text-right">
+            <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">لوحة تحكم الإدمن (الرفع للسحابة)</h2>
             
-            <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-300 to-red-400 leading-tight">
-                حقك عليا يا أغلى الناس
-            </h1>
-
-            <div class="glass-card p-6 md:p-9 rounded-3xl shadow-2xl max-w-2xl w-full text-right relative overflow-hidden">
-                <div class="absolute -top-10 -left-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl"></div>
-                <p class="text-lg md:text-xl text-rose-100/95 leading-relaxed mb-4 font-medium">
-                    حقك عليا، أنا آسف جداً، والله ما كان قصدي أزعل قلبك الجميل ده خالص. عارف إني غلطت في حقك وإني هببت الدنيا، بس صدقيني أنتِ أغلى حاجة عندي في حياتي كلها ومقدرش أستحمل زعلك مني لحظة واحدة.
-                </p>
-                <p class="text-base md:text-lg text-rose-200/90 leading-relaxed font-medium">
-                    أنا بحتذر لك ألف مرة ومرة، وعارف إن طيبة قلبك أكبر بكتير من أي غلطة، وبتمنى تسامحيني وتفتحي صفحة جديدة عشان نرجع زي الأول وأحسن بكتير. أنا فعلاً ندمان على كل ثانية زعلك فيها.
-                </p>
+            <div id="admin-login" class="mb-4">
+                <input type="password" id="admin-pwd" placeholder="كلمة السر..." class="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:border-purple-500 mb-3" dir="ltr">
+                <button id="btn-login" class="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded text-white font-bold">دخول</button>
             </div>
 
-            <button onclick="startJourney()" class="mt-4 px-9 py-4 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-lg rounded-full shadow-lg shadow-rose-600/30 transition-all duration-300 transform hover:scale-105 flex items-center gap-3">
-                <span>كمل</span>
-                <i class="fa-solid fa-arrow-left text-sm"></i>
+            <div id="admin-dashboard" class="hidden space-y-6">
+                <!-- Status Box -->
+                <div id="sync-status" class="bg-blue-900/50 text-blue-200 p-3 rounded border border-blue-700 text-sm mb-4">
+                    جاري الاتصال بقاعدة البيانات...
+                </div>
+
+                <!-- Image 1 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-purple-300 font-semibold mb-2">صورة 1 (أول رسالة):</label>
+                    <input type="file" id="upload-img1" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                </div>
+                <!-- Image 2 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-purple-300 font-semibold mb-2">صورة 2 (أجمل إنسانة):</label>
+                    <input type="file" id="upload-img2" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                </div>
+                <!-- Image 3 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-purple-300 font-semibold mb-2">صورة 3 (أول صورة AI):</label>
+                    <input type="file" id="upload-img3" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+                </div>
+
+                <!-- Audio 1 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-pink-300 font-semibold mb-2">تراك 1 (البداية):</label>
+                    <input type="file" id="upload-aud1" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+                <!-- Audio 2 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-pink-300 font-semibold mb-2">تراك 2 (الألبوم):</label>
+                    <input type="file" id="upload-aud2" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+                <!-- Audio 3 -->
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <label class="block text-pink-300 font-semibold mb-2">تراك 3 (الاحتفال):</label>
+                    <input type="file" id="upload-aud3" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
+                </div>
+
+                <div class="flex gap-4 mt-6">
+                    <button id="btn-close-admin" class="flex-1 bg-gray-600 hover:bg-gray-700 p-3 rounded text-white font-bold">إغلاق</button>
+                    <button id="btn-save-admin" class="flex-1 bg-green-600 hover:bg-green-700 p-3 rounded text-white font-bold shadow-lg shadow-green-500/30">حفظ للسحابة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Dialog Box for alerts (replaces window.alert) -->
+    <div id="custom-alert" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-white text-gray-900 p-6 rounded-xl shadow-2xl max-w-sm w-[90%] text-center">
+            <p id="custom-alert-msg" class="text-lg font-bold mb-6 font-cairo"></p>
+            <button id="custom-alert-btn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold w-full transition">حسناً</button>
+        </div>
+    </div>
+
+    <!-- Screen 1: Intro -->
+    <div id="screen-1" class="screen active text-center px-6">
+        <div class="max-w-md mx-auto bg-black/30 p-8 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+            <h1 class="text-4xl font-bold mb-6 text-pink-300 font-amiri">آسف من قلبي</h1>
+            <p class="text-xl leading-relaxed mb-8 text-gray-200">
+                عارف إني زعلتك، وعارف إن الكلمة دي لوحدها مش كفاية.. 
+                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى حاجة في حياتي.
+            </p>
+            <button id="btn-continue" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-xl shadow-[0_0_20px_rgba(236,72,153,0.5)] transition transform hover:scale-105 active:scale-95">
+                كملي...
             </button>
-        </section>
+        </div>
+    </div>
 
-        <!-- ================= STAGE 2: FLYING PHOTOS SCREEN ================= -->
-        <section id="screenFlying" class="w-full hidden flex-col items-center justify-center min-h-[80vh] relative text-center">
-            <div id="flyingPhotosContainer" class="absolute inset-0 overflow-hidden pointer-events-none">
-                <!-- Dynamically injected flying photos -->
-            </div>
-            
-            <div class="glass-card p-8 rounded-3xl shadow-2xl z-20 max-w-md mx-auto border border-rose-500/30 backdrop-blur-xl animate-fade-in">
-                <div class="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-400 text-2xl animate-bounce">
-                    <i class="fa-solid fa-images"></i>
+    <!-- Screen 2 & 3: Book & Flying Photos -->
+    <div id="screen-3" class="screen">
+        <div id="flying-container" class="absolute inset-0 pointer-events-none z-0">
+            <!-- Photos will be injected here dynamically -->
+        </div>
+        
+        <div class="book-container opacity-0 transition-opacity duration-1000" id="album-book">
+            <!-- Page 3 (Last page) -->
+            <div class="page z-80" id="page3">
+                <div class="page-front">
+                    <div class="page-content">
+                        <div class="img-frame">
+                            <img src="https://placehold.co/400x500/eee/999?text=Image+3" alt="الصورة الثالثة" class="dyn-img3">
+                        </div>
+                        <p class="caption">اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.</p>
+                    </div>
                 </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-rose-200 mb-3">ذكرياتنا الجميلة لا تُعوض</h2>
-                <p class="text-rose-100/70 text-sm mb-6 leading-relaxed">
-                    كل لحظة حلوة جمعتنا هي إثبات إن حبنا أكبر من أي زعل...
-                </p>
-                <button onclick="openAlbumScreen()" class="w-full py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition-all transform hover:scale-[1.02]">
-                    افتح الألبوم <i class="fa-solid fa-book-open mr-2"></i>
+                <div class="page-back"></div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="page z-90" id="page2">
+                <div class="page-front">
+                    <div class="page-content">
+                        <div class="img-frame">
+                            <img src="https://placehold.co/400x500/eee/999?text=Image+2" alt="الصورة الثانية" class="dyn-img2">
+                        </div>
+                        <p class="caption">اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.</p>
+                    </div>
+                </div>
+                <div class="page-back"></div>
+            </div>
+
+            <!-- Page 1 (Cover) -->
+            <div class="page z-100" id="page1">
+                <div class="page-front">
+                    <div class="page-content">
+                        <div class="img-frame">
+                            <img src="https://placehold.co/400x500/eee/999?text=Image+1" alt="الصورة الأولى" class="dyn-img1">
+                        </div>
+                        <p class="caption">اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.</p>
+                    </div>
+                </div>
+                <div class="page-back"></div>
+            </div>
+        </div>
+
+        <div class="mt-10 z-20 opacity-0 transition-opacity duration-1000" id="album-controls">
+            <button id="btn-open-book" class="bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-8 rounded-full backdrop-blur-md border border-white/30 shadow-lg text-lg transition">
+                افتح الألبوم
+            </button>
+            <button id="btn-next-screen" class="hidden bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition mt-4 animate-pulse">
+                اللي بعده
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 4: Consent -->
+    <div id="screen-4" class="screen overflow-hidden">
+        <canvas id="q-canvas"></canvas>
+        <div class="z-10 text-center px-4 relative max-w-lg w-full flex flex-col items-center justify-center min-h-[50vh]">
+            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-white text-shadow-lg font-amiri leading-tight">
+                هتسامحيني ونبدأ صفحة جديدة؟
+            </h2>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-6 w-full relative h-[200px]">
+                <button id="btn-yes" class="absolute z-20 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-[0_0_20px_rgba(34,197,94,0.5)] transition transform hover:scale-110 active:scale-95" style="right: 20px; top: 20px;">
+                    موافقة ❤️
+                </button>
+                <button id="btn-no" class="btn-dodge absolute z-30 bg-gray-500 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg whitespace-nowrap" style="left: 20px; top: 20px;">
+                    لا
                 </button>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <!-- ================= STAGE 3: REALISTIC 3D PAPER-FLIPPING ALBUM ================= -->
-        <section id="screenAlbum" class="w-full hidden flex-col items-center justify-center min-h-[85vh]">
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-black text-rose-300 mb-1">ألبوم ذكرياتنا الحقيقي</h2>
-                <p class="text-xs text-rose-200/60">تقليب صفحات كتاب الذكريات ورقة ورقة</p>
-            </div>
-
-            <!-- Book Container -->
-            <div class="book-container w-full max-w-xl h-[480px] md:h-[520px] relative flex items-center justify-center mb-6">
-                <div id="bookSheetsWrapper" class="w-full h-full relative">
-                    <!-- Sheets generated dynamically -->
-                </div>
-            </div>
-
-            <!-- Album Navigation Controls -->
-            <div class="flex items-center justify-between w-full max-w-xl px-4 z-20">
-                <button onclick="prevAlbumPage()" id="prevPageBtn" class="px-5 py-2.5 bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-200 rounded-xl font-bold transition flex items-center gap-2 opacity-50 cursor-not-allowed" disabled>
-                    <i class="fa-solid fa-arrow-right"></i>
-                    <span>السابق</span>
-                </button>
-                <span id="pageIndicator" class="text-xs font-bold text-rose-300 tracking-wider">صفحة 1 من 3</span>
-                <button onclick="nextAlbumPage()" id="nextPageBtn" class="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white rounded-xl font-bold transition flex items-center gap-2 shadow-lg">
-                    <span>التالي</span>
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- ================= STAGE 4: PROPOSAL / QUESTION SCREEN ================= -->
-        <section id="screenProposal" class="w-full hidden flex-col items-center justify-center text-center min-h-[80vh] relative">
-            <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl max-w-xl w-full border border-rose-500/40 relative z-20">
-                <div class="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400 text-3xl animate-pulse">
-                    <i class="fa-solid fa-hand-holding-heart"></i>
-                </div>
-                
-                <h2 class="text-2xl md:text-4xl font-black text-rose-200 mb-6 leading-tight">
-                    نرجع لبعض ونفتح صفحة جديدة؟
-                </h2>
-
-                <p class="text-rose-100/80 text-sm md:text-base mb-8 leading-relaxed">
-                    عارف إننا عدينا بكتير، بس قلبك الحنون هو بيتي وحشتني أيامي معاكِ...
-                </p>
-
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 relative min-h-[80px]">
-                    <button onclick="acceptProposal()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-emerald-900/40 transition-all transform hover:scale-105 z-30">
-                        موافقة <i class="fa-solid fa-check mr-2"></i>
-                    </button>
-
-                    <button id="refusalBtn" onmouseover="dodgeButton()" ontouchstart="dodgeButton()" onclick="dodgeButton()" class="w-full sm:w-auto px-8 py-4 bg-rose-900/80 hover:bg-rose-800 text-rose-200 font-bold text-lg rounded-2xl border border-rose-500/40 transition-all duration-200 absolute sm:relative">
-                        رفض
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= STAGE 5: FINAL CELEBRATION SCREEN ================= -->
-        <section id="screenCelebration" class="w-full hidden flex-col items-center justify-center text-center min-h-[85vh] relative z-20">
-            <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl max-w-2xl w-full border border-rose-500/50 backdrop-blur-2xl">
-                <div class="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400 text-4xl animate-bounce">
-                    <i class="fa-solid fa-heart text-rose-500"></i>
-                </div>
-
-                <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-300 to-red-400 mb-6 leading-tight">
-                    كنت عارف ان حبنا اقوي من اي حاجه وانك هتسامحيني
-                </h1>
-
-                <p class="text-xl md:text-2xl font-bold text-rose-200 mb-8 animate-pulse">
-                    وحشتيني جداً يا أغلى ما في الوجود! ❤️
-                </p>
-
-                <div class="inline-flex items-center gap-3 px-6 py-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-300 text-sm">
-                    <i class="fa-solid fa-infinity"></i>
-                    <span>بداية جديدة للأبد مع بعضنا</span>
-                </div>
-            </div>
-        </section>
-
-    </main>
+    <!-- Screen 5: Celebration -->
+    <div id="screen-5" class="screen bg-red-950 overflow-hidden relative">
+        <div id="celebration-container" class="absolute inset-0 pointer-events-none"></div>
+        <div class="z-20 text-center p-8 bg-black/40 backdrop-blur-md rounded-3xl border border-red-500/30">
+            <h1 class="text-6xl md:text-8xl font-bold text-red-500 mb-6 font-amiri" style="text-shadow: 0 0 30px rgba(239, 68, 68, 0.8);">
+                بحبك!
+            </h1>
+            <p class="text-2xl text-white">وأوعدك مش هزعلك تاني أبداً</p>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global environment variables provided by container
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-apology-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyDummyKey",
-            authDomain: "dummy.firebaseapp.com",
-            projectId: "dummy-project"
-        };
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // Firebase Configuration injected by environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-app-default';
+        let firebaseConfig;
+        
+        try {
+            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+                // Fallback for local testing if needed (wont work without actual project, but prevents fatal crash)
+                projectId: "dummy-project"
+            };
+        } catch(e) {
+            console.error("Error parsing firebase config", e);
+        }
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        let currentUser = null;
 
-        // Default slot images & static captions
-        const defaultSlots = {
-            slot1: 'https://placehold.co/400x500/e11d48/ffffff?text=Slot+1+رسالة',
-            slot2: 'https://placehold.co/400x500/be123c/ffffff?text=Slot+2+صورة',
-            slot3: 'https://placehold.co/400x500/9f1239/ffffff?text=Slot+3+AI'
+        // Custom Alert function
+        const showCustomAlert = (msg) => {
+            document.getElementById('custom-alert-msg').innerText = msg;
+            document.getElementById('custom-alert').style.display = 'flex';
+        };
+        document.getElementById('custom-alert-btn').addEventListener('click', () => {
+            document.getElementById('custom-alert').style.display = 'none';
+        });
+
+        // App State for Media
+        const appData = {
+            img1: '', img2: '', img3: '',
+            aud1: '', aud2: '', aud3: ''
         };
 
-        window.currentSlots = { ...defaultSlots };
-        window.globalAudios = { stage1: '', stage2: '', stage3: '' };
+        const audioPlayers = {
+            aud1: new Audio(),
+            aud2: new Audio(),
+            aud3: new Audio()
+        };
 
-        window.fixedCaptions = [
-            "اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
-            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
-            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
-        ];
+        // UI elements for synchronization status
+        const syncStatus = document.getElementById('sync-status');
+        const setStatus = (msg, isError = false) => {
+            syncStatus.innerText = msg;
+            syncStatus.className = isError ? 
+                'bg-red-900/50 text-red-200 p-3 rounded border border-red-700 text-sm mb-4' : 
+                'bg-blue-900/50 text-blue-200 p-3 rounded border border-blue-700 text-sm mb-4';
+        };
 
-        // Firestore Public Settings Document Reference (Rule 1 & 2)
-        const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
-
-        // Authenticate and Setup Realtime Firestore Listener (Rule 3)
-        async function initFirebaseAndSync() {
+        async function initAuth() {
             try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
-            } catch (err) {
-                console.log("Auth fallback to anonymous:", err);
-                try {
-                    await signInAnonymously(auth);
-                } catch (e) {
-                    console.error("Auth error:", e);
-                }
+                currentUser = auth.currentUser;
+                setStatus("تم الاتصال بنجاح. جاهز لرفع الملفات والسحب.", false);
+                startRealtimeSync();
+            } catch (error) {
+                console.error("Auth Error:", error);
+                setStatus("خطأ في الاتصال بالخادم السحابي.", true);
             }
+        }
 
-            // Realtime listener for global synchronization across all visitors
-            onSnapshot(settingsDocRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if (data.slots) {
-                        window.currentSlots = {
-                            slot1: data.slots.slot1 || defaultSlots.slot1,
-                            slot2: data.slots.slot2 || defaultSlots.slot2,
-                            slot3: data.slots.slot3 || defaultSlots.slot3
-                        };
+        // We store each file in a separate document to avoid the 1MB Firestore limit
+        const getAssetPath = (assetId) => doc(db, 'artifacts', appId, 'public', 'data', 'media_assets', assetId);
+
+        function startRealtimeSync() {
+            if (!currentUser) return;
+
+            const assets = ['img1', 'img2', 'img3', 'aud1', 'aud2', 'aud3'];
+            
+            assets.forEach(asset => {
+                onSnapshot(getAssetPath(asset), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data && data.base64) {
+                            appData[asset] = data.base64;
+                            updateUIWithAsset(asset, data.base64);
+                        }
                     }
-                    if (data.audios) {
-                        window.globalAudios = {
-                            stage1: data.audios.stage1 || '',
-                            stage2: data.audios.stage2 || '',
-                            stage3: data.audios.stage3 || ''
-                        };
-                    }
-                    if (typeof window.renderAlbumSheets === 'function') {
-                        window.renderAlbumSheets();
-                    }
-                }
-            }, (error) => {
-                console.error("Firestore snapshot error:", error);
+                }, (error) => {
+                    console.error(`Error listening to ${asset}:`, error);
+                });
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initFirebaseAndSync();
-        });
+        function updateUIWithAsset(assetId, base64Data) {
+            if (assetId.startsWith('img')) {
+                const els = document.querySelectorAll(`.dyn-${assetId}`);
+                els.forEach(el => el.src = base64Data);
+            } else if (assetId.startsWith('aud')) {
+                audioPlayers[assetId].src = base64Data;
+            }
+        }
 
-        window.getEffectiveSlots = function() {
-            return [
-                { url: window.currentSlots.slot1, caption: window.fixedCaptions[0] },
-                { url: window.currentSlots.slot2, caption: window.fixedCaptions[1] },
-                { url: window.currentSlots.slot3, caption: window.fixedCaptions[2] }
-            ];
+        initAuth();
+
+        // Utility to convert file to base64 with image compression
+        const compressImage = (file, maxWidth = 800) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Compress to JPEG 70% quality to save space
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                    img.onerror = (error) => reject(error);
+                };
+            });
         };
 
-        // Save updated settings to Firebase so all visitors instantly sync
-        window.saveSettingsToFirebase = async function() {
-            const user = auth.currentUser;
-            if (!user) {
-                showToast("جاري الاتصال بالسحابة... حاول مرة أخرى.", "error");
+        const fileToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        };
+
+        async function handleFileUpload() {
+            if (!currentUser) {
+                showCustomAlert("غير متصل بالسيرفر!");
                 return;
             }
 
-            const readFileAsDataURL = (fileInputId) => {
-                return new Promise((resolve) => {
-                    const fileInput = document.getElementById(fileInputId);
-                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-                        resolve(null);
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(fileInput.files[0]);
-                });
-            };
-
-            const s1 = await readFileAsDataURL('slot1Input');
-            const s2 = await readFileAsDataURL('slot2Input');
-            const s3 = await readFileAsDataURL('slot3Input');
-
-            const a1 = await readFileAsDataURL('audioStage1');
-            const a2 = await readFileAsDataURL('audioStage2');
-            const a3 = await readFileAsDataURL('audioStage3');
-
-            const updatedSlots = {
-                slot1: s1 || window.currentSlots.slot1,
-                slot2: s2 || window.currentSlots.slot2,
-                slot3: s3 || window.currentSlots.slot3
-            };
-
-            const updatedAudios = {
-                stage1: a1 || window.globalAudios.stage1,
-                stage2: a2 || window.globalAudios.stage2,
-                stage3: a3 || window.globalAudios.stage3
-            };
+            const btnSave = document.getElementById('btn-save-admin');
+            const originalText = btnSave.innerText;
+            btnSave.innerText = "جاري الرفع...";
+            btnSave.disabled = true;
+            setStatus("جاري معالجة ورفع الملفات للسحابة...", false);
 
             try {
-                await setDoc(settingsDocRef, {
-                    slots: updatedSlots,
-                    audios: updatedAudios,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-
-                showToast("تم الحفظ والمزامنة السحابية الفورية بنجاح لجميع الزوار!", "success");
-                closeSettingsPanel();
-                if (typeof window.renderAlbumSheets === 'function') {
-                    window.renderAlbumSheets();
-                }
-            } catch (err) {
-                console.error("Error saving to Firestore:", err);
-                showToast("حدث خطأ أثناء الحفظ بالسحابة.", "error");
-            }
-        };
-
-        window.resetToDefaultSlots = async function() {
-            const user = auth.currentUser;
-            if (!user) return;
-
-            try {
-                await setDoc(settingsDocRef, {
-                    slots: defaultSlots,
-                    audios: { stage1: '', stage2: '', stage3: '' },
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-
-                showToast("تم استعادة الإعدادات والافتراضات بنجاح.", "success");
-                closeSettingsPanel();
-                if (typeof window.renderAlbumSheets === 'function') {
-                    window.renderAlbumSheets();
-                }
-            } catch (err) {
-                console.error("Reset error:", err);
-            }
-        };
-    </script>
-
-    <script>
-        // Toast Notification System (No alert/confirm)
-        function showToast(message, type = 'info') {
-            const toast = document.getElementById('toastNotification');
-            const msgEl = document.getElementById('toastMessage');
-            const iconEl = document.getElementById('toastIcon');
-
-            msgEl.textContent = message;
-            if (type === 'success') {
-                iconEl.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
-            } else if (type === 'error') {
-                iconEl.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
-            } else {
-                iconEl.className = 'fa-solid fa-circle-info text-rose-400 text-lg';
-            }
-
-            toast.classList.remove('translate-y-[-150%]', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-[-150%]', 'opacity-0');
-            }, 3500);
-        }
-
-        // Audio Playback Manager
-        function playStageAudio(stageKey) {
-            const audioEl = document.getElementById('mainAudio');
-            if (window.globalAudios && window.globalAudios[stageKey]) {
-                audioEl.src = window.globalAudios[stageKey];
-                audioEl.play().catch(e => console.log("Audio autoplay restricted:", e));
-            }
-        }
-
-        // Settings Modal Handlers (Password 9090)
-        function openSettingsModal() {
-            document.getElementById('passwordModal').classList.remove('hidden');
-            document.getElementById('adminPasswordInput').value = '';
-            document.getElementById('passwordErrorMsg').textContent = '';
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').classList.add('hidden');
-        }
-
-        function verifyPassword() {
-            const pass = document.getElementById('adminPasswordInput').value;
-            if (pass === '9090') {
-                closePasswordModal();
-                document.getElementById('settingsPanelModal').classList.remove('hidden');
-            } else {
-                document.getElementById('passwordErrorMsg').textContent = 'كلمة المرور غير صحيحة';
-            }
-        }
-
-        function closeSettingsPanel() {
-            document.getElementById('settingsPanelModal').classList.add('hidden');
-        }
-
-        // Navigation between Stages
-        function startJourney() {
-            playStageAudio('stage1');
-            document.getElementById('screenApology').classList.add('hidden');
-            const screenFlying = document.getElementById('screenFlying');
-            screenFlying.classList.remove('hidden');
-            screenFlying.classList.add('flex');
-            generateFlyingPhotos();
-        }
-
-        function openAlbumScreen() {
-            playStageAudio('stage2');
-            document.getElementById('screenFlying').classList.add('hidden');
-            const screenAlbum = document.getElementById('screenAlbum');
-            screenAlbum.classList.remove('hidden');
-            screenAlbum.classList.add('flex');
-            renderAlbumSheets();
-        }
-
-        function openProposalScreen() {
-            document.getElementById('screenAlbum').classList.add('hidden');
-            const screenProposal = document.getElementById('screenProposal');
-            screenProposal.classList.remove('hidden');
-            screenProposal.classList.add('flex');
-            startQuestionMarksCanvas();
-        }
-
-        // Flying Photos Animation Generator
-        function generateFlyingPhotos() {
-            const container = document.getElementById('flyingPhotosContainer');
-            container.innerHTML = '';
-            const slots = window.getEffectiveSlots();
-
-            for (let i = 0; i < 12; i++) {
-                const img = document.createElement('img');
-                const slotObj = slots[i % slots.length];
-                img.src = slotObj.url;
-                img.className = 'absolute w-24 h-32 md:w-32 md:h-44 object-cover rounded-xl shadow-2xl border-2 border-rose-500/40 flying-photo';
+                const uploads = [];
                 
-                const startX = (Math.random() - 0.5) * window.innerWidth * 1.5;
-                const startY = (Math.random() - 0.5) * window.innerHeight * 1.5;
-                const endRot = (Math.random() - 0.5) * 30;
+                // Images (Compress before upload)
+                for (let i = 1; i <= 3; i++) {
+                    const fileInput = document.getElementById(`upload-img${i}`);
+                    if (fileInput.files.length > 0) {
+                        const base64 = await compressImage(fileInput.files[0]);
+                        uploads.push(setDoc(getAssetPath(`img${i}`), { base64, updatedAt: Date.now() }));
+                    }
+                }
 
-                img.style.setProperty('--startX', startX + 'px');
-                img.style.setProperty('--startY', startY + 'px');
-                img.style.setProperty('--endRot', endRot + 'deg');
+                // Audio (Raw Base64, hope it's small enough. Better to limit size conceptually)
+                for (let i = 1; i <= 3; i++) {
+                    const fileInput = document.getElementById(`upload-aud${i}`);
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        if (file.size > 1048576) { // 1MB limit warning
+                             setStatus("تحذير: ملف الصوت كبير جداً قد لا يتم حفظه. حاول استخدام ملف أصغر.", true);
+                             await new Promise(r => setTimeout(r, 2000));
+                        }
+                        const base64 = await fileToBase64(file);
+                        uploads.push(setDoc(getAssetPath(`aud${i}`), { base64, updatedAt: Date.now() }));
+                    }
+                }
 
-                img.style.left = (15 + Math.random() * 70) + '%';
-                img.style.top = (15 + Math.random() * 70) + '%';
-                img.style.animationDelay = (i * 0.1) + 's';
+                if (uploads.length === 0) {
+                    showCustomAlert("لم يتم اختيار أي ملفات للرفع.");
+                    btnSave.innerText = originalText;
+                    btnSave.disabled = false;
+                    setStatus("لم يتم الرفع. اختر ملفات أولاً.", false);
+                    return;
+                }
 
-                container.appendChild(img);
+                await Promise.all(uploads);
+                showCustomAlert("تم رفع الملفات وحفظها في السحابة بنجاح!");
+                setStatus("تم الرفع والمزامنة بنجاح.", false);
+                
+                // Clear inputs
+                [1,2,3].forEach(i => {
+                    document.getElementById(`upload-img${i}`).value = '';
+                    document.getElementById(`upload-aud${i}`).value = '';
+                });
+
+            } catch (error) {
+                console.error("Upload error:", error);
+                showCustomAlert("حدث خطأ أثناء الرفع: " + error.message);
+                setStatus("حدث خطأ أثناء الرفع.", true);
+            }
+
+            btnSave.innerText = originalText;
+            btnSave.disabled = false;
+        }
+
+        const adminToggle = document.getElementById('admin-toggle');
+        const adminModal = document.getElementById('admin-modal');
+        const adminLogin = document.getElementById('admin-login');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const btnLogin = document.getElementById('btn-login');
+        const pwdInput = document.getElementById('admin-pwd');
+        const btnCloseAdmin = document.getElementById('btn-close-admin');
+        const btnSaveAdmin = document.getElementById('btn-save-admin');
+
+        adminToggle.addEventListener('click', () => {
+            adminModal.classList.remove('hidden');
+            adminModal.classList.add('flex');
+        });
+
+        btnLogin.addEventListener('click', () => {
+            if (pwdInput.value === '9090') {
+                adminLogin.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+            } else {
+                showCustomAlert("كلمة السر خاطئة!");
+                pwdInput.value = '';
+            }
+        });
+
+        btnCloseAdmin.addEventListener('click', () => {
+            adminModal.classList.add('hidden');
+            adminModal.classList.remove('flex');
+            // reset logic
+            adminLogin.classList.remove('hidden');
+            adminDashboard.classList.add('hidden');
+            pwdInput.value = '';
+        });
+
+        btnSaveAdmin.addEventListener('click', handleFileUpload);
+
+
+        const screens = [
+            document.getElementById('screen-1'),
+            document.getElementById('screen-3'), // includes flying + book
+            document.getElementById('screen-4'),
+            document.getElementById('screen-5')
+        ];
+
+        function switchScreen(index) {
+            screens.forEach((s, i) => {
+                if (i === index) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        }
+
+        // Helper to stop all audio
+        function stopAllAudio() {
+            Object.values(audioPlayers).forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
+
+        function playAudioSafely(audioObj) {
+            if (audioObj.src && audioObj.src !== window.location.href) {
+                audioObj.play().catch(e => console.log("Autoplay prevented", e));
             }
         }
 
-        // 3D Paper-Flipping Album Logic with object-fit: contain & fixed static captions
-        let currentAlbumIndex = 0;
-        window.renderAlbumSheets = function() {
-            const wrapper = document.getElementById('bookSheetsWrapper');
-            if (!wrapper) return;
-            wrapper.innerHTML = '';
-            const slots = window.getEffectiveSlots();
-            const totalPages = slots.length;
+        // Screen 1 -> Screen 2(3)
+        document.getElementById('btn-continue').addEventListener('click', () => {
+            switchScreen(1);
+            stopAllAudio();
+            playAudioSafely(audioPlayers.aud1); // Track 1
+            startFlyingPhotosSequence();
+        });
 
-            slots.forEach((slot, index) => {
-                const sheet = document.createElement('div');
-                sheet.className = `book-sheet absolute inset-0 glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center justify-between border border-rose-500/30 shadow-2xl ${index === currentAlbumIndex ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`;
-                sheet.style.zIndex = totalPages - index;
-                sheet.style.transform = index < currentAlbumIndex ? 'rotateY(-180deg)' : 'rotateY(0deg)';
-
-                // Photo container with object-fit: contain so portrait and landscape photos fit fully without cropping
-                const photoHtml = `
-                    <div class="w-full h-64 md:h-80 bg-black/40 rounded-2xl overflow-hidden flex items-center justify-center p-2 border border-rose-500/20 shadow-inner">
-                        <img src="${slot.url}" alt="ذكرياتنا" class="max-w-full max-h-full object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x500/e11d48/ffffff?text=صورة'">
-                    </div>
-                `;
-
-                sheet.innerHTML = `
-                    <div class="w-full flex items-center justify-between text-rose-300 text-xs font-bold mb-2">
-                        <span>صفحة رقم (${index + 1}) من خانة (${index + 1})</span>
-                        <i class="fa-solid fa-heart text-rose-500"></i>
-                    </div>
-                    ${photoHtml}
-                    <div class="mt-4 text-center px-2">
-                        <p class="text-sm md:text-base text-rose-100 font-medium leading-relaxed">${slot.caption}</p>
-                    </div>
-                `;
-
-                wrapper.appendChild(sheet);
-            });
-
-            document.getElementById('pageIndicator').textContent = `صفحة ${currentAlbumIndex + 1} من ${totalPages}`;
-            document.getElementById('prevPageBtn').disabled = currentAlbumIndex === 0;
-            document.getElementById('prevPageBtn').style.opacity = currentAlbumIndex === 0 ? '0.5' : '1';
-            document.getElementById('prevPageBtn').style.cursor = currentAlbumIndex === 0 ? 'not-allowed' : 'pointer';
-
-            const nextBtn = document.getElementById('nextPageBtn');
-            if (currentAlbumIndex === totalPages - 1) {
-                nextBtn.innerHTML = '<span>السؤال المنتظر</span> <i class="fa-solid fa-arrow-left"></i>';
-            } else {
-                nextBtn.innerHTML = '<span>التالي</span> <i class="fa-solid fa-arrow-left"></i>';
+        function startFlyingPhotosSequence() {
+            const container = document.getElementById('flying-container');
+            container.innerHTML = '';
+            const imagesToFly = [appData.img1, appData.img2, appData.img3].filter(img => img !== '');
+            
+            // Fallbacks if admin hasn't uploaded yet
+            if(imagesToFly.length === 0) {
+                imagesToFly.push('https://placehold.co/300x400/ff9999/fff?text=Photo+1');
+                imagesToFly.push('https://placehold.co/300x400/99ff99/fff?text=Photo+2');
+                imagesToFly.push('https://placehold.co/300x400/9999ff/fff?text=Photo+3');
             }
+
+            // Create multiple flying instances for effect
+            const totalFlying = 8;
+            for(let i=0; i<totalFlying; i++) {
+                const imgEl = document.createElement('img');
+                imgEl.src = imagesToFly[i % imagesToFly.length];
+                imgEl.className = 'floating-photo';
+                
+                // Random start positions off-screen
+                const startX = Math.random() > 0.5 ? -200 : window.innerWidth + 200;
+                const startY = Math.random() * window.innerHeight;
+                
+                imgEl.style.left = `${startX}px`;
+                imgEl.style.top = `${startY}px`;
+                imgEl.style.transform = `rotate(${Math.random() * 90 - 45}deg) scale(0.5)`;
+                
+                container.appendChild(imgEl);
+
+                // Animate to center then fade out
+                setTimeout(() => {
+                    imgEl.style.opacity = '1';
+                    imgEl.style.left = `calc(50% - 75px)`;
+                    imgEl.style.top = `calc(50% - 100px)`;
+                    imgEl.style.transform = `rotate(${Math.random() * 20 - 10}deg) scale(1)`;
+                    
+                    setTimeout(() => {
+                        imgEl.style.opacity = '0';
+                        imgEl.style.transform = 'scale(0) rotate(0deg)';
+                    }, 2000 + (Math.random() * 1000));
+                }, i * 400); // Stagger start
+            }
+
+            // After flying sequence, show the 3D book
+            setTimeout(() => {
+                document.getElementById('album-book').style.opacity = '1';
+                document.getElementById('album-controls').style.opacity = '1';
+            }, (totalFlying * 400) + 2000);
+        }
+
+        let currentPage = 1;
+        const btnOpenBook = document.getElementById('btn-open-book');
+        const btnNextScreen = document.getElementById('btn-next-screen');
+        
+        btnOpenBook.addEventListener('click', () => {
+            stopAllAudio();
+            playAudioSafely(audioPlayers.aud2); // Track 2 on opening album
+            
+            if (currentPage === 1) {
+                document.getElementById('page1').classList.add('flipped');
+                btnOpenBook.innerText = "التالي";
+                currentPage++;
+            } else if (currentPage === 2) {
+                document.getElementById('page2').classList.add('flipped');
+                btnOpenBook.classList.add('hidden');
+                btnNextScreen.classList.remove('hidden');
+                currentPage++;
+            }
+        });
+
+        btnNextScreen.addEventListener('click', () => {
+            switchScreen(2); // Consent Screen
+            initQuestionMarks();
+        });
+
+
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+        let noClicks = 0;
+        const noMessages = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
+
+        const moveBtnNo = (e) => {
+            e.preventDefault(); // Prevent accidental clicks on mobile touch start
+            noClicks++;
+            
+            if (noClicks >= 3) {
+                btnNo.innerText = noMessages;
+                btnNo.classList.add('text-sm', 'md:text-base');
+                btnNo.classList.remove('text-xl');
+            }
+
+            const container = document.getElementById('screen-4');
+            const rect = btnNo.getBoundingClientRect();
+            
+            const maxW = container.clientWidth - rect.width - 40;
+            const maxH = container.clientHeight - rect.height - 40;
+            
+            const newX = Math.random() * maxW + 20;
+            const newY = Math.random() * maxH + 20;
+
+            // Make position fixed relative to viewport to guarantee dodging everywhere
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = `${newX}px`;
+            btnNo.style.top = `${newY}px`;
         };
 
-        function nextAlbumPage() {
-            const slots = window.getEffectiveSlots();
-            if (currentAlbumIndex < slots.length - 1) {
-                currentAlbumIndex++;
-                renderAlbumSheets();
-            } else {
-                openProposalScreen();
-            }
-        }
+        // Aggressive dodging!
+        btnNo.addEventListener('mouseenter', moveBtnNo);
+        btnNo.addEventListener('touchstart', moveBtnNo, {passive: false});
+        btnNo.addEventListener('click', moveBtnNo);
 
-        function prevAlbumPage() {
-            if (currentAlbumIndex > 0) {
-                currentAlbumIndex--;
-                renderAlbumSheets();
-            }
-        }
 
-        let refusalAttempts = 0;
-
-        function dodgeButton() {
-            const btn = document.getElementById('refusalBtn');
-            refusalAttempts++;
-
-            if (refusalAttempts <= 3) {
-                const randomX = (Math.random() - 0.5) * 260;
-                const randomY = (Math.random() - 0.5) * 180;
-                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-            } else {
-                // Lock in exact requested refusal text after 3 dodges and continue dodging
-                btn.textContent = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
-                const randomX = (Math.random() - 0.5) * 340;
-                const randomY = (Math.random() - 0.5) * 240;
-                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                btn.style.fontSize = '0.75rem';
-                btn.style.padding = '12px 16px';
-            }
-        }
-
-        // Accept Proposal & Final Celebration
-        function acceptProposal() {
-            playStageAudio('stage3');
-            document.getElementById('screenProposal').classList.add('hidden');
-            const screenCelebration = document.getElementById('screenCelebration');
-            screenCelebration.classList.remove('hidden');
-            screenCelebration.classList.add('flex');
-            startCelebrationCanvas();
-        }
-
-        const canvas = document.getElementById('effectCanvas');
+        const canvas = document.getElementById('q-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationMode = 'none';
+        let marks = [];
+        let animFrame;
 
-        function resizeCanvas() {
+        function initQuestionMarks() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function startQuestionMarksCanvas() {
-            animationMode = 'question_marks';
-            particles = [];
-            for (let i = 0; i < 35; i++) {
-                particles.push({
+            marks = [];
+            for (let i = 0; i < 30; i++) {
+                marks.push({
                     x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    speed: 1.5 + Math.random() * 2.5,
-                    size: 18 + Math.random() * 24,
-                    opacity: 0.3 + Math.random() * 0.5
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 30 + 10,
+                    speedY: Math.random() * 2 + 1,
+                    opacity: Math.random() * 0.5 + 0.1
                 });
             }
+            animateQuestionMarks();
         }
 
-        function startCelebrationCanvas() {
-            animationMode = 'celebration';
-            particles = [];
-            for (let i = 0; i < 70; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: canvas.height + Math.random() * 200,
-                    speedY: 2 + Math.random() * 4,
-                    speedX: (Math.random() - 0.5) * 3,
-                    size: 16 + Math.random() * 28,
-                    opacity: 0.6 + Math.random() * 0.4,
-                    text: Math.random() > 0.5 ? 'وحشتيني ❤️' : '❤️'
-                });
-            }
-        }
-
-        function animateCanvas() {
+        function animateQuestionMarks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (animationMode === 'question_marks') {
-                ctx.fillStyle = 'rgba(244, 63, 94, 0.6)';
-                particles.forEach(p => {
-                    ctx.font = `${p.size}px 'Tajawal', sans-serif`;
-                    ctx.globalAlpha = p.opacity;
-                    ctx.fillText('?', p.x, p.y);
-                    p.y += p.speed;
-                    if (p.y > canvas.height + 50) {
-                        p.y = -50;
-                        p.x = Math.random() * canvas.width;
-                    }
-                });
-            } else if (animationMode === 'celebration') {
-                particles.forEach(p => {
-                    ctx.font = `${p.size}px 'Tajawal', sans-serif`;
-                    ctx.globalAlpha = p.opacity;
-                    ctx.fillStyle = '#f43f5e';
-                    ctx.fillText(p.text, p.x, p.y);
-
-                    p.y -= p.speedY;
-                    p.x += p.speedX;
-
-                    if (p.y < -50) {
-                        p.y = canvas.height + 50;
-                        p.x = Math.random() * canvas.width;
-                    }
-                });
-            }
-
-            requestAnimationFrame(animateCanvas);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 30px Cairo';
+            
+            marks.forEach(m => {
+                ctx.globalAlpha = m.opacity;
+                ctx.fillText('؟', m.x, m.y);
+                m.y += m.speedY;
+                if (m.y > canvas.height) {
+                    m.y = -30;
+                    m.x = Math.random() * canvas.width;
+                }
+            });
+            ctx.globalAlpha = 1;
+            animFrame = requestAnimationFrame(animateQuestionMarks);
         }
-        animateCanvas();
+
+        window.addEventListener('resize', () => {
+            if(screens[2].classList.contains('active')) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+
+        btnYes.addEventListener('click', () => {
+            cancelAnimationFrame(animFrame); // Stop question marks
+            switchScreen(3);
+            stopAllAudio();
+            playAudioSafely(audioPlayers.aud3); // Final track
+            startCelebration();
+        });
+
+        function startCelebration() {
+            const container = document.getElementById('celebration-container');
+            
+            setInterval(() => {
+                // Heart explosions
+                for(let i=0; i<3; i++) {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.className = 'heart-particle';
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.top = `${Math.random() * 100}%`;
+                    container.appendChild(heart);
+                    setTimeout(() => heart.remove(), 2000);
+                }
+
+                // Random "وحشتيني" text
+                if (Math.random() > 0.5) {
+                    const text = document.createElement('div');
+                    text.innerText = 'وحشتيني';
+                    text.className = 'wahshteny-text';
+                    text.style.left = `${Math.random() * 80 + 10}%`;
+                    text.style.top = `${Math.random() * 80 + 10}%`;
+                    // random color tint
+                    const colors = ['#ff4d4d', '#ff9999', '#ff1a1a', '#ffcccc'];
+                    text.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    container.appendChild(text);
+                    setTimeout(() => text.remove(), 3000);
+                }
+            }, 300);
+        }
     </script>
 </body>
 </html>
