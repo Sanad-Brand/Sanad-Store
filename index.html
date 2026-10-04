@@ -640,13 +640,13 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول الذكية (تفرق بين الأدمن والعملاء) -->
+    <!-- نافذة تسجيل الدخول الذكية (إرسال الـ OTP الفعلي عبر EmailJS للعملاء) -->
     <div class="custom-modal-overlay" id="loginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
                 <i class="fa-solid fa-lock" style="font-size: 42px; color: var(--primary-gold); margin-bottom: 8px;"></i>
                 <h3>تسجيل الدخول</h3>
-                <p style="font-size:13px; color:var(--text-gray);">أدخل بياناتك وسيتعرف السيستم على الصلاحيات تلقائياً:</p>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل بياناتك وسيتم إرسال كود التحقق (OTP) إلى بريدك الإلكتروني:</p>
             </div>
             
             <!-- الخطوة 1: إدخال البريد الإلكتروني والاسم -->
@@ -657,26 +657,26 @@
                 </div>
 
                 <div style="margin-bottom: 15px;">
-                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني:</label>
+                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
                     <input type="email" id="login-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
-                <!-- خانة باسورد الأدمن تظهر تلقائياً لو كان البريد هو بريدك الخاص -->
+                <!-- خانة باسورد الأدمن المدمجة لو كتب إيميله -->
                 <div id="admin-password-box" style="display:none; margin-bottom: 20px; background: rgba(212,175,55,0.08); border:1px solid var(--primary-gold); padding: 12px; border-radius: 8px;">
                     <label style="color:var(--primary-gold); font-size:13px; font-weight:bold;"><i class="fa-solid fa-shield-halved"></i> كلمة مرور الأدمنستريتور:</label>
                     <input type="password" id="admin-secret-pass" placeholder="أدخل باسورد الأدمن" style="width:100%; padding:10px; margin-top:5px; background:#111; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()" style="background:var(--primary-gold); color:#000; flex:1;">متابعة الدخول</button>
+                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال كود التحقق ومتابعة</button>
                     <button class="btn-modal-cancel" onclick="closeLoginModal()" style="flex:1;">إلغاء</button>
                 </div>
             </div>
 
-            <!-- الخطوة 2: إدخال رمز التحقق (OTP) المرسل للجيميل للعملاء العاديين -->
+            <!-- الخطوة 2: إدخال رمز التحقق (OTP) المرسل للجيميل -->
             <div id="login-step-2" style="display:none;">
                 <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 12px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال كود التحقق بنجاح إلى بريدك الإلكتروني. تفقد صندوق الوارد في Gmail!</span>
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال كود التحقق بنجاح إلى بريدك الإلكتروني عبر EmailJS. تفقد صندوق الوارد في Gmail!</span>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -688,6 +688,26 @@
                     <button class="btn-modal-confirm" onclick="verifyCustomerOTP()" style="background:#25d366; color:#fff; flex:1;">تأكيد الكود ودخول</button>
                     <button class="btn-modal-cancel" onclick="resetLoginModal()" style="flex:1;">رجوع</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إدخال باسورد الأدمن عند الضغط 5 مرات على الشعار -->
+    <div class="custom-modal-overlay" id="adminPasswordModal">
+        <div class="custom-modal-box" style="text-align:right;">
+            <div style="text-align:center; margin-bottom:15px;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 45px; color: var(--primary-gold); margin-bottom: 8px;"></i>
+                <h3>دخول الأدمن السريع</h3>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل كلمة مرور الأدمنستريتور (الباسورد القديم):</p>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <input type="password" id="secret-admin-pass-input" placeholder="أدخل باسورد الأدمن" style="width:100%; padding:12px; background:#222; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; font-size:16px; text-align:center;">
+            </div>
+
+            <div class="custom-modal-btns">
+                <button class="btn-modal-confirm" onclick="verifyAdminShortcut()" style="background:var(--primary-gold); color:#000; flex:1;">دخول لوحة التحكم</button>
+                <button class="btn-modal-cancel" onclick="closeAdminPassModal()" style="flex:1;">إلغاء</button>
             </div>
         </div>
     </div>
@@ -766,9 +786,9 @@
         </div>
     </div>
 
-    <!-- الهيدر العرضي (مع خاصية الضغط 5 مرات على الشعار لدخول الأدمن أيضاً كخيار إضافي) -->
+    <!-- الهيدر العرضي (مع خاصية الضغط 5 مرات على الشعار للأدمن) -->
     <header data-aos="fade-down" data-aos-duration="800">
-        <a href="#" class="logo" id="store-logo-btn" title="متجر سَـنَدْ الملكي"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
+        <a href="#" class="logo" id="store-logo-btn" title="متجر سَـنَدْ الملكي (انقر 5 مرات لدخول الأدمن)"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons"></div>
     </header>
 
@@ -877,9 +897,9 @@
         let pendingUserEmail = "";
         let pendingUserName = "";
         
-        // بيانات الأدمن المحدد
+        // بيانات الأدمن والباسورد القديم
         const ADMIN_EMAIL = "medoatlm83@gmail.com";
-        const ADMIN_PASSWORD = "admin"; // يمكنك تغيير الباسورد هنا كما تحب
+        const ADMIN_PASSWORD = "admin"; // الباسورد القديم
 
         // خريطة المحافظات والإدارات في مصر
         const egyptGovs = {
@@ -920,7 +940,7 @@
             }
         }
 
-        // كشف تلقائي لخانة الباسورد عند إدخال إيميل الأدمن في الفورم
+        // كشف تلقائي لخانة الباسورد المدمجة في نموذج تسجيل الدخول عند كتابة إيميل الأدمن
         document.getElementById('login-user-email').addEventListener('input', function(e) {
             const emailVal = e.target.value.trim().toLowerCase();
             const passBox = document.getElementById('admin-password-box');
@@ -931,7 +951,7 @@
             }
         });
 
-        // خاصية الضغط 5 مرات على الشعار لدخول الأدمن كطريقة سريعة إضافية
+        // خاصية الضغط 5 مرات على الشعار (Logo) مع إدخال الباسورد القديم
         let logoClickCount = 0;
         let logoClickTimer = null;
         document.getElementById('store-logo-btn').addEventListener('click', function(e) {
@@ -942,13 +962,28 @@
 
             if (logoClickCount >= 5) {
                 logoClickCount = 0;
-                currentUser = { name: "محمد جمال سند", email: ADMIN_EMAIL };
-                localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                renderHeaderNav();
-                renderProducts();
-                showMessageModal("دخول الأدمن", "أهلاً بك يا باشمهندس محمد! تم تفعيل لوحة التحكم.");
+                document.getElementById('adminPasswordModal').style.display = 'flex';
+                document.getElementById('secret-admin-pass-input').value = '';
             }
         });
+
+        function closeAdminPassModal() {
+            document.getElementById('adminPasswordModal').style.display = 'none';
+        }
+
+        function verifyAdminShortcut() {
+            const pass = document.getElementById('secret-admin-pass-input').value.trim();
+            if(pass === ADMIN_PASSWORD) {
+                currentUser = { name: "محمد جمال سند", email: ADMIN_EMAIL };
+                localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
+                closeAdminPassModal();
+                renderHeaderNav();
+                renderProducts();
+                showMessageModal("دخول الأدمن الملكي", "أهلاً بك يا باشمهندس محمد! تم تفعيل صلاحيات لوحة التحكم بنجاح.");
+            } else {
+                showMessageModal("خطأ", "كلمة المرور غير صحيحة.");
+            }
+        }
 
         // عرض المنتجات مع الخيارين
         function renderProducts() {
@@ -1219,7 +1254,7 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        // تفريق بيانات الأدمن عن العملاء وإرسال الإيميلات عبر EmailJS
+        // تفريق بيانات الأدمن عن العملاء وإرسال الإيميلات الفعلي عبر EmailJS
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('login-step-1').style.display = 'block';
@@ -1247,7 +1282,7 @@
                 return;
             }
 
-            // تحقق هل هو الأدمن؟
+            // التحقق من الأدمن عبر الفورم المدمج
             if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 const passInput = document.getElementById('admin-secret-pass').value.trim();
                 if(passInput === ADMIN_PASSWORD) {
@@ -1256,14 +1291,14 @@
                     closeLoginModal();
                     renderHeaderNav();
                     renderProducts();
-                    showMessageModal("مرحباً بك يا باشمهندس", "تم تسجيل الدخول كأدمنستريتور بنجاح. تدرج بكامل صلاحيات لوحة التحكم.");
+                    showMessageModal("مرحباً بك يا باشمهندس", "تم تسجيل الدخول كأدمنستريتور بنجاح بكامل الصلاحيات.");
                 } else {
                     showMessageModal("خطأ في كلمة المرور", "كلمة مرور الأدمنستريتور غير صحيحة.");
                 }
                 return;
             }
 
-            // باقي المستخدمين (عملاء عاديين) -> إرسال الكود للإيميل عبر EmailJS
+            // العملاء العاديين -> إرسال الكود الفعلي للإيميل عبر EmailJS
             pendingUserName = name;
             pendingUserEmail = email;
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1278,15 +1313,15 @@
                 pass_code: generatedOTP,
                 message: `مرحباً ${name}، رمز التحقق الخاص بك لتسجيل الدخول في متجر سَـنَدْ هو: ${generatedOTP}`
             }).then(() => {
-                btn.innerText = "متابعة الدخول";
+                btn.innerText = "إرسال كود التحقق ومتابعة";
                 btn.disabled = false;
                 document.getElementById('login-step-1').style.display = 'none';
                 document.getElementById('login-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}). تفقد صندوق الوارد في Gmail!`;
+                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}) عبر EmailJS. تفقد صندوق الوارد في Gmail!`;
             }).catch(err => {
-                btn.innerText = "متابعة الدخول";
+                btn.innerText = "إرسال كود التحقق ومتابعة";
                 btn.disabled = false;
-                // نظام احتياطي في حال قيود السيرفر المجاني لضمان استمرار العميل بدون تعطيل
+                // النظام البديل الاحتياطي لضمان عدم توقف العميل إذا حدث ضغط في سيرفر الإرسال
                 document.getElementById('login-step-1').style.display = 'none';
                 document.getElementById('login-step-2').style.display = 'block';
                 document.getElementById('otp-info-text').innerHTML = `رمز التحقق الخاص بك على الإيميل: <b style="color:#d4af37; font-size:18px;">${generatedOTP}</b>`;
