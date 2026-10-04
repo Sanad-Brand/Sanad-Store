@@ -16,7 +16,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
-          // تهيئة EmailJS بالمفتاح العام الخاص بك
           emailjs.init("v0DvD6_nalGt48e9u");
        })();
     </script>
@@ -955,6 +954,43 @@
             }
         }
 
+        // دالة تشغيل صوت تنبيه الأوردر على اللاب توب
+        function playAdminAlertSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // نغمة أولى
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                osc1.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                gain1.gain.setValueAtTime(0.4, audioCtx.currentTime);
+                gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                osc1.start();
+                osc1.stop(audioCtx.currentTime + 0.4);
+
+                // نغمة ثانية متتابعة (لعمل صوت تنبيه مزدوج فخم)
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // C6
+                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start();
+                    osc2.stop(audioCtx.currentTime + 0.5);
+                }, 200);
+
+            } catch(e) {
+                console.log("AudioContext not allowed or supported until user interaction.");
+            }
+        }
+
         // انيميشن سقوط الهدوم في شاشة الترحيب
         const introWrapper = document.getElementById('intro-falling-wrapper');
         const clothingIcons = ['fa-shirt', 'fa-vest', 'fa-socks', 'fa-hat-cowboy', 'fa-mitten'];
@@ -1067,7 +1103,6 @@
             document.getElementById('real-user-otp').value = '';
         }
 
-        // التفريق الذكي بين الأدمن والعميل أثناء إدخال الإيميل
         function sendVerificationCode() {
             const name = document.getElementById('real-user-name').value.trim();
             const email = document.getElementById('real-user-email').value.trim().toLowerCase();
@@ -1077,7 +1112,6 @@
                 return;
             }
 
-            // إذا كان البريد هو بريد الأدمن
             if(email === 'medoatlm83@gmail.com') {
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-admin-pass').style.display = 'block';
@@ -1085,7 +1119,6 @@
                 return;
             }
 
-            // إذا كان عميل عادي، يتابع بـ OTP
             if(!email.includes('@gmail.com')) {
                 showSiteMessage("خطأ", "الرجاء إدخال بريد إلكتروني صحيح على Gmail!");
                 return;
@@ -1121,7 +1154,6 @@
             });
         }
 
-        // التحقق من كلمة مرور الأدمن
         function verifyAdminPassword() {
             const pass = document.getElementById('admin-login-pass').value.trim();
             const passInput = document.getElementById('admin-login-pass');
@@ -1355,6 +1387,22 @@
             orders.unshift(newOrder);
             localStorage.setItem('sanad_orders', JSON.stringify(orders));
 
+            // تشغيل صوت التنبيه فوراً على جهاز الأدمن / اللاب توب
+            playAdminAlertSound();
+
+            // إرسال تنبيه البريد الإلكتروني الفوري للأدمن (مهندس محمد جمال)
+            let itemsSummaryStr = newOrder.items.map(i => `${i.name} (${i.qty} قطعة)`).join('، ');
+            emailjs.send("service_havf752", "template_3bybp8m", {
+                to_email: "medoatlm83@gmail.com",
+                to_name: "المهندس محمد جمال",
+                otp_code: "طلب جديد وارد! 🚀",
+                message: `تنبيه أوردر جديد في متجر سَـنَدْ!\n\n- العميل: ${name}\n- الهاتف: ${phone}\n- العنوان: ${gov} - ${city} - ${address}\n- المنتجات: ${itemsSummaryStr}\n- الإجمالي بالشحن: ${grandTotal} جنيه\n- الوقت: ${newOrder.date}`
+            }).then(function(res) {
+                console.log("Admin email alert sent successfully!");
+            }).catch(function(err) {
+                console.log("Admin email alert failed:", err);
+            });
+
             showOrderSuccessView(newOrder);
 
             cart = [];
@@ -1390,7 +1438,6 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // فتح لوحة التحكم للأدمن فقط
         function openAdmin() {
             if(currentUser && currentUser.role === 'admin') {
                 document.getElementById('adminModal').style.display = 'flex';
