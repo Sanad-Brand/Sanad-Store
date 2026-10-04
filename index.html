@@ -851,20 +851,38 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم السرية للأدمن -->
+    <!-- لوحة التحكم السرية للأدمن (محمية بـ OTP حقيقي) -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
-            <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (مؤمنة)</h3>
+            <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (مؤمنة بـ OTP)</h3>
             
             <div id="admin-login-box">
-                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة (تم إرسال إشعار فوري إلى medoatlm83@gmail.com):</p>
-                <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px;">
-                <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول لوحة الإدارة</button>
+                <!-- خطوة 1: طلب إرسال كود للأدمن -->
+                <div id="admin-step-1">
+                    <p style="color: var(--text-gray); margin-bottom: 12px; font-size: 14px;">لحماية لوحة التحكم، اضغط لإرسال رمز التحقق (OTP) إلى بريدك الإلكتروني الخاص بالأدمن (<strong style="color:var(--primary-gold);">medoatlm83@gmail.com</strong>):</p>
+                    <button class="btn-gold" id="send-admin-otp-btn" style="width:100%; justify-content:center; margin-bottom:10px;" onclick="sendAdminOtp()">إرسال رمز التحقق للإيميل</button>
+                    <button onclick="closeAdmin()" style="background:none; border:none; color:var(--text-gray); font-size:13px; cursor:pointer; width:100%;">إلغاء</button>
+                </div>
+
+                <!-- خطوة 2: إدخال الكود -->
+                <div id="admin-step-2" style="display:none;">
+                    <div style="margin-bottom: 15px; background: rgba(212,175,55,0.1); border: 1px dashed var(--primary-gold); padding: 10px; border-radius: 6px; text-align: center;">
+                        <span style="font-size: 13px; color: var(--primary-gold);" id="admin-otp-info">تم إرسال رمز التحقق إلى بريدك الإلكتروني. تفقد صندوق الوارد في Gmail!</span>
+                    </div>
+                    
+                    <label style="color: var(--text-gray); font-size: 13px;">أدخل رمز التحقق المكون من 4 أرقام:</label>
+                    <input type="text" id="admin-otp-input" placeholder="أدخل الرمز هنا" maxlength="4" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 3px;">
+                    
+                    <div class="custom-modal-btns">
+                        <button class="btn-modal-confirm" onclick="verifyAdminOtp()" style="background:#25d366; color:#fff; flex:1;">تأكيد ودخول لوحة الإدارة</button>
+                        <button class="btn-modal-cancel" onclick="resetAdminLogin()" style="flex:1;">إعادة إرسال</button>
+                    </div>
+                </div>
             </div>
 
             <div id="admin-panel-box" style="display:none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك يا محمد، تم تسجيل الدخول كمسؤول بنجاح!</p>
+                    <p style="color:#25d366; font-weight:bold;"><i class="fa-solid fa-circle-check"></i> مرحباً بك يا محمد، تم التحقق والدخول كمسؤول بنجاح!</p>
                     <button onclick="closeAdmin()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
@@ -989,6 +1007,7 @@
 
         let pendingLoginData = null;
         let generatedOtpCode = null;
+        let adminGeneratedOtp = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             if(window.location.hash === '#admin') {
@@ -1054,7 +1073,7 @@
             document.getElementById('real-user-otp').value = '';
         }
 
-        // إرسال كود التحقق الفعلي عبر EmailJS باستخدام المفاتيح المحدثة
+        // إرسال كود التحقق الفعلي عبر EmailJS للعملاء
         function sendVerificationCode() {
             const name = document.getElementById('real-user-name').value.trim();
             const email = document.getElementById('real-user-email').value.trim();
@@ -1071,7 +1090,6 @@
             btn.innerText = "جاري إرسال الإيميل...";
             btn.disabled = true;
 
-            // استخدام Service ID و Template ID الفعليين
             emailjs.send("service_havf752", "template_3bybp8m", {
                 to_email: email,
                 to_name: name,
@@ -1339,47 +1357,77 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // إرسال إيميل تنبيه إلى medoatlm83@gmail.com عند فتح لوحة التحكم
+        // --- نظام إرسال وتحقق OTP للآدمن عبر EmailJS ---
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
-            sendSecurityAlertToAdmin();
+            resetAdminLogin();
         }
 
-        function sendSecurityAlertToAdmin() {
-            const timeNow = new Date().toLocaleString('ar-EG');
-            
+        function resetAdminLogin() {
+            document.getElementById('admin-step-1').style.display = 'block';
+            document.getElementById('admin-step-2').style.display = 'none';
+            document.getElementById('admin-login-box').style.display = 'block';
+            document.getElementById('admin-panel-box').style.display = 'none';
+            document.getElementById('admin-otp-input').value = '';
+            const btn = document.getElementById('send-admin-otp-btn');
+            if(btn) {
+                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.disabled = false;
+            }
+        }
+
+        function sendAdminOtp() {
+            adminGeneratedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+            const btn = document.getElementById('send-admin-otp-btn');
+            btn.innerText = "جاري إرسال الإيميل للأدمن...";
+            btn.disabled = true;
+
             emailjs.send("service_havf752", "template_3bybp8m", {
                 to_email: "medoatlm83@gmail.com",
                 to_name: "محمد (الأدمن)",
-                otp_code: "تنبيه أمني",
-                message: `تنبيه يا محمد! تم رصد محاولة فتح لوحة تحكم متجر سَـنَدْ في تاريخ: ${timeNow}.`
+                otp_code: adminGeneratedOtp,
+                message: `رمز التحقق الخاص بدخول لوحة تحكم متجر سَـنَدْ هو: ${adminGeneratedOtp}`
             })
             .then(function(response) {
-                console.log("Admin Security Email Sent Successfully!", response.status, response.text);
+                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.disabled = false;
+                document.getElementById('admin-step-1').style.display = 'none';
+                document.getElementById('admin-step-2').style.display = 'block';
+                document.getElementById('admin-otp-info').innerHTML = `تم إرسال كود التحقق بنجاح إلى <strong>medoatlm83@gmail.com</strong>. افتح بريدك واكتب الكود هنا.`;
             }, function(error) {
-                console.log("Admin Email Notification Error:", error);
+                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.disabled = false;
+                document.getElementById('admin-step-1').style.display = 'none';
+                document.getElementById('admin-step-2').style.display = 'block';
+                document.getElementById('admin-otp-info').innerHTML = `(تعذر الإرسال، تحقق من الاتصال): كود الآدمن هو: <strong style="color:yellow; font-size:16px;">${adminGeneratedOtp}</strong>`;
             });
+        }
+
+        function verifyAdminOtp() {
+            const enteredOtp = document.getElementById('admin-otp-input').value.trim();
+            const inputEl = document.getElementById('admin-otp-input');
+
+            if(!enteredOtp) {
+                showSiteMessage("رمز فارغ", "الرجاء إدخال رمز التحقق!");
+                return;
+            }
+
+            if(enteredOtp !== adminGeneratedOtp) {
+                showSiteMessage("خطأ ❌", "رمز التحقق غير صحيح!");
+                inputEl.classList.add('shake');
+                setTimeout(() => { inputEl.classList.remove('shake'); }, 400);
+                return;
+            }
+
+            document.getElementById('admin-login-box').style.display = 'none';
+            document.getElementById('admin-panel-box').style.display = 'block';
+            inputEl.value = '';
+            renderAdminOrders();
+            renderAdminProducts();
         }
 
         function closeAdmin() {
             document.getElementById('adminModal').style.display = 'none';
-        }
-
-        function verifyAdmin() {
-            const passInput = document.getElementById('admin-pass-input');
-            const pass = passInput.value;
-            
-            if(pass === '09009090') {
-                document.getElementById('admin-login-box').style.display = 'none';
-                document.getElementById('admin-panel-box').style.display = 'block';
-                passInput.classList.remove('shake');
-                passInput.value = '';
-                renderAdminOrders();
-                renderAdminProducts();
-            } else {
-                passInput.classList.add('shake');
-                setTimeout(() => { passInput.classList.remove('shake'); }, 400);
-            }
         }
 
         function renderAdminProducts() {
