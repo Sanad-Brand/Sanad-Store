@@ -10,8 +10,6 @@
     <!-- الأيقونات والخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- EmailJS SDK لإرسال الإيميلات الحقيقية -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -52,7 +50,7 @@
             z-index: 10;
         }
 
-        /* شاشة الترحيب الافتتاحية النظيفة بدون أيقونات واقعة */
+        /* شاشة الترحيب الافتتاحية النظيفة */
         #intro-splash {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -194,7 +192,6 @@
             padding: 0 30px;
         }
 
-        /* تصميم الشريحة الواحدة (Slice) التي تأتي من الجانب وتكتمل */
         @keyframes sliceSlideInFromRight {
             0% {
                 transform: translateX(80px) scale(0.96);
@@ -218,7 +215,6 @@
             animation: sliceSlideInFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* تتابع ظهور الشرائح وراء بعضها كأنها تركب تدريجياً لأسفل */
         .slice-1 { animation-delay: 0.2s; }
         .slice-2 { animation-delay: 0.45s; }
 
@@ -240,7 +236,6 @@
             font-size: 15px;
         }
 
-        /* شبكة المنتجات العرضية الواسعة داخل الشريحة الثانية */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -548,7 +543,6 @@
             transition: 0.3s;
         }
 
-        /* نافذة المودال المتحركة المخصصة */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -863,7 +857,7 @@
             </div>
 
             <div id="admin-panel-box">
-                <!-- إضافة منتج جديد (مع إمكانية السحب والإفلات أو الرفع أو الرابط) -->
+                <!-- إضافة منتج جديد -->
                 <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
                     <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد (سحب وإفلات أو رفع صورة أو رابط)</h4>
                     
@@ -871,7 +865,6 @@
                     <input type="number" id="new-p-price" placeholder="السعر الحالي (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="number" id="new-p-old-price" placeholder="السعر القديم قبل الخصم (اختياري)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     
-                    <!-- منطقة السحب والإفلات المخصصة للصور -->
                     <label style="color: var(--text-gray); font-size: 13px; display: block; margin-bottom: 5px;">صورة المنتج (اسحب وأرمي الصورة هنا، أو اضغط للاختيار):</label>
                     <div id="drop-zone" style="border: 2px dashed var(--primary-gold); padding: 18px; text-align: center; border-radius: 6px; background: #222; margin-bottom: 8px; cursor: pointer; transition: 0.3s;">
                         <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--primary-gold); margin-bottom: 6px;"></i>
@@ -884,13 +877,13 @@
                     <button class="btn-gold" style="width:100%; justify-content:center;" onclick="addNewProduct()">إضافة المنتج</button>
                 </div>
 
-                <!-- قسم إدارة وتعديل أسعار المنتجات الحالية -->
+                <!-- إدارة المنتجات -->
                 <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
                     <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إدارة المنتجات وتغيير الأسعار والعروض</h4>
                     <div id="admin-products-list" style="max-height: 220px; overflow-y: auto;"></div>
                 </div>
 
-                <!-- قسم طلبات العملاء -->
+                <!-- طلبات العملاء -->
                 <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <h4 style="color: var(--primary-gold);">طلبات العملاء الواردة للسيستم (<span id="admin-orders-count">0</span>)</h4>
@@ -946,7 +939,6 @@
             }
         }
 
-        // إعداد خاصية السحب والإفلات واختيار الملفات للصور
         let uploadedImageBase64 = '';
         function setupDropZone() {
             const dropZone = document.getElementById('drop-zone');
@@ -995,11 +987,9 @@
             reader.readAsDataURL(file);
         }
 
-        // دالة تشغيل صوت تنبيه الأوردر على اللاب توب
         function playAdminAlertSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
                 const osc1 = audioCtx.createOscillator();
                 const gain1 = audioCtx.createGain();
                 osc1.type = 'sine';
@@ -1011,22 +1001,8 @@
                 gain1.connect(audioCtx.destination);
                 osc1.start();
                 osc1.stop(audioCtx.currentTime + 0.4);
-
-                setTimeout(() => {
-                    const osc2 = audioCtx.createOscillator();
-                    const gain2 = audioCtx.createGain();
-                    osc2.type = 'triangle';
-                    osc2.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
-                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                    osc2.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc2.start();
-                    osc2.stop(audioCtx.currentTime + 0.5);
-                }, 200);
-
             } catch(e) {
-                console.log("AudioContext restricted until user interaction.");
+                console.log("Audio restricted.");
             }
         }
 
@@ -1160,7 +1136,7 @@
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-2').style.display = 'block';
                 document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
-                document.getElementById('otp-info-text').innerHTML = `(تعذر الإرسال، تحقق من الاتصال): كود التحقق هو: <strong style="color:yellow; font-size:16px;">${generatedOtpCode}</strong>`;
+                document.getElementById('otp-info-text').innerHTML = `(تعذر الإرسال): كود التحقق هو: <strong style="color:yellow; font-size:16px;">${generatedOtpCode}</strong>`;
             });
         }
 
@@ -1197,7 +1173,7 @@
             }
 
             if(enteredOtp !== generatedOtpCode) {
-                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق الذي أدخلته غير صحيح! تأكد من إيميلك.");
+                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق الذي أدخلته غير صحيح!");
                 document.getElementById('real-user-otp').classList.add('shake');
                 setTimeout(() => { document.getElementById('real-user-otp').classList.remove('shake'); }, 400);
                 return;
@@ -1214,7 +1190,7 @@
 
             closeGoogleModal();
             updateHeaderNav();
-            showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}! تم التحقق من إيميلك وربط حسابك بنجاح.`);
+            showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}!`);
         }
 
         function logoutUser() {
@@ -1399,17 +1375,39 @@
 
             playAdminAlertSound();
 
-            let itemsSummaryStr = newOrder.items.map(i => `${i.name} (${i.qty} قطعة)`).join('، ');
+            let itemsSummaryStr = newOrder.items.map(i => `${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('\n');
+
+            // إرسال الإيميل
             emailjs.send("service_havf752", "template_3bybp8m", {
                 to_email: "medoatlm83@gmail.com",
                 to_name: "المهندس محمد جمال",
                 otp_code: "طلب جديد وارد! 🚀",
                 message: `تنبيه أوردر جديد في متجر سَـنَدْ!\n\n- العميل: ${name}\n- الهاتف: ${phone}\n- العنوان: ${gov} - ${city} - ${address}\n- المنتجات: ${itemsSummaryStr}\n- الإجمالي بالشحن: ${grandTotal} جنيه\n- الوقت: ${newOrder.date}`
             }).then(function(res) {
-                console.log("Admin email alert sent successfully!");
+                console.log("Admin email alert sent!");
             }).catch(function(err) {
-                console.log("Admin email alert failed:", err);
+                console.log("Admin email failed:", err);
             });
+
+            // إرسال بوليصة الشحن المتكاملة مباشرة عبر الواتساب على رقم 01080629789
+            let whatsappMessage = `🧾 *بوليصة شحن طلب جديد - متجر سَـنَدْ* 🚀\n\n` +
+                `👤 *اسم العميل:* ${name}\n` +
+                `📞 *رقم الهاتف:* ${phone}\n` +
+                `📍 *المحافظة:* ${gov}\n` +
+                `🏢 *الإدارة/المدينة:* ${city}\n` +
+                `🏠 *العنوان بالتفصيل:* ${address}\n` +
+                `📝 *ملاحظات العميل:* ${notes}\n\n` +
+                `🛒 *تفاصيل المنتجات المطلوبة:*\n${itemsSummaryStr}\n\n` +
+                `📦 *رسوم الشحن:* ${shipping} جنيه\n` +
+                `💰 *الإجمالي الكلي شامل الشحن:* *${grandTotal} جنيه*\n` +
+                `⏰ *وقت الطلب:* ${newOrder.date}\n\n` +
+                `_تم إنشاء هذه البوليصة تلقائياً من سيستم متجر سَـنَدْ._`;
+
+            let encodedMessage = encodeURIComponent(whatsappMessage);
+            let whatsappUrl = `https://wa.me/201080629789?text=${encodedMessage}`;
+            
+            // فتح واتساب بوليصة الشحن للرقم المطلوب
+            window.open(whatsappUrl, '_blank');
 
             showOrderSuccessView(newOrder);
 
@@ -1534,7 +1532,7 @@
             const finalImg = uploadedImageBase64 || urlImg;
 
             if(!name || isNaN(price) || !finalImg) {
-                showSiteMessage("بيانات ناقصة", "الرجاء إدخال اسم المنتج، السعر، وإرفاق صورة (سحب وإفلات، أو رفع ملف، أو وضع رابط)!");
+                showSiteMessage("بيانات ناقصة", "الرجاء إدخال اسم المنتج، السعر، وإرفاق صورة!");
                 return;
             }
 
