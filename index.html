@@ -3,510 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رسالة اعتذار وحب</title>
+    <title>آسف يا نور عيني</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary-bg: #110008;
+            --secondary-bg: #2d0a1f;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #1a0b1c, #3a1538);
+            background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
             color: white;
-            overflow-x: hidden;
-            touch-action: pan-y;
+            overflow: hidden; /* Prevent scrolling entirely */
+            touch-action: none; /* Disable default touch actions for smooth dodging */
+            width: 100vw;
+            height: 100vh;
+        }
+
+        h1, h2, .ruqaa {
+            font-family: 'Aref Ruqaa', serif;
         }
 
         .screen {
-            display: none;
-            min-height: 100vh;
-            width: 100vw;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            top: 0;
-            left: 0;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .screen.active {
-            display: flex;
-            opacity: 1;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
             z-index: 10;
         }
 
-        /* 3D Book Styles */
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #flying-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .flying-photo {
+            position: absolute;
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border: 5px solid white;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0.1) rotate(0deg);
+            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
         .book-container {
-            perspective: 1500px;
-            width: 90%;
-            max-width: 400px;
+            perspective: 2000px;
+            width: 90vw;
+            max-width: 350px;
             height: 500px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1s;
+            display: none; /* Shown after flying photos */
+            z-index: 30;
         }
-        
-        .page {
+
+        .book-page {
             position: absolute;
             width: 100%;
             height: 100%;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.3);
-            transform-origin: right center; /* RTL orientation */
-            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            border-radius: 8px 15px 15px 8px;
+            box-shadow: inset 5px 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.3);
+            /* RTL Spine is on the right side */
+            transform-origin: right center;
+            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
             transform-style: preserve-3d;
             backface-visibility: hidden;
             display: flex;
             flex-direction: column;
             padding: 15px;
             box-sizing: border-box;
+            border: 1px solid #ccc;
         }
 
         .page-front, .page-back {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+            inset: 0;
             backface-visibility: hidden;
-            background: #fff;
-            border-radius: 10px;
+            background: #fdfbf7;
+            border-radius: inherit;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            border: 2px solid #e2e8f0;
         }
 
         .page-back {
             transform: rotateY(180deg);
+            background: #f5f5f5;
         }
 
-        .page-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #fdfbf7;
-            border: 1px dashed #d1d5db;
+        .book-page.flipped {
+            /* Flip to the left */
+            transform: rotateY(180deg) !important;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 300px;
+            background: #eaeaea;
             border-radius: 8px;
             overflow: hidden;
-        }
-
-        .img-frame {
-            width: 100%;
-            height: 250px;
-            background: #f3f4f6;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
         }
 
-        .img-frame img {
+        .img-container img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        .caption {
-            color: #4b5563;
+        .page-caption {
+            color: #333;
             text-align: center;
             font-size: 1.1rem;
-            font-weight: 600;
-            font-family: 'Amiri', serif;
-            line-height: 1.6;
+            font-weight: 700;
+            line-height: 1.5;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Page Flipping Classes */
-        .flipped {
-            transform: rotateY(-180deg) !important;
-        }
-        
-        .z-100 { z-index: 100; }
-        .z-90 { z-index: 90; }
-        .z-80 { z-index: 80; }
+        /* Z-indexes for proper stacking of pages */
+        #page3 { z-index: 100; }
+        #page2 { z-index: 101; }
+        #page1 { z-index: 102; }
 
-        /* Animations */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-
-        @keyframes explode {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        .floating-photo {
-            position: absolute;
-            animation: float 4s ease-in-out infinite;
-            border: 4px solid white;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 150px;
-            height: 200px;
-            object-fit: cover;
-            opacity: 0;
-            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .heart-particle {
-            position: absolute;
-            font-size: 2rem;
-            animation: popUp 2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        .wahshteny-text {
-            position: absolute;
-            color: #ff4d4d;
-            font-weight: bold;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            animation: fadeInOut 3s forwards;
-            pointer-events: none;
-            z-index: 40;
-        }
-
-        @keyframes popUp {
-            0% { transform: translateY(0) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-200px) scale(1.5) rotate(45deg); opacity: 0; }
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.5); }
-            20% { opacity: 1; transform: scale(1.2); }
-            80% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.5); }
-        }
-
-        /* Canvas for Question Marks */
         #q-canvas {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 1;
+            z-index: 5;
         }
-        
-        .btn-dodge {
-            position: relative;
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+        .dodge-btn {
+            position: absolute;
+            transition: all 0.15s ease-out; /* Fast snappy transition */
+            z-index: 50;
+            will-change: transform, left, top;
+        }
+
+        #celebration-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .falling-heart {
+            position: absolute;
+            color: #ff2a2a;
+            font-size: 2rem;
+            animation: fall linear forwards;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg) scale(0.8); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .pop-text {
+            position: absolute;
+            color: #ffb3b3;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 10px rgba(255,0,0,0.8);
+            animation: popFade 2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes popFade {
+            0% { transform: scale(0.5); opacity: 0; }
+            20% { transform: scale(1.2); opacity: 1; }
+            80% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Custom Modal */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
-    <!-- Admin Button -->
-    <button id="admin-toggle" class="fixed top-4 left-4 z-50 bg-white/20 p-3 rounded-full hover:bg-white/40 backdrop-blur-sm transition">
+
+    <button id="admin-gear" class="fixed top-4 left-4 z-[999] p-2 bg-white/10 rounded-full hover:bg-white/30 backdrop-blur transition text-2xl">
         ⚙️
     </button>
 
-    <!-- Admin Modal -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex-col items-center justify-center p-6 overflow-y-auto">
-        <div class="bg-gray-900 border border-purple-500 rounded-2xl p-6 w-full max-w-lg text-right">
-            <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">لوحة تحكم الإدمن (الرفع للسحابة)</h2>
+    <div id="admin-modal" class="fixed inset-0 bg-black/95 z-[1000] hidden flex-col items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 text-right">
+            <h2 class="text-2xl font-bold mb-4 text-pink-300">لوحة التحكم</h2>
             
-            <div id="admin-login" class="mb-4">
-                <input type="password" id="admin-pwd" placeholder="كلمة السر..." class="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:border-purple-500 mb-3" dir="ltr">
-                <button id="btn-login" class="w-full bg-purple-600 hover:bg-purple-700 p-3 rounded text-white font-bold">دخول</button>
+            <div id="admin-login-section">
+                <input type="password" id="admin-pwd" placeholder="كلمة السر" class="w-full p-3 rounded bg-black/50 text-white border border-gray-600 mb-4" dir="ltr">
+                <button id="btn-login" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold p-3 rounded">دخول</button>
             </div>
 
-            <div id="admin-dashboard" class="hidden space-y-6">
-                <!-- Status Box -->
-                <div id="sync-status" class="bg-blue-900/50 text-blue-200 p-3 rounded border border-blue-700 text-sm mb-4">
-                    جاري الاتصال بقاعدة البيانات...
+            <div id="admin-dashboard" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                <p id="sync-status" class="text-sm text-blue-300 bg-blue-900/30 p-2 rounded">جاري التحقق من الاتصال...</p>
+                
+                <div class="space-y-3">
+                    <div class="bg-black/40 p-3 rounded">
+                        <label class="block text-sm text-gray-300 mb-1">صورة 1 (الرسالة):</label>
+                        <input type="file" id="up-img1" accept="image/*" class="text-sm w-full">
+                    </div>
+                    <div class="bg-black/40 p-3 rounded">
+                        <label class="block text-sm text-gray-300 mb-1">صورة 2 (أجمل إنسانة):</label>
+                        <input type="file" id="up-img2" accept="image/*" class="text-sm w-full">
+                    </div>
+                    <div class="bg-black/40 p-3 rounded">
+                        <label class="block text-sm text-gray-300 mb-1">صورة 3 (الـ AI):</label>
+                        <input type="file" id="up-img3" accept="image/*" class="text-sm w-full">
+                    </div>
+                    <div class="bg-black/40 p-3 rounded">
+                        <label class="block text-sm text-pink-300 mb-1">مقطع صوت 1 (المقدمة):</label>
+                        <input type="file" id="up-aud-intro" accept="audio/*" class="text-sm w-full">
+                    </div>
+                    <div class="bg-black/40 p-3 rounded">
+                        <label class="block text-sm text-pink-300 mb-1">مقطع صوت 2 (الاحتفال):</label>
+                        <input type="file" id="up-aud-celeb" accept="audio/*" class="text-sm w-full">
+                    </div>
                 </div>
 
-                <!-- Image 1 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-purple-300 font-semibold mb-2">صورة 1 (أول رسالة):</label>
-                    <input type="file" id="upload-img1" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                </div>
-                <!-- Image 2 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-purple-300 font-semibold mb-2">صورة 2 (أجمل إنسانة):</label>
-                    <input type="file" id="upload-img2" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                </div>
-                <!-- Image 3 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-purple-300 font-semibold mb-2">صورة 3 (أول صورة AI):</label>
-                    <input type="file" id="upload-img3" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-                </div>
-
-                <!-- Audio 1 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-pink-300 font-semibold mb-2">تراك 1 (البداية):</label>
-                    <input type="file" id="upload-aud1" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
-                </div>
-                <!-- Audio 2 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-pink-300 font-semibold mb-2">تراك 2 (الألبوم):</label>
-                    <input type="file" id="upload-aud2" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
-                </div>
-                <!-- Audio 3 -->
-                <div class="bg-gray-800 p-4 rounded-lg">
-                    <label class="block text-pink-300 font-semibold mb-2">تراك 3 (الاحتفال):</label>
-                    <input type="file" id="upload-aud3" accept="audio/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100">
-                </div>
-
-                <div class="flex gap-4 mt-6">
-                    <button id="btn-close-admin" class="flex-1 bg-gray-600 hover:bg-gray-700 p-3 rounded text-white font-bold">إغلاق</button>
-                    <button id="btn-save-admin" class="flex-1 bg-green-600 hover:bg-green-700 p-3 rounded text-white font-bold shadow-lg shadow-green-500/30">حفظ للسحابة</button>
+                <div class="flex gap-2 pt-4">
+                    <button id="btn-close-admin" class="flex-1 bg-gray-600 p-2 rounded text-white">إغلاق</button>
+                    <button id="btn-save-admin" class="flex-1 bg-green-600 p-2 rounded text-white font-bold shadow-lg">حفظ للسحابة</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Custom Dialog Box for alerts (replaces window.alert) -->
-    <div id="custom-alert" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="bg-white text-gray-900 p-6 rounded-xl shadow-2xl max-w-sm w-[90%] text-center">
-            <p id="custom-alert-msg" class="text-lg font-bold mb-6 font-cairo"></p>
-            <button id="custom-alert-btn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold w-full transition">حسناً</button>
+    <!-- Alert Modal (Replaces standard alert) -->
+    <div id="custom-alert" class="fixed inset-0 z-[1100] hidden items-center justify-center bg-black/80">
+        <div class="bg-white text-black p-6 rounded-xl max-w-sm w-[90%] text-center">
+            <p id="alert-msg" class="text-lg font-bold mb-4"></p>
+            <button id="btn-alert-ok" class="bg-pink-600 text-white px-8 py-2 rounded font-bold">تمام</button>
         </div>
     </div>
 
-    <!-- Screen 1: Intro -->
-    <div id="screen-1" class="screen active text-center px-6">
-        <div class="max-w-md mx-auto bg-black/30 p-8 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
-            <h1 class="text-4xl font-bold mb-6 text-pink-300 font-amiri">آسف من قلبي</h1>
-            <p class="text-xl leading-relaxed mb-8 text-gray-200">
+    <div id="screen-intro" class="screen active p-6 text-center">
+        <div class="glass-panel p-8 rounded-3xl max-w-md w-full shadow-[0_0_40px_rgba(255,0,100,0.2)]">
+            <h1 class="text-5xl mb-6 text-pink-400">آسف يا روحي</h1>
+            <p class="text-xl leading-loose mb-8 text-gray-200">
                 عارف إني زعلتك، وعارف إن الكلمة دي لوحدها مش كفاية.. 
-                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى حاجة في حياتي.
+                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى وأحن حاجة في حياتي.
             </p>
-            <button id="btn-continue" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-xl shadow-[0_0_20px_rgba(236,72,153,0.5)] transition transform hover:scale-105 active:scale-95">
-                كملي...
+            <button id="btn-continue" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-lg transition transform hover:scale-105">
+                كمل
             </button>
         </div>
     </div>
 
-    <!-- Screen 2 & 3: Book & Flying Photos -->
-    <div id="screen-3" class="screen">
-        <div id="flying-container" class="absolute inset-0 pointer-events-none z-0">
-            <!-- Photos will be injected here dynamically -->
-        </div>
+    <div id="screen-album" class="screen">
+        <div id="flying-container"></div>
         
-        <div class="book-container opacity-0 transition-opacity duration-1000" id="album-book">
-            <!-- Page 3 (Last page) -->
-            <div class="page z-80" id="page3">
+        <div class="book-container" id="the-book">
+            <!-- Page 3 (Bottom) -->
+            <div class="book-page" id="page3">
                 <div class="page-front">
-                    <div class="page-content">
-                        <div class="img-frame">
-                            <img src="https://placehold.co/400x500/eee/999?text=Image+3" alt="الصورة الثالثة" class="dyn-img3">
-                        </div>
-                        <p class="caption">اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.</p>
+                    <div class="img-container">
+                        <img id="display-img3" src="https://placehold.co/400x500/pink/white?text=الصورة+الثالثة" alt="AI Photo">
                     </div>
+                    <p class="page-caption">اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.</p>
                 </div>
                 <div class="page-back"></div>
             </div>
 
-            <!-- Page 2 -->
-            <div class="page z-90" id="page2">
+            <!-- Page 2 (Middle) -->
+            <div class="book-page" id="page2">
                 <div class="page-front">
-                    <div class="page-content">
-                        <div class="img-frame">
-                            <img src="https://placehold.co/400x500/eee/999?text=Image+2" alt="الصورة الثانية" class="dyn-img2">
-                        </div>
-                        <p class="caption">اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.</p>
+                    <div class="img-container">
+                        <img id="display-img2" src="https://placehold.co/400x500/purple/white?text=الصورة+الثانية" alt="Beautiful Photo">
                     </div>
+                    <p class="page-caption">اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.</p>
                 </div>
                 <div class="page-back"></div>
             </div>
 
-            <!-- Page 1 (Cover) -->
-            <div class="page z-100" id="page1">
+            <!-- Page 1 (Top) -->
+            <div class="book-page" id="page1">
                 <div class="page-front">
-                    <div class="page-content">
-                        <div class="img-frame">
-                            <img src="https://placehold.co/400x500/eee/999?text=Image+1" alt="الصورة الأولى" class="dyn-img1">
-                        </div>
-                        <p class="caption">اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.</p>
+                    <div class="img-container">
+                        <img id="display-img1" src="https://placehold.co/400x500/red/white?text=الصورة+الأولى" alt="First Message">
                     </div>
+                    <p class="page-caption">اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.</p>
                 </div>
                 <div class="page-back"></div>
             </div>
         </div>
 
-        <div class="mt-10 z-20 opacity-0 transition-opacity duration-1000" id="album-controls">
-            <button id="btn-open-book" class="bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-8 rounded-full backdrop-blur-md border border-white/30 shadow-lg text-lg transition">
-                افتح الألبوم
-            </button>
-            <button id="btn-next-screen" class="hidden bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg transition mt-4 animate-pulse">
-                اللي بعده
-            </button>
-        </div>
+        <button id="btn-next-page" class="hidden absolute bottom-10 bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-10 rounded-full backdrop-blur border border-white/30 shadow-lg text-xl z-40 transition">
+            التالي
+        </button>
     </div>
 
-    <!-- Screen 4: Consent -->
-    <div id="screen-4" class="screen overflow-hidden">
+    <div id="screen-question" class="screen">
         <canvas id="q-canvas"></canvas>
-        <div class="z-10 text-center px-4 relative max-w-lg w-full flex flex-col items-center justify-center min-h-[50vh]">
-            <h2 class="text-4xl md:text-5xl font-bold mb-12 text-white text-shadow-lg font-amiri leading-tight">
-                هتسامحيني ونبدأ صفحة جديدة؟
+        <div class="z-20 text-center w-full px-4 h-full flex flex-col items-center justify-center relative">
+            <h2 class="text-4xl md:text-6xl font-bold mb-16 text-white text-shadow-lg ruqaa" style="text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
+                هتسامحيني ونرجع أقوى من الأول؟
             </h2>
-            <div class="flex flex-col md:flex-row justify-center items-center gap-6 w-full relative h-[200px]">
-                <button id="btn-yes" class="absolute z-20 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-[0_0_20px_rgba(34,197,94,0.5)] transition transform hover:scale-110 active:scale-95" style="right: 20px; top: 20px;">
+            
+            <div class="relative w-full max-w-sm h-[200px]">
+                <!-- Static Yes Button -->
+                <button id="btn-yes" class="absolute bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-[0_0_20px_rgba(34,197,94,0.6)] right-[10%] top-[20%] transition transform hover:scale-110">
                     موافقة ❤️
                 </button>
-                <button id="btn-no" class="btn-dodge absolute z-30 bg-gray-500 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg whitespace-nowrap" style="left: 20px; top: 20px;">
-                    لا
+                
+                <!-- Dodging No Button -->
+                <button id="btn-no" class="dodge-btn bg-gray-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-lg left-[10%] top-[20%]">
+                    لأ
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Screen 5: Celebration -->
-    <div id="screen-5" class="screen bg-red-950 overflow-hidden relative">
-        <div id="celebration-container" class="absolute inset-0 pointer-events-none"></div>
-        <div class="z-20 text-center p-8 bg-black/40 backdrop-blur-md rounded-3xl border border-red-500/30">
-            <h1 class="text-6xl md:text-8xl font-bold text-red-500 mb-6 font-amiri" style="text-shadow: 0 0 30px rgba(239, 68, 68, 0.8);">
-                بحبك!
+    <div id="screen-celebration" class="screen bg-[#3a0000]">
+        <div id="celebration-bg"></div>
+        <div class="z-20 text-center p-8 glass-panel rounded-3xl border border-red-500/50 shadow-[0_0_50px_rgba(255,0,0,0.4)]">
+            <h1 class="text-4xl md:text-6xl font-bold text-red-500 mb-6 ruqaa" style="text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);">
+                كنت عارف ان حبنا اقوي من اي حاجه وانك هتسامحيني
             </h1>
-            <p class="text-2xl text-white">وأوعدك مش هزعلك تاني أبداً</p>
         </div>
     </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration injected by environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-app-default';
-        let firebaseConfig;
-        
-        try {
-            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-                // Fallback for local testing if needed (wont work without actual project, but prevents fatal crash)
-                projectId: "dummy-project"
-            };
-        } catch(e) {
-            console.error("Error parsing firebase config", e);
-        }
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        let currentUser = null;
-
-        // Custom Alert function
-        const showCustomAlert = (msg) => {
-            document.getElementById('custom-alert-msg').innerText = msg;
-            document.getElementById('custom-alert').style.display = 'flex';
-        };
-        document.getElementById('custom-alert-btn').addEventListener('click', () => {
-            document.getElementById('custom-alert').style.display = 'none';
-        });
-
-        // App State for Media
-        const appData = {
+        // State & Data
+        const state = {
             img1: '', img2: '', img3: '',
-            aud1: '', aud2: '', aud3: ''
+            audioIntro: '', audioCeleb: ''
         };
 
         const audioPlayers = {
-            aud1: new Audio(),
-            aud2: new Audio(),
-            aud3: new Audio()
+            intro: new Audio(),
+            celeb: new Audio()
         };
 
-        // UI elements for synchronization status
-        const syncStatus = document.getElementById('sync-status');
-        const setStatus = (msg, isError = false) => {
-            syncStatus.innerText = msg;
-            syncStatus.className = isError ? 
-                'bg-red-900/50 text-red-200 p-3 rounded border border-red-700 text-sm mb-4' : 
-                'bg-blue-900/50 text-blue-200 p-3 rounded border border-blue-700 text-sm mb-4';
+        // Utility: Custom Alert
+        const showAlert = (msg) => {
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('custom-alert').style.display = 'flex';
+        };
+        document.getElementById('btn-alert-ok').addEventListener('click', () => {
+            document.getElementById('custom-alert').style.display = 'none';
+        });
+
+        // Safe Environment Variables Parsing
+        let appId = 'apology-app-default';
+        let firebaseConfig = null;
+        let initialToken = null;
+
+        try {
+            if (typeof __app_id !== 'undefined') appId = __app_id;
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+            }
+            if (typeof __initial_auth_token !== 'undefined') initialToken = __initial_auth_token;
+        } catch (e) {
+            console.error("Env extraction error:", e);
+        }
+
+        let db, auth;
+        const statusEl = document.getElementById('sync-status');
+        const setStatus = (msg, isError=false) => {
+            statusEl.innerText = msg;
+            statusEl.className = isError ? 'text-sm text-red-300 bg-red-900/30 p-2 rounded' : 'text-sm text-blue-300 bg-blue-900/30 p-2 rounded';
         };
 
-        async function initAuth() {
+        // Initialize Firebase safely
+        async function initApp() {
+            if (!firebaseConfig) {
+                console.warn("No Firebase config found. Running in local dummy mode.");
+                return;
+            }
+
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (initialToken) {
+                    await signInWithCustomToken(auth, initialToken);
                 } else {
                     await signInAnonymously(auth);
                 }
-                currentUser = auth.currentUser;
-                setStatus("تم الاتصال بنجاح. جاهز لرفع الملفات والسحب.", false);
+
+                setStatus("متصل بالسحابة.");
                 startRealtimeSync();
             } catch (error) {
-                console.error("Auth Error:", error);
-                setStatus("خطأ في الاتصال بالخادم السحابي.", true);
+                console.error("Firebase Init Error:", error);
+                setStatus("خطأ في الاتصال بقاعدة البيانات.", true);
             }
         }
 
-        // We store each file in a separate document to avoid the 1MB Firestore limit
-        const getAssetPath = (assetId) => doc(db, 'artifacts', appId, 'public', 'data', 'media_assets', assetId);
+        // Realtime Sync Function
+        const getDocPath = (docId) => doc(db, 'artifacts', appId, 'public', 'data', 'app_data', docId);
 
         function startRealtimeSync() {
-            if (!currentUser) return;
-
-            const assets = ['img1', 'img2', 'img3', 'aud1', 'aud2', 'aud3'];
+            if (!auth.currentUser) return;
+            const items = ['img1', 'img2', 'img3', 'audioIntro', 'audioCeleb'];
             
-            assets.forEach(asset => {
-                onSnapshot(getAssetPath(asset), (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data && data.base64) {
-                            appData[asset] = data.base64;
-                            updateUIWithAsset(asset, data.base64);
+            items.forEach(itemId => {
+                onSnapshot(getDocPath(itemId), (snap) => {
+                    if (snap.exists() && snap.data().base64) {
+                        const b64 = snap.data().base64;
+                        state[itemId] = b64;
+                        
+                        // Update UI immediately
+                        if (itemId.startsWith('img')) {
+                            const el = document.getElementById(`display-${itemId}`);
+                            if (el) el.src = b64;
+                        } else if (itemId === 'audioIntro') {
+                            audioPlayers.intro.src = b64;
+                        } else if (itemId === 'audioCeleb') {
+                            audioPlayers.celeb.src = b64;
                         }
                     }
-                }, (error) => {
-                    console.error(`Error listening to ${asset}:`, error);
-                });
+                }, (error) => console.error(`Error syncing ${itemId}:`, error));
             });
         }
 
-        function updateUIWithAsset(assetId, base64Data) {
-            if (assetId.startsWith('img')) {
-                const els = document.querySelectorAll(`.dyn-${assetId}`);
-                els.forEach(el => el.src = base64Data);
-            } else if (assetId.startsWith('aud')) {
-                audioPlayers[assetId].src = base64Data;
-            }
-        }
-
-        initAuth();
-
-        // Utility to convert file to base64 with image compression
-        const compressImage = (file, maxWidth = 800) => {
+        const compressImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
-                reader.onload = (event) => {
+                reader.onload = (e) => {
                     const img = new Image();
-                    img.src = event.target.result;
+                    img.src = e.target.result;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > maxWidth) {
-                            height = Math.round((height * maxWidth) / width);
-                            width = maxWidth;
+                        let { width, height } = img;
+                        const maxD = 600; // Keep it small to avoid Firestore limits
+                        if (width > maxD || height > maxD) {
+                            if (width > height) {
+                                height = (height / width) * maxD; width = maxD;
+                            } else {
+                                width = (width / height) * maxD; height = maxD;
+                            }
                         }
-
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Compress to JPEG 70% quality to save space
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                        canvas.width = width; canvas.height = height;
+                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
                     };
-                    img.onerror = (error) => reject(error);
                 };
+                reader.onerror = error => reject(error);
             });
         };
 
@@ -515,347 +490,301 @@
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => resolve(reader.result);
-                reader.onerror = (error) => reject(error);
+                reader.onerror = error => reject(error);
             });
         };
 
-        async function handleFileUpload() {
-            if (!currentUser) {
-                showCustomAlert("غير متصل بالسيرفر!");
+        async function handleUploads() {
+            if (!auth || !auth.currentUser) {
+                showAlert("عفواً، لا يوجد اتصال بالسيرفر!");
                 return;
             }
 
-            const btnSave = document.getElementById('btn-save-admin');
-            const originalText = btnSave.innerText;
-            btnSave.innerText = "جاري الرفع...";
-            btnSave.disabled = true;
-            setStatus("جاري معالجة ورفع الملفات للسحابة...", false);
+            const btn = document.getElementById('btn-save-admin');
+            btn.innerText = "جاري الرفع...";
+            btn.disabled = true;
+            setStatus("جاري معالجة ورفع الملفات...");
 
             try {
-                const uploads = [];
+                const tasks = [];
                 
-                // Images (Compress before upload)
+                // Images
                 for (let i = 1; i <= 3; i++) {
-                    const fileInput = document.getElementById(`upload-img${i}`);
-                    if (fileInput.files.length > 0) {
-                        const base64 = await compressImage(fileInput.files[0]);
-                        uploads.push(setDoc(getAssetPath(`img${i}`), { base64, updatedAt: Date.now() }));
+                    const file = document.getElementById(`up-img${i}`).files[0];
+                    if (file) {
+                        const b64 = await compressImage(file);
+                        tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
                     }
                 }
 
-                // Audio (Raw Base64, hope it's small enough. Better to limit size conceptually)
-                for (let i = 1; i <= 3; i++) {
-                    const fileInput = document.getElementById(`upload-aud${i}`);
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
-                        if (file.size > 1048576) { // 1MB limit warning
-                             setStatus("تحذير: ملف الصوت كبير جداً قد لا يتم حفظه. حاول استخدام ملف أصغر.", true);
-                             await new Promise(r => setTimeout(r, 2000));
-                        }
-                        const base64 = await fileToBase64(file);
-                        uploads.push(setDoc(getAssetPath(`aud${i}`), { base64, updatedAt: Date.now() }));
-                    }
+                // Audio
+                const audIntro = document.getElementById('up-aud-intro').files[0];
+                if (audIntro) {
+                    const b64 = await fileToBase64(audIntro);
+                    tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
                 }
 
-                if (uploads.length === 0) {
-                    showCustomAlert("لم يتم اختيار أي ملفات للرفع.");
-                    btnSave.innerText = originalText;
-                    btnSave.disabled = false;
-                    setStatus("لم يتم الرفع. اختر ملفات أولاً.", false);
-                    return;
+                const audCeleb = document.getElementById('up-aud-celeb').files[0];
+                if (audCeleb) {
+                    const b64 = await fileToBase64(audCeleb);
+                    tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
                 }
 
-                await Promise.all(uploads);
-                showCustomAlert("تم رفع الملفات وحفظها في السحابة بنجاح!");
-                setStatus("تم الرفع والمزامنة بنجاح.", false);
-                
-                // Clear inputs
-                [1,2,3].forEach(i => {
-                    document.getElementById(`upload-img${i}`).value = '';
-                    document.getElementById(`upload-aud${i}`).value = '';
-                });
-
-            } catch (error) {
-                console.error("Upload error:", error);
-                showCustomAlert("حدث خطأ أثناء الرفع: " + error.message);
-                setStatus("حدث خطأ أثناء الرفع.", true);
-            }
-
-            btnSave.innerText = originalText;
-            btnSave.disabled = false;
-        }
-
-        const adminToggle = document.getElementById('admin-toggle');
-        const adminModal = document.getElementById('admin-modal');
-        const adminLogin = document.getElementById('admin-login');
-        const adminDashboard = document.getElementById('admin-dashboard');
-        const btnLogin = document.getElementById('btn-login');
-        const pwdInput = document.getElementById('admin-pwd');
-        const btnCloseAdmin = document.getElementById('btn-close-admin');
-        const btnSaveAdmin = document.getElementById('btn-save-admin');
-
-        adminToggle.addEventListener('click', () => {
-            adminModal.classList.remove('hidden');
-            adminModal.classList.add('flex');
-        });
-
-        btnLogin.addEventListener('click', () => {
-            if (pwdInput.value === '9090') {
-                adminLogin.classList.add('hidden');
-                adminDashboard.classList.remove('hidden');
-            } else {
-                showCustomAlert("كلمة السر خاطئة!");
-                pwdInput.value = '';
-            }
-        });
-
-        btnCloseAdmin.addEventListener('click', () => {
-            adminModal.classList.add('hidden');
-            adminModal.classList.remove('flex');
-            // reset logic
-            adminLogin.classList.remove('hidden');
-            adminDashboard.classList.add('hidden');
-            pwdInput.value = '';
-        });
-
-        btnSaveAdmin.addEventListener('click', handleFileUpload);
-
-
-        const screens = [
-            document.getElementById('screen-1'),
-            document.getElementById('screen-3'), // includes flying + book
-            document.getElementById('screen-4'),
-            document.getElementById('screen-5')
-        ];
-
-        function switchScreen(index) {
-            screens.forEach((s, i) => {
-                if (i === index) {
-                    s.classList.add('active');
+                if (tasks.length === 0) {
+                    showAlert("لم تختر أي ملفات جديدة!");
                 } else {
-                    s.classList.remove('active');
+                    await Promise.all(tasks);
+                    showAlert("تم الرفع والحفظ بنجاح!");
+                    setStatus("تم المزامنة بنجاح.");
                 }
-            });
-        }
-
-        // Helper to stop all audio
-        function stopAllAudio() {
-            Object.values(audioPlayers).forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
-            });
-        }
-
-        function playAudioSafely(audioObj) {
-            if (audioObj.src && audioObj.src !== window.location.href) {
-                audioObj.play().catch(e => console.log("Autoplay prevented", e));
+            } catch (err) {
+                console.error(err);
+                showAlert("حدث خطأ أثناء الرفع، قد يكون الملف كبيراً جداً.");
+                setStatus("خطأ في الرفع.", true);
             }
+            
+            btn.innerText = "حفظ للسحابة";
+            btn.disabled = false;
         }
 
-        // Screen 1 -> Screen 2(3)
-        document.getElementById('btn-continue').addEventListener('click', () => {
-            switchScreen(1);
-            stopAllAudio();
-            playAudioSafely(audioPlayers.aud1); // Track 1
-            startFlyingPhotosSequence();
+        // Admin UI Event Listeners
+        document.getElementById('admin-gear').addEventListener('click', () => {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-modal').classList.add('flex');
         });
 
-        function startFlyingPhotosSequence() {
+        document.getElementById('btn-login').addEventListener('click', () => {
+            if (document.getElementById('admin-pwd').value === '9090') {
+                document.getElementById('admin-login-section').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+            } else {
+                showAlert("كلمة السر غلط يا برو!");
+            }
+        });
+
+        document.getElementById('btn-close-admin').addEventListener('click', () => {
+            document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('admin-modal').classList.remove('flex');
+            document.getElementById('admin-pwd').value = '';
+            document.getElementById('admin-login-section').classList.remove('hidden');
+            document.getElementById('admin-dashboard').classList.add('hidden');
+        });
+
+        document.getElementById('btn-save-admin').addEventListener('click', handleUploads);
+
+
+        const screens = {
+            intro: document.getElementById('screen-intro'),
+            album: document.getElementById('screen-album'),
+            question: document.getElementById('screen-question'),
+            celeb: document.getElementById('screen-celebration')
+        };
+
+        const showScreen = (name) => {
+            Object.values(screens).forEach(s => s.classList.remove('active'));
+            screens[name].classList.add('active');
+        };
+
+        // Intro -> Album Transition
+        document.getElementById('btn-continue').addEventListener('click', () => {
+            // Play Intro Audio
+            if (audioPlayers.intro.src) {
+                audioPlayers.intro.play().catch(e => console.log("Audio play prevented:", e));
+            }
+            
+            showScreen('album');
+            startFlyingSequence();
+        });
+
+        function startFlyingSequence() {
             const container = document.getElementById('flying-container');
             container.innerHTML = '';
-            const imagesToFly = [appData.img1, appData.img2, appData.img3].filter(img => img !== '');
             
-            // Fallbacks if admin hasn't uploaded yet
-            if(imagesToFly.length === 0) {
-                imagesToFly.push('https://placehold.co/300x400/ff9999/fff?text=Photo+1');
-                imagesToFly.push('https://placehold.co/300x400/99ff99/fff?text=Photo+2');
-                imagesToFly.push('https://placehold.co/300x400/9999ff/fff?text=Photo+3');
-            }
+            const images = [
+                state.img1 || 'https://placehold.co/400x500/red/white?text=1',
+                state.img2 || 'https://placehold.co/400x500/purple/white?text=2',
+                state.img3 || 'https://placehold.co/400x500/pink/white?text=3'
+            ];
 
-            // Create multiple flying instances for effect
-            const totalFlying = 8;
-            for(let i=0; i<totalFlying; i++) {
-                const imgEl = document.createElement('img');
-                imgEl.src = imagesToFly[i % imagesToFly.length];
-                imgEl.className = 'floating-photo';
+            const total = 9; // Number of flying elements
+            for (let i = 0; i < total; i++) {
+                const img = document.createElement('img');
+                img.src = images[i % 3];
+                img.className = 'flying-photo';
                 
-                // Random start positions off-screen
+                // Random start
                 const startX = Math.random() > 0.5 ? -200 : window.innerWidth + 200;
                 const startY = Math.random() * window.innerHeight;
+                img.style.left = `${startX}px`;
+                img.style.top = `${startY}px`;
                 
-                imgEl.style.left = `${startX}px`;
-                imgEl.style.top = `${startY}px`;
-                imgEl.style.transform = `rotate(${Math.random() * 90 - 45}deg) scale(0.5)`;
-                
-                container.appendChild(imgEl);
+                container.appendChild(img);
 
-                // Animate to center then fade out
+                // Animate to center and fade out
                 setTimeout(() => {
-                    imgEl.style.opacity = '1';
-                    imgEl.style.left = `calc(50% - 75px)`;
-                    imgEl.style.top = `calc(50% - 100px)`;
-                    imgEl.style.transform = `rotate(${Math.random() * 20 - 10}deg) scale(1)`;
+                    img.style.opacity = '1';
+                    img.style.transform = `scale(1) rotate(${(Math.random() - 0.5) * 40}deg) translate(${ (Math.random()-0.5)*100 }px, ${ (Math.random()-0.5)*100 }px)`;
+                    img.style.left = `calc(50% - 75px)`;
+                    img.style.top = `calc(50% - 100px)`;
                     
                     setTimeout(() => {
-                        imgEl.style.opacity = '0';
-                        imgEl.style.transform = 'scale(0) rotate(0deg)';
-                    }, 2000 + (Math.random() * 1000));
-                }, i * 400); // Stagger start
+                        img.style.opacity = '0';
+                        img.style.transform = 'scale(1.5) rotate(0deg)';
+                    }, 2000);
+                }, i * 250); // Stagger
             }
 
-            // After flying sequence, show the 3D book
+            // After flying, show book
             setTimeout(() => {
-                document.getElementById('album-book').style.opacity = '1';
-                document.getElementById('album-controls').style.opacity = '1';
-            }, (totalFlying * 400) + 2000);
+                document.getElementById('the-book').style.display = 'block';
+                document.getElementById('btn-next-page').classList.remove('hidden');
+                setTimeout(() => { document.getElementById('the-book').style.opacity = '1'; }, 50);
+            }, (total * 250) + 1500);
         }
 
+        // Book Logic
         let currentPage = 1;
-        const btnOpenBook = document.getElementById('btn-open-book');
-        const btnNextScreen = document.getElementById('btn-next-screen');
+        const btnNextPage = document.getElementById('btn-next-page');
         
-        btnOpenBook.addEventListener('click', () => {
-            stopAllAudio();
-            playAudioSafely(audioPlayers.aud2); // Track 2 on opening album
-            
+        btnNextPage.addEventListener('click', () => {
             if (currentPage === 1) {
                 document.getElementById('page1').classList.add('flipped');
-                btnOpenBook.innerText = "التالي";
                 currentPage++;
             } else if (currentPage === 2) {
                 document.getElementById('page2').classList.add('flipped');
-                btnOpenBook.classList.add('hidden');
-                btnNextScreen.classList.remove('hidden');
+                btnNextPage.innerText = 'هتسامحيني؟';
                 currentPage++;
+            } else if (currentPage === 3) {
+                audioPlayers.intro.pause();
+                showScreen('question');
+                initQuestionMarks();
             }
         });
-
-        btnNextScreen.addEventListener('click', () => {
-            switchScreen(2); // Consent Screen
-            initQuestionMarks();
-        });
-
-
-        const btnYes = document.getElementById('btn-yes');
-        const btnNo = document.getElementById('btn-no');
-        let noClicks = 0;
-        const noMessages = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
-
-        const moveBtnNo = (e) => {
-            e.preventDefault(); // Prevent accidental clicks on mobile touch start
-            noClicks++;
-            
-            if (noClicks >= 3) {
-                btnNo.innerText = noMessages;
-                btnNo.classList.add('text-sm', 'md:text-base');
-                btnNo.classList.remove('text-xl');
-            }
-
-            const container = document.getElementById('screen-4');
-            const rect = btnNo.getBoundingClientRect();
-            
-            const maxW = container.clientWidth - rect.width - 40;
-            const maxH = container.clientHeight - rect.height - 40;
-            
-            const newX = Math.random() * maxW + 20;
-            const newY = Math.random() * maxH + 20;
-
-            // Make position fixed relative to viewport to guarantee dodging everywhere
-            btnNo.style.position = 'fixed';
-            btnNo.style.left = `${newX}px`;
-            btnNo.style.top = `${newY}px`;
-        };
-
-        // Aggressive dodging!
-        btnNo.addEventListener('mouseenter', moveBtnNo);
-        btnNo.addEventListener('touchstart', moveBtnNo, {passive: false});
-        btnNo.addEventListener('click', moveBtnNo);
-
 
         const canvas = document.getElementById('q-canvas');
         const ctx = canvas.getContext('2d');
-        let marks = [];
-        let animFrame;
+        let qMarks = [];
+        let qAnimFrame;
 
         function initQuestionMarks() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            marks = [];
-            for (let i = 0; i < 30; i++) {
-                marks.push({
+            qMarks = [];
+            for (let i = 0; i < 40; i++) {
+                qMarks.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 30 + 10,
-                    speedY: Math.random() * 2 + 1,
-                    opacity: Math.random() * 0.5 + 0.1
+                    speed: Math.random() * 2 + 1,
+                    size: Math.random() * 20 + 20,
+                    opacity: Math.random() * 0.4 + 0.1
                 });
             }
-            animateQuestionMarks();
+            animateQMarks();
         }
 
-        function animateQuestionMarks() {
+        function animateQMarks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 30px Cairo';
+            ctx.fillStyle = '#ffffff';
             
-            marks.forEach(m => {
+            qMarks.forEach(m => {
                 ctx.globalAlpha = m.opacity;
+                ctx.font = `${m.size}px Cairo`;
                 ctx.fillText('؟', m.x, m.y);
-                m.y += m.speedY;
-                if (m.y > canvas.height) {
+                m.y += m.speed;
+                if (m.y > canvas.height + 30) {
                     m.y = -30;
                     m.x = Math.random() * canvas.width;
                 }
             });
-            ctx.globalAlpha = 1;
-            animFrame = requestAnimationFrame(animateQuestionMarks);
+            qAnimFrame = requestAnimationFrame(animateQMarks);
         }
 
         window.addEventListener('resize', () => {
-            if(screens[2].classList.contains('active')) {
+            if (screens.question.classList.contains('active')) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             }
         });
 
+        // Dodging Button Logic
+        const btnNo = document.getElementById('btn-no');
+        let dodgeCount = 0;
+
+        const dodgeAction = (e) => {
+            if (e) e.preventDefault(); // crucial for mobile touch
+            dodgeCount++;
+            
+            if (dodgeCount === 3) {
+                btnNo.innerText = 'ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض';
+                btnNo.classList.remove('text-2xl', 'py-4', 'px-10', 'rounded-full');
+                btnNo.classList.add('text-sm', 'md:text-base', 'py-3', 'px-6', 'rounded-xl');
+            }
+
+            // Calculate bounds
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const btnW = btnNo.offsetWidth;
+            const btnH = btnNo.offsetHeight;
+
+            // Generate safe random position
+            const newX = Math.max(10, Math.random() * (w - btnW - 20));
+            const newY = Math.max(10, Math.random() * (h - btnH - 20));
+
+            // Fix position to viewport
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = `${newX}px`;
+            btnNo.style.top = `${newY}px`;
+        };
+
+        // Attach to both mouse and touch for aggressive dodging
+        btnNo.addEventListener('mouseenter', dodgeAction);
+        btnNo.addEventListener('touchstart', dodgeAction, { passive: false });
+        btnNo.addEventListener('click', dodgeAction); // Backup
+
+        const btnYes = document.getElementById('btn-yes');
         btnYes.addEventListener('click', () => {
-            cancelAnimationFrame(animFrame); // Stop question marks
-            switchScreen(3);
-            stopAllAudio();
-            playAudioSafely(audioPlayers.aud3); // Final track
-            startCelebration();
+            cancelAnimationFrame(qAnimFrame);
+            showScreen('celeb');
+            
+            if (audioPlayers.celeb.src) {
+                audioPlayers.celeb.play().catch(e => console.log("Audio blocked:", e));
+            }
+            
+            startCelebrationFX();
         });
 
-        function startCelebration() {
-            const container = document.getElementById('celebration-container');
+        function startCelebrationFX() {
+            const bg = document.getElementById('celebration-bg');
             
+            // Continuous heart rain
             setInterval(() => {
-                // Heart explosions
-                for(let i=0; i<3; i++) {
-                    const heart = document.createElement('div');
-                    heart.innerHTML = '❤️';
-                    heart.className = 'heart-particle';
-                    heart.style.left = `${Math.random() * 100}%`;
-                    heart.style.top = `${Math.random() * 100}%`;
-                    container.appendChild(heart);
-                    setTimeout(() => heart.remove(), 2000);
-                }
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'falling-heart';
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                bg.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 4000);
+            }, 100);
 
-                // Random "وحشتيني" text
-                if (Math.random() > 0.5) {
-                    const text = document.createElement('div');
-                    text.innerText = 'وحشتيني';
-                    text.className = 'wahshteny-text';
-                    text.style.left = `${Math.random() * 80 + 10}%`;
-                    text.style.top = `${Math.random() * 80 + 10}%`;
-                    // random color tint
-                    const colors = ['#ff4d4d', '#ff9999', '#ff1a1a', '#ffcccc'];
-                    text.style.color = colors[Math.floor(Math.random() * colors.length)];
-                    container.appendChild(text);
-                    setTimeout(() => text.remove(), 3000);
+            // Pop up "وحشتيني"
+            setInterval(() => {
+                if(Math.random() > 0.4) {
+                    const txt = document.createElement('div');
+                    txt.innerText = 'وحشتيني';
+                    txt.className = 'pop-text';
+                    txt.style.left = `${10 + Math.random() * 70}vw`;
+                    txt.style.top = `${10 + Math.random() * 80}vh`;
+                    bg.appendChild(txt);
+                    
+                    setTimeout(() => txt.remove(), 2000);
                 }
-            }, 300);
+            }, 600);
         }
+
+        // Fire Initialization on load
+        initApp();
     </script>
 </body>
 </html>
