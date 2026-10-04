@@ -67,7 +67,7 @@
         }
 
         .glass-card {
-            background: rgba(22, 9, 18, 0.82);
+            background: rgba(22, 9, 18, 0.85);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             border: 1px solid rgba(244, 63, 94, 0.25);
@@ -76,16 +76,23 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-rose-950 flex flex-col items-center justify-center relative selection:bg-rose-500 selection:text-white">
 
+    <!-- Audio Player -->
     <audio id="mainAudio" loop>
         <source src="" type="audio/mp3">
         متصفحك لا يدعم تشغيل الصوت.
     </audio>
 
+    <!-- Custom Toast Notification -->
+    <div id="toastNotification" class="fixed top-6 right-6 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 bg-rose-950/95 border border-rose-500/50 text-rose-200 px-6 py-3 rounded-2xl shadow-2xl backdrop-blur-md flex items-center gap-3">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-rose-400 text-lg"></i>
+        <span id="toastMessage" class="text-sm font-medium">رسالة تنبيه</span>
+    </div>
+
     <!-- Canvas for particle background effects -->
     <canvas id="effectCanvas" class="effect-canvas"></canvas>
 
-    <!-- Hidden Settings Gear Icon -->
-    <button onclick="openSettingsModal()" class="fixed top-4 left-4 z-40 p-3 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-full border border-rose-500/20 backdrop-blur-md transition shadow-lg">
+    <!-- Hidden Settings Gear Icon (No hint on page) -->
+    <button onclick="openSettingsModal()" class="fixed top-4 left-4 z-40 p-3 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-full border border-rose-500/20 backdrop-blur-md transition shadow-lg" title="الإعدادات">
         <i class="fa-solid fa-gear text-lg"></i>
     </button>
 
@@ -97,7 +104,8 @@
             </div>
             <h3 class="text-xl font-bold text-rose-200 mb-2">لوحة إعدادات المشرف</h3>
             <p class="text-xs text-rose-300/60 mb-4">أدخل كلمة المرور الخاصة باللوحة</p>
-            <input type="password" id="adminPasswordInput" placeholder="كلمة المرور" class="w-full px-4 py-3 bg-rose-950/60 border border-rose-500/30 rounded-xl text-white text-center mb-4 focus:outline-none focus:border-rose-500">
+            <input type="password" id="adminPasswordInput" placeholder="كلمة المرور" class="w-full px-4 py-3 bg-rose-950/60 border border-rose-500/30 rounded-xl text-white text-center mb-2 focus:outline-none focus:border-rose-500">
+            <p id="passwordErrorMsg" class="text-xs text-rose-400 mb-4 h-4"></p>
             <div class="flex gap-2">
                 <button onclick="verifyPassword()" class="flex-1 py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl transition">دخول</button>
                 <button onclick="closePasswordModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition">إلغاء</button>
@@ -105,24 +113,25 @@
         </div>
     </div>
 
-    <!-- Hidden Settings Panel Modal -->
+    <!-- Hidden Settings Panel Modal (Cloud synced via Firebase) -->
     <div id="settingsPanelModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card p-6 md:p-8 rounded-3xl max-w-2xl w-full shadow-2xl border border-rose-500/40 max-h-[90vh] overflow-y-auto text-right">
             <div class="flex items-center justify-between mb-6 pb-3 border-b border-rose-500/20">
-                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-sliders ml-2"></i> إعدادات المجلد والأغاني</h3>
+                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-cloud-arrow-up ml-2"></i> إعدادات المجلد والأغاني (مزامنة سحابية)</h3>
                 <button onclick="closeSettingsPanel()" class="text-rose-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="space-y-6">
                 <!-- Photo Upload Section -->
                 <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20">
-                    <h4 class="text-sm font-bold text-rose-300 mb-2"><i class="fa-solid fa-images ml-1"></i> رفع صور الألبوم (<span id="settingsPhotoCount">0</span> صور مرفوعة)</h4>
+                    <h4 class="text-sm font-bold text-rose-300 mb-2"><i class="fa-solid fa-images ml-1"></i> رفع صور الألبوم المباشرة (<span id="settingsPhotoCount">0</span> صور مرفوعة سحابياً)</h4>
+                    <p class="text-xs text-rose-300/60 mb-3">الصور تظهر مباشرة لجميع الزوار على اللينك عالمياً (تدعم العرض بالطول والعرض بالكامل تلقائياً).</p>
                     <input type="file" id="adminPhotoInput" multiple accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
                 </div>
 
                 <!-- Stage Audio Configuration Section -->
                 <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
-                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-music ml-1"></i> تخصيص الأغاني لكل مرحلة</h4>
+                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-music ml-1"></i> تخصيص الأغاني لكل مرحلة (تزامن عالمي)</h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
@@ -141,8 +150,9 @@
                 </div>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-rose-500/20 flex justify-end">
-                <button onclick="saveSettings()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ التغييرات</button>
+            <div class="mt-6 pt-4 border-t border-rose-500/20 flex justify-between items-center">
+                <button onclick="clearAllPhotos()" class="px-4 py-2 bg-red-900/40 hover:bg-red-800 text-red-300 text-xs font-bold rounded-xl transition">حذف كل الصور المخصصة</button>
+                <button onclick="saveSettingsToFirebase()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ ومزامنة عالمياً</button>
             </div>
         </div>
     </div>
@@ -165,7 +175,7 @@
                     حقك عليا، أنا آسف جداً، والله ما كان قصدي أزعل قلبك الجميل ده خالص. عارف إني غلطت في حقك وإني هببت الدنيا، بس صدقيني أنتِ أغلى حاجة عندي في حياتي كلها ومقدرش أستحمل زعلك مني لحظة واحدة.
                 </p>
                 <p class="text-base md:text-lg text-rose-200/90 leading-relaxed font-medium">
-                    أنا بحتذر لك ألف مرة ومرة، وعارف إن طيبة قلبك أكبر بكتير من أي غلطة. وبتمنى تسامحيني وتفتحي صفحة جديدة عشان نرجع زي الأول وأحسن بكتير.
+                    أنا بحتذر لك ألف مرة ومرة، وعارف إن طيبة قلبك أكبر بكتير من أي غلطة، وبتمنى تسامحيني وتفتحي صفحة جديدة عشان نرجع زي الأول وأحسن بكتير. أنا فعلاً ندمان على كل ثانية زعلك فيها.
                 </p>
             </div>
 
@@ -202,125 +212,266 @@
                 <p class="text-xs text-rose-200/60">تقليب صفحات كتاب الذكريات ورقة ورقة</p>
             </div>
 
-            <!-- Book Container with 3D perspective -->
-            <div class="book-container w-full max-w-2xl h-[420px] md:h-[490px] relative flex items-center justify-center">
-                <div id="bookSheet" class="book-sheet w-full h-full glass-card rounded-2xl shadow-2xl border border-rose-500/30 flex flex-col items-center justify-between p-6 md:p-8 relative overflow-hidden">
-                    
-                    <!-- Sheet Content -->
-                    <div id="albumPageContent" class="w-full h-full flex flex-col items-center justify-center text-center transition-opacity duration-300">
-                        <!-- Content loaded dynamically -->
-                    </div>
-
-                    <!-- Navigation Bar -->
-                    <div class="w-full flex items-center justify-between pt-4 border-t border-rose-500/20 z-10">
-                        <button onclick="prevAlbumPage()" id="prevAlbumBtn" class="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 text-rose-200 rounded-xl text-sm border border-rose-500/30 transition flex items-center gap-2">
-                            <i class="fa-solid fa-chevron-right"></i> السابق
-                        </button>
-                        <span id="albumIndicator" class="text-xs font-bold text-rose-300">صفحة 1 من 1</span>
-                        <button onclick="nextAlbumPage()" id="nextAlbumBtn" class="px-4 py-2 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white rounded-xl text-sm shadow transition flex items-center gap-2">
-                            التالي <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                    </div>
+            <!-- Book Container -->
+            <div class="book-container w-full max-w-xl h-[480px] md:h-[520px] relative flex items-center justify-center mb-6">
+                <div id="bookSheetsWrapper" class="w-full h-full relative">
+                    <!-- Sheets generated dynamically -->
                 </div>
             </div>
 
-            <!-- Proceed to Question Button (Shown only on last page) -->
-            <div id="toQuestionWrapper" class="mt-6 hidden">
-                <button onclick="openQuestionScreen()" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-2xl shadow-lg shadow-rose-600/30 transition-all transform hover:scale-105 flex items-center gap-2">
-                    <span>السؤال الأهم</span>
-                    <i class="fa-solid fa-circle-question"></i>
+            <!-- Album Navigation Controls -->
+            <div class="flex items-center justify-between w-full max-w-xl px-4 z-20">
+                <button onclick="prevAlbumPage()" id="prevPageBtn" class="px-5 py-2.5 bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-200 rounded-xl font-bold transition flex items-center gap-2 opacity-50 cursor-not-allowed" disabled>
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>السابق</span>
+                </button>
+                <span id="pageIndicator" class="text-xs font-bold text-rose-300 tracking-wider">صفحة 1 من 4</span>
+                <button onclick="nextAlbumPage()" id="nextPageBtn" class="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white rounded-xl font-bold transition flex items-center gap-2 shadow-lg">
+                    <span>التالي</span>
+                    <i class="fa-solid fa-arrow-left"></i>
                 </button>
             </div>
         </section>
 
-        <!-- ================= STAGE 4: CONSENT QUESTION & DODGING BUTTON ================= -->
-        <section id="screenQuestion" class="w-full hidden flex-col items-center justify-center min-h-[80vh] text-center relative">
+        <!-- ================= STAGE 4: PROPOSAL / QUESTION SCREEN ================= -->
+        <section id="screenProposal" class="w-full hidden flex-col items-center justify-center text-center min-h-[80vh] relative">
             <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl max-w-xl w-full border border-rose-500/40 relative z-20">
-                <div class="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400 text-3xl animate-pulse">
+                <div class="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400 text-3xl animate-pulse">
                     <i class="fa-solid fa-hand-holding-heart"></i>
                 </div>
                 
-                <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-8 leading-snug">
-                    موافقة نرجع لبعض ونفتح صفحة جديدة؟
+                <h2 class="text-2xl md:text-4xl font-black text-rose-200 mb-6 leading-tight">
+                    نرجع لبعض ونفتح صفحة جديدة؟
                 </h2>
 
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full relative min-h-[100px]">
-                    <button onclick="handleAgree()" class="w-full sm:w-1/2 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-emerald-600/30 transition-all transform hover:scale-105 flex items-center justify-center gap-2">
-                        <span>موافقة ❤️</span>
+                <p class="text-rose-100/80 text-sm md:text-base mb-8 leading-relaxed">
+                    عارف إننا عدينا بكتير، بس قلبك الحنون هو بيتي وحشتني أيامي معاكِ...
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 relative min-h-[80px]">
+                    <button onclick="acceptProposal()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-emerald-900/40 transition-all transform hover:scale-105 z-30">
+                        موافقة <i class="fa-solid fa-check mr-2"></i>
                     </button>
-                    <!-- Dodging Refusal Button (Keeps moving permanently after 3 attempts) -->
-                    <button id="dodgeBtn" onmouseover="dodgeButton()" ontouchstart="dodgeButton()" class="w-full sm:w-1/2 py-4 bg-rose-950/90 hover:bg-rose-900 text-rose-300 font-bold text-xs sm:text-sm rounded-2xl border border-rose-500/40 transition-transform duration-200 absolute sm:relative right-0 sm:right-auto">
-                        لا مفيش
+
+                    <button id="refusalBtn" onmouseover="dodgeButton()" ontouchstart="dodgeButton()" onclick="dodgeButton()" class="w-full sm:w-auto px-8 py-4 bg-rose-900/80 hover:bg-rose-800 text-rose-200 font-bold text-lg rounded-2xl border border-rose-500/40 transition-all duration-200 absolute sm:relative">
+                        لا
                     </button>
                 </div>
             </div>
         </section>
 
         <!-- ================= STAGE 5: FINAL CELEBRATION SCREEN ================= -->
-        <section id="screenCelebration" class="w-full hidden flex-col items-center justify-center min-h-[85vh] text-center relative z-20">
-            <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl max-w-2xl w-full border border-rose-500/50 backdrop-blur-2xl animate-fade-in relative overflow-hidden">
-                <div class="absolute -top-12 -right-12 w-40 h-40 bg-rose-500/20 rounded-full blur-3xl"></div>
-                
-                <div class="w-20 h-20 bg-gradient-to-tr from-rose-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-3xl shadow-lg shadow-rose-500/50 animate-bounce">
-                    <i class="fa-solid fa-face-smile-beam"></i>
+        <section id="screenCelebration" class="w-full hidden flex-col items-center justify-center text-center min-h-[85vh] relative z-20">
+            <div class="glass-card p-8 md:p-12 rounded-3xl shadow-2xl max-w-2xl w-full border border-rose-500/50 backdrop-blur-2xl">
+                <div class="w-20 h-20 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-rose-400 text-4xl animate-bounce">
+                    <i class="fa-solid fa-heart text-rose-500"></i>
                 </div>
 
-                <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-300 to-red-400 mb-6 leading-tight">
-                    كنت عارف ان حبنا اقوي من اي حاجه وانك هتسامحيني
+                <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-300 to-red-400 mb-6 leading-tight">
+                    كنت عارف إن حبنا أقوي من أي حاجة وأنك هتسامحيني
                 </h1>
 
-                <p class="text-lg md:text-xl text-rose-100 font-medium mb-8">
-                    شكراً لأنكِ أعدتِ النور لحياتي. بحبك جداً! ✨
+                <p class="text-xl md:text-2xl font-bold text-rose-200 mb-8 animate-pulse">
+                    وحشتيني جداً يا أغلى ما في الوجود! ❤️
                 </p>
 
-                <div class="inline-flex items-center gap-3 px-6 py-3 bg-rose-950/80 rounded-full border border-rose-500/30 text-rose-300 text-sm">
-                    <i class="fa-solid fa-music animate-spin"></i>
-                    <span>تستمعين الآن لأغنيتنا الخاصة...</span>
+                <div class="inline-flex items-center gap-3 px-6 py-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-rose-300 text-sm">
+                    <i class="fa-solid fa-infinity"></i>
+                    <span>بداية جديدة للأبد مع بعضنا</span>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <script>
-        // Default placeholders for albums
-        const defaultPhotos = [
-            { url: "https://placehold.co/600x400/4a0404/ff758c?text=ذكرى+أول+لقاء", caption: "اليوم الذي غير مجرى حياتي للأبد..." },
-            { url: "https://placehold.co/600x400/581c87/f43f5e?text=ضحكتك+الجميلة", caption: "ابتسامتك هي المكان الذي أجد فيه راحتي." },
-            { url: "https://placehold.co/600x400/831843/fda4af?text=أجمل+اللحظات", caption: "كل ثانية معك تساوي الدنيا وما فيها." },
-            { url: "https://placehold.co/600x400/31101d/fb7185?text=صفحة+جديدة", caption: "معاً نبدأ من جديد وبقوة أكبر." }
-        ];
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, onSnapshot, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let customPhotos = [];
-        let stageAudios = { stage1: null, stage2: null, stage3: null };
-        let currentAlbumIndex = 0;
-        let animationMode = 'none'; // 'questionMarks', 'celebrationHearts'
-        let canvas, ctx, particles = [];
-        let dodgeAttempts = 0;
-
-        // Load data from localStorage on init
-        window.onload = function() {
-            const savedPhotos = localStorage.getItem('romantic_photos');
-            if (savedPhotos) {
-                try { customPhotos = JSON.parse(savedPhotos); } catch(e){}
-            }
-            document.getElementById('settingsPhotoCount').textContent = customPhotos.length > 0 ? customPhotos.length : defaultPhotos.length;
+        let app, db, auth;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-apology-global-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "dummy", authDomain: "dummy", projectId: "dummy", storageBucket: "dummy", messagingSenderId: "dummy", appId: "dummy"
         };
 
-        function getActivePhotos() {
-            return customPhotos.length > 0 ? customPhotos : defaultPhotos;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+            if (token) {
+                signInWithCustomToken(auth, token).catch(() => signInAnonymously(auth));
+            } else {
+                signInAnonymously(auth).catch(err => console.error("Auth error:", err));
+            }
+        } catch (e) {
+            console.error("Firebase init error:", e);
         }
 
-        // Settings Modal Handlers
+        // Global state for photos & audio (synced live)
+        let defaultPhotos = [
+            { url: 'https://placehold.co/400x500/e11d48/ffffff?text=ذكرياتنا+الجميلة+1' },
+            { url: 'https://placehold.co/400x500/be123c/ffffff?text=ذكرياتنا+الجميلة+2' },
+            { url: 'https://placehold.co/400x500/9f1239/ffffff?text=ذكرياتنا+الجميلة+3' },
+            { url: 'https://placehold.co/400x500/881337/ffffff?text=ذكرياتنا+الجميلة+4' }
+        ];
+
+        let loadedPhotos = [];
+        window.globalAudios = { stage1: '', stage2: '', stage3: '' };
+
+        // Static captions that NEVER change when custom photos are uploaded
+        window.staticCaptions = [
+            "أجمل ضحكة في الدنيا، يوم ما ربنا جمعنا مع بعض وسدنا كل الدنيا بضحكتك.",
+            "أحلى خروجة وأجمل أيام عشناها، كنتِ منورة الدنيا كلها بحضورك.",
+            "اللحظات دي بتفكرني ليه أنا عشقتك من أول نظرة، ربنا ما يحرمني منك.",
+            "صفحة جديدة وبداية أحلى مع الإنسانة اللي سكنت قلبي وروحي للأبد."
+        ];
+
+        // Real-time synchronization via Firebase Firestore
+        if (db) {
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
+                const fetched = [];
+                snapshot.forEach(docSnap => {
+                    fetched.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                if (fetched.length > 0) {
+                    loadedPhotos = fetched;
+                } else {
+                    loadedPhotos = defaultPhotos;
+                }
+                updateSettingsPhotoCount();
+                if (typeof window.renderAlbumSheets === 'function') {
+                    window.renderAlbumSheets();
+                }
+            }, (err) => {
+                console.error("Photos sync error:", err);
+                loadedPhotos = defaultPhotos;
+                updateSettingsPhotoCount();
+            });
+
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), (snapshot) => {
+                snapshot.forEach(docSnap => {
+                    if (docSnap.id === 'audio_config') {
+                        window.globalAudios = docSnap.data() || window.globalAudios;
+                    }
+                });
+            }, (err) => console.error("Settings sync error:", err));
+        } else {
+            loadedPhotos = defaultPhotos;
+            updateSettingsPhotoCount();
+        }
+
+        window.getEffectivePhotos = function() {
+            return loadedPhotos.length > 0 ? loadedPhotos : defaultPhotos;
+        };
+
+        window.saveSettingsToFirebase = async function() {
+            const photoInput = document.getElementById('adminPhotoInput');
+            if (photoInput.files && photoInput.files.length > 0 && db) {
+                for (let file of photoInput.files) {
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        const base64Str = e.target.result;
+                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), {
+                            url: base64Str,
+                            createdAt: Date.now()
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            const audio1File = document.getElementById('audioStage1').files[0];
+            const audio2File = document.getElementById('audioStage2').files[0];
+            const audio3File = document.getElementById('audioStage3').files[0];
+
+            let newAudios = { ...window.globalAudios };
+            const readFileAsDataURL = (file) => {
+                return new Promise((resolve) => {
+                    if (!file) resolve(null);
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            };
+
+            newAudios.stage1 = await readFileAsDataURL(audio1File) || newAudios.stage1;
+            newAudios.stage2 = await readFileAsDataURL(audio2File) || newAudios.stage2;
+            newAudios.stage3 = await readFileAsDataURL(audio3File) || newAudios.stage3;
+
+            if (db) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'audio_config'), newAudios);
+            }
+
+            showToast("تم حفظ الإعدادات ومزامنتها عالمياً عبر السحابة بنجاح!", "success");
+            closeSettingsPanel();
+        };
+
+        window.clearAllPhotos = async function() {
+            if (!db) return;
+            try {
+                const snapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'photos'));
+                for (let docSnap of snapshot.docs) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'photos', docSnap.id));
+                }
+                showToast("تم حذف جميع الصور المخصصة وعودة الصور الافتراضية.", "success");
+                closeSettingsPanel();
+            } catch (e) {
+                console.error("Error clearing photos:", e);
+            }
+        };
+
+        function updateSettingsPhotoCount() {
+            const countEl = document.getElementById('settingsPhotoCount');
+            if (countEl) {
+                countEl.textContent = loadedPhotos.length;
+            }
+        }
+    </script>
+
+    <!-- Application Script -->
+    <script>
+        // Toast Notification System (No alert/confirm)
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            const iconEl = document.getElementById('toastIcon');
+
+            msgEl.textContent = message;
+            if (type === 'success') {
+                iconEl.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+            } else if (type === 'error') {
+                iconEl.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
+            } else {
+                iconEl.className = 'fa-solid fa-circle-info text-rose-400 text-lg';
+            }
+
+            toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-[-150%]', 'opacity-0');
+            }, 3500);
+        }
+
+        // Audio Playback Manager
+        function playStageAudio(stageKey) {
+            const audioEl = document.getElementById('mainAudio');
+            if (window.globalAudios && window.globalAudios[stageKey]) {
+                audioEl.src = window.globalAudios[stageKey];
+                audioEl.play().catch(e => console.log("Audio autoplay restricted:", e));
+            }
+        }
+
+        // Settings Modal Handlers (Password 9090)
         function openSettingsModal() {
             document.getElementById('passwordModal').classList.remove('hidden');
-            document.getElementById('passwordModal').classList.add('flex');
             document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('passwordErrorMsg').textContent = '';
         }
 
         function closePasswordModal() {
             document.getElementById('passwordModal').classList.add('hidden');
-            document.getElementById('passwordModal').classList.remove('flex');
         }
 
         function verifyPassword() {
@@ -328,281 +479,260 @@
             if (pass === '9090') {
                 closePasswordModal();
                 document.getElementById('settingsPanelModal').classList.remove('hidden');
-                document.getElementById('settingsPanelModal').classList.add('flex');
+                if (typeof updateSettingsPhotoCount === 'function') updateSettingsPhotoCount();
             } else {
-                alert('كلمة المرور غير صحيحة!');
+                document.getElementById('passwordErrorMsg').textContent = 'كلمة المرور غير صحيحة';
             }
         }
 
         function closeSettingsPanel() {
             document.getElementById('settingsPanelModal').classList.add('hidden');
-            document.getElementById('settingsPanelModal').classList.remove('flex');
         }
 
-        // Save settings from hidden panel
-        document.getElementById('adminPhotoInput').addEventListener('change', function(e) {
-            const files = e.target.files;
-            if (files.length > 0) {
-                customPhotos = [];
-                for (let i = 0; i < files.length; i++) {
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        customPhotos.push({ url: evt.target.result, caption: `ذكرى خاصة #${i+1}` });
-                        if (customPhotos.length === files.length) {
-                            document.getElementById('settingsPhotoCount').textContent = customPhotos.length;
-                        }
-                    };
-                    reader.readAsDataURL(files[i]);
-                }
-            }
-        });
-
-        function saveSettings() {
-            if (customPhotos.length > 0) {
-                localStorage.setItem('romantic_photos', JSON.stringify(customPhotos));
-            }
-            
-            // Handle audio files
-            const audio1 = document.getElementById('audioStage1').files[0];
-            if (audio1) stageAudios.stage1 = URL.createObjectURL(audio1);
-
-            const audio2 = document.getElementById('audioStage2').files[0];
-            if (audio2) stageAudios.stage2 = URL.createObjectURL(audio2);
-
-            const audio3 = document.getElementById('audioStage3').files[0];
-            if (audio3) stageAudios.stage3 = URL.createObjectURL(audio3);
-
-            closeSettingsPanel();
-            alert('تم حفظ الإعدادات بنجاح!');
-        }
-
-        function playStageAudio(stageKey) {
-            const audioEl = document.getElementById('mainAudio');
-            if (stageAudios[stageKey]) {
-                audioEl.src = stageAudios[stageKey];
-                audioEl.load();
-                audioEl.play().catch(e => console.log("Audio autoplay prevented"));
-            }
-        }
-
-        // Screen Switcher
-        function switchScreen(screenId) {
-            ['screenApology', 'screenFlying', 'screenAlbum', 'screenQuestion', 'screenCelebration'].forEach(s => {
-                document.getElementById(s).classList.add('hidden');
-                document.getElementById(s).classList.remove('flex');
-            });
-            const target = document.getElementById(screenId);
-            target.classList.remove('hidden');
-            target.classList.add('flex');
-        }
-
-        // Stage 1 -> Stage 2 (Flying Photos)
+        // Navigation between Stages
         function startJourney() {
             playStageAudio('stage1');
-            setupFlyingPhotos();
-            switchScreen('screenFlying');
-            animationMode = 'none';
+            document.getElementById('screenApology').classList.add('hidden');
+            const screenFlying = document.getElementById('screenFlying');
+            screenFlying.classList.remove('hidden');
+            screenFlying.classList.add('flex');
+            generateFlyingPhotos();
         }
 
-        function setupFlyingPhotos() {
-            const container = document.getElementById('flyingPhotosContainer');
-            container.innerHTML = '';
-            const photos = getActivePhotos();
-
-            photos.forEach((photo, index) => {
-                const el = document.createElement('div');
-                const randomX = (Math.random() - 0.5) * window.innerWidth * 0.7;
-                const randomY = (Math.random() - 0.5) * window.innerHeight * 0.7;
-                const randomRot = (Math.random() - 0.5) * 35;
-
-                el.style.setProperty('--startX', `${randomX}px`);
-                el.style.setProperty('--startY', `${randomY}px`);
-                el.style.setProperty('--endRot', `${randomRot}deg`);
-                el.className = `absolute w-32 h-32 md:w-44 md:h-44 rounded-2xl overflow-hidden shadow-2xl border-2 border-rose-500/40 flying-photo`;
-                el.style.left = `calc(50% - 80px + ${(index - photos.length/2)*20}px)`;
-                el.style.top = `calc(50% - 80px)`;
-                el.style.animationDelay = `${index * 0.15}s`;
-
-                el.innerHTML = `<img src="${photo.url}" alt="Memory" class="w-full h-full object-cover">`;
-                container.appendChild(el);
-            });
-        }
-
-        // Stage 2 -> Stage 3 (Realistic 3D Paper-Flipping Album)
         function openAlbumScreen() {
             playStageAudio('stage2');
-            currentAlbumIndex = 0;
-            renderAlbumPage();
-            switchScreen('screenAlbum');
-            animationMode = 'none';
+            document.getElementById('screenFlying').classList.add('hidden');
+            const screenAlbum = document.getElementById('screenAlbum');
+            screenAlbum.classList.remove('hidden');
+            screenAlbum.classList.add('flex');
+            renderAlbumSheets();
         }
 
-        function renderAlbumPage() {
-            const photos = getActivePhotos();
-            const contentContainer = document.getElementById('albumPageContent');
-            const pageIndicator = document.getElementById('albumIndicator');
-            const prevBtn = document.getElementById('prevAlbumBtn');
-            const nextBtn = document.getElementById('nextAlbumBtn');
-            const toQuestionWrapper = document.getElementById('toQuestionWrapper');
+        function openProposalScreen() {
+            document.getElementById('screenAlbum').classList.add('hidden');
+            const screenProposal = document.getElementById('screenProposal');
+            screenProposal.classList.remove('hidden');
+            screenProposal.classList.add('flex');
+            startQuestionMarksCanvas();
+        }
 
-            const photo = photos[currentAlbumIndex];
-            pageIndicator.textContent = `صفحة ${currentAlbumIndex + 1} من ${photos.length}`;
+        // Flying Photos Animation Generator
+        function generateFlyingPhotos() {
+            const container = document.getElementById('flyingPhotosContainer');
+            container.innerHTML = '';
+            const photos = window.getEffectivePhotos();
 
-            // Trigger paper flip simulation effect
-            const sheet = document.getElementById('bookSheet');
-            sheet.style.transform = 'rotateY(90deg)';
-            setTimeout(() => {
-                contentContainer.innerHTML = `
-                    <div class="w-full h-56 md:h-72 rounded-xl overflow-hidden shadow-lg mb-4 border border-rose-500/30">
-                        <img src="${photo.url}" alt="Album Photo" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-lg md:text-xl font-bold text-rose-200 mb-2">${photo.caption}</h3>
-                    <p class="text-xs md:text-sm text-rose-300/70">كل لحظة معك تنسيني كل تعب الأيام...</p>
-                `;
-                sheet.style.transform = 'rotateY(0deg)';
-            }, 300);
+            for (let i = 0; i < 14; i++) {
+                const img = document.createElement('img');
+                const photoObj = photos[i % photos.length];
+                img.src = photoObj.url;
+                img.className = 'absolute w-24 h-32 md:w-32 md:h-44 object-cover rounded-xl shadow-2xl border-2 border-rose-500/40 flying-photo';
+                
+                // Random start positions from all directions
+                const startX = (Math.random() - 0.5) * window.innerWidth * 1.5;
+                const startY = (Math.random() - 0.5) * window.innerHeight * 1.5;
+                const endRot = (Math.random() - 0.5) * 30;
 
-            prevBtn.disabled = currentAlbumIndex === 0;
-            prevBtn.style.opacity = currentAlbumIndex === 0 ? '0.4' : '1';
+                img.style.setProperty('--startX', startX + 'px');
+                img.style.setProperty('--startY', startY + 'px');
+                img.style.setProperty('--endRot', endRot + 'deg');
 
-            if (currentAlbumIndex === photos.length - 1) {
-                nextBtn.classList.add('hidden');
-                toQuestionWrapper.classList.remove('hidden');
-            } else {
-                nextBtn.classList.remove('hidden');
-                toQuestionWrapper.classList.add('hidden');
+                img.style.left = (15 + Math.random() * 70) + '%';
+                img.style.top = (15 + Math.random() * 70) + '%';
+                img.style.animationDelay = (i * 0.1) + 's';
+
+                container.appendChild(img);
             }
         }
 
+        // 3D Paper-Flipping Album Logic
+        let currentAlbumIndex = 0;
+        window.renderAlbumSheets = function() {
+            const wrapper = document.getElementById('bookSheetsWrapper');
+            wrapper.innerHTML = '';
+            const photos = window.getEffectivePhotos();
+            const totalPages = photos.length;
+
+            photos.forEach((photo, index) => {
+                const sheet = document.createElement('div');
+                sheet.className = `book-sheet absolute inset-0 glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center justify-between border border-rose-500/30 shadow-2xl ${index === currentAlbumIndex ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`;
+                sheet.style.zIndex = totalPages - index;
+                sheet.style.transform = index < currentAlbumIndex ? 'rotateY(-180deg)' : 'rotateY(0deg)';
+
+                // Photo container with object-fit: contain so portrait and landscape photos fit fully without cropping
+                const photoHtml = `
+                    <div class="w-full h-64 md:h-80 bg-black/40 rounded-2xl overflow-hidden flex items-center justify-center p-2 border border-rose-500/20 shadow-inner">
+                        <img src="${photo.url}" alt="ذكرياتنا" class="max-w-full max-h-full object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x500/e11d48/ffffff?text=صورة'">
+                    </div>
+                `;
+
+                // Fixed static romantic caption (never changes when custom photos are uploaded)
+                const captionText = window.staticCaptions[index % window.staticCaptions.length];
+
+                sheet.innerHTML = `
+                    <div class="w-full flex items-center justify-between text-rose-300 text-xs font-bold mb-2">
+                        <span>صفحة ذكريات رقم (${index + 1})</span>
+                        <i class="fa-solid fa-heart text-rose-500"></i>
+                    </div>
+                    ${photoHtml}
+                    <div class="mt-4 text-center px-2">
+                        <p class="text-sm md:text-base text-rose-100 font-medium leading-relaxed">${captionText}</p>
+                    </div>
+                `;
+
+                wrapper.appendChild(sheet);
+            });
+
+            document.getElementById('pageIndicator').textContent = `صفحة ${currentAlbumIndex + 1} من ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentAlbumIndex === 0;
+            document.getElementById('prevPageBtn').style.opacity = currentAlbumIndex === 0 ? '0.5' : '1';
+            document.getElementById('prevPageBtn').style.cursor = currentAlbumIndex === 0 ? 'not-allowed' : 'pointer';
+
+            const nextBtn = document.getElementById('nextPageBtn');
+            if (currentAlbumIndex === totalPages - 1) {
+                nextBtn.innerHTML = '<span>السؤال المنتظر</span> <i class="fa-solid fa-arrow-left"></i>';
+            } else {
+                nextBtn.innerHTML = '<span>التالي</span> <i class="fa-solid fa-arrow-left"></i>';
+            }
+        };
+
         function nextAlbumPage() {
-            const photos = getActivePhotos();
+            const photos = window.getEffectivePhotos();
             if (currentAlbumIndex < photos.length - 1) {
                 currentAlbumIndex++;
-                renderAlbumPage();
+                renderAlbumSheets();
+            } else {
+                openProposalScreen();
             }
         }
 
         function prevAlbumPage() {
             if (currentAlbumIndex > 0) {
                 currentAlbumIndex--;
-                renderAlbumPage();
+                renderAlbumSheets();
             }
         }
 
-        // Stage 3 -> Stage 4 (Question & Dodging Refusal Button)
-        function openQuestionScreen() {
-            switchScreen('screenQuestion');
-            animationMode = 'questionMarks';
-            initParticles();
-        }
+        // Interactive Refusal Button Dodging Logic
+        let refusalAttempts = 0;
+        const refusalPhrases = [
+            "لا مش هينفع",
+            "فكر تاني كده!",
+            "مفيش فرصة ترفضي",
+            "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض"
+        ];
 
         function dodgeButton() {
-            dodgeAttempts++;
-            const btnNo = document.getElementById('dodgeBtn');
-            if (dodgeAttempts >= 3) {
-                btnNo.innerText = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
+            const btn = document.getElementById('refusalBtn');
+            refusalAttempts++;
+
+            if (refusalAttempts <= 3) {
+                // Dodge around randomly on screen
+                const randomX = (Math.random() - 0.5) * 260;
+                const randomY = (Math.random() - 0.5) * 180;
+                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                btn.textContent = refusalPhrases[Math.min(refusalAttempts - 1, refusalPhrases.length - 1)];
+            } else {
+                // Lock in exact requested refusal text and continue dodging continuously
+                btn.textContent = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
+                const randomX = (Math.random() - 0.5) * 320;
+                const randomY = (Math.random() - 0.5) * 220;
+                btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                btn.style.fontSize = '0.85rem';
+                btn.style.padding = '12px 16px';
             }
-            const randomX = (Math.random() - 0.5) * 260;
-            const randomY = (Math.random() - 0.5) * 140;
-            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
         }
 
-        // Stage 4 -> Stage 5 (Celebration with Hearts & "وحشتيني")
-        function handleAgree() {
+        // Accept Proposal & Final Celebration
+        function acceptProposal() {
             playStageAudio('stage3');
-            switchScreen('screenCelebration');
-            animationMode = 'celebrationHearts';
-            initParticles();
+            document.getElementById('screenProposal').classList.add('hidden');
+            const screenCelebration = document.getElementById('screenCelebration');
+            screenCelebration.classList.remove('hidden');
+            screenCelebration.classList.add('flex');
+            startCelebrationCanvas();
         }
 
-        // Canvas Particle Engine for Falling Question Marks & Celebration Hearts
-        class Particle {
-            constructor(mode) {
-                this.mode = mode;
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * window.innerWidth;
-                this.y = -50 - Math.random() * 200;
-                this.size = this.mode === 'questionMarks' ? Math.random() * 22 + 16 : Math.random() * 20 + 12;
-                this.speedY = this.mode === 'questionMarks' ? Math.random() * 2 + 1 : Math.random() * 3 + 2;
-                this.speedX = (Math.random() - 0.5) * 1.5;
-                this.rotation = Math.random() * 360;
-                this.rotSpeed = (Math.random() - 0.5) * 2;
-                this.opacity = Math.random() * 0.7 + 0.3;
-                this.payload = Math.random() > 0.3 ? 'وحشتيني' : '❤️';
-            }
-
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.rotation += this.rotSpeed;
-
-                if (this.y > window.innerHeight + 50) {
-                    this.reset();
-                }
-            }
-
-            draw(context) {
-                context.save();
-                context.translate(this.x, this.y);
-                context.rotate((this.rotation * Math.PI) / 180);
-                context.globalAlpha = this.opacity;
-
-                if (animationMode === 'questionMarks') {
-                    context.font = `bold ${this.size}px Tajawal`;
-                    context.fillStyle = 'rgba(244, 63, 94, 0.45)';
-                    context.textAlign = 'center';
-                    context.fillText('؟', 0, 0);
-                } else if (animationMode === 'celebrationHearts') {
-                    if (this.payload === '❤️') {
-                        context.font = `${this.size}px sans-serif`;
-                        context.textAlign = 'center';
-                        context.fillText('❤️', 0, 0);
-                    } else {
-                        context.font = `bold 16px Tajawal`;
-                        context.fillStyle = '#ff758c';
-                        context.textAlign = 'center';
-                        context.fillText('وحشتيني ❤️', 0, 0);
-                    }
-                }
-                context.restore();
-            }
-        }
-
-        function initParticles() {
-            canvas = document.getElementById('effectCanvas');
-            ctx = canvas.getContext('2d');
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            particles = [];
-            const particleCount = 50;
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle(animationMode));
-            }
-
-            animateParticles();
-        }
+        // Canvas Effects (Falling Question Marks & Heart/Text Explosions)
+        const canvas = document.getElementById('effectCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationMode = 'none';
 
         function resizeCanvas() {
-            if (!canvas) return;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-        function animateParticles() {
-            if (!ctx || animationMode === 'none') return;
+        function startQuestionMarksCanvas() {
+            animationMode = 'question_marks';
+            particles = [];
+            for (let i = 0; i < 35; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    speed: 1.5 + Math.random() * 2.5,
+                    size: 18 + Math.random() * 24,
+                    opacity: 0.3 + Math.random() * 0.5,
+                    rot: (Math.random() - 0.5) * 0.5
+                });
+            }
+        }
+
+        function startCelebrationCanvas() {
+            animationMode = 'celebration';
+            particles = [];
+            for (let i = 0; i < 70; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + Math.random() * 200,
+                    speedY: 2 + Math.random() * 4,
+                    speedX: (Math.random() - 0.5) * 3,
+                    size: 16 + Math.random() * 28,
+                    opacity: 0.6 + Math.random() * 0.4,
+                    type: Math.random() > 0.4 ? 'heart' : 'text',
+                    text: Math.random() > 0.5 ? 'وحشتيني ❤️' : '❤️️'
+                });
+            }
+        }
+
+        function animateCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            particles.forEach(p => {
-                p.update();
-                p.draw(ctx);
-            });
+            if (animationMode === 'question_marks') {
+                ctx.fillStyle = 'rgba(244, 63, 94, 0.6)';
+                particles.forEach(p => {
+                    ctx.font = `${p.size}px 'Tajawal', sans-serif`;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillText('?', p.x, p.y);
+                    p.y += p.speed;
+                    if (p.y > canvas.height + 50) {
+                        p.y = -50;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+            } else if (animationMode === 'celebration') {
+                particles.forEach(p => {
+                    ctx.font = `${p.size}px 'Tajawal', sans-serif`;
+                    ctx.globalAlpha = p.opacity;
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.fillText(p.text, p.x, p.y);
 
-            requestAnimationFrame(animateParticles);
+                    p.y -= p.speedY;
+                    p.x += p.speedX;
+
+                    if (p.y < -50) {
+                        p.y = canvas.height + 50;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+            }
+
+            requestAnimationFrame(animateCanvas);
         }
+        animateCanvas();
     </script>
 </body>
 </html>
