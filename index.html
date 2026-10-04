@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رسالة اعتذار وحب استثنائية</title>
+    <title>رسالة اعتذار وحب استثنائية (مزامنة فورية)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Tajawal for authentic Arabic typography -->
@@ -113,11 +113,11 @@
         </div>
     </div>
 
-    <!-- Hidden Settings Panel Modal with IndexedDB Storage -->
+    <!-- Hidden Settings Panel Modal with Global Firebase Sync -->
     <div id="settingsPanelModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card p-6 md:p-8 rounded-3xl max-w-2xl w-full shadow-2xl border border-rose-500/40 max-h-[90vh] overflow-y-auto text-right">
             <div class="flex items-center justify-between mb-6 pb-3 border-b border-rose-500/20">
-                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-database ml-2"></i> إدارة الخانات والأغاني (حفظ دائم في المتصفح)</h3>
+                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-cloud-arrow-up ml-2"></i> إدارة الخانات والأغاني (مزامنة فورية عبر السحابة)</h3>
                 <button onclick="closeSettingsPanel()" class="text-rose-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
@@ -125,7 +125,7 @@
                 <!-- Slot-Based Photo Upload Section -->
                 <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
                     <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-images ml-1"></i> تخصيص صور الألبوم حسب الخانات (ترتيب ثابت)</h4>
-                    <p class="text-xs text-rose-300/60">الصور المحفوظة لا تختفي أبداً عند عمل تحديث (Refresh) للصفحة بفضل التخزين المحلي.</p>
+                    <p class="text-xs text-rose-300/60">الصور المحفوظة ستظهر فوراً لجميع الزوار عبر أي جهاز وفي أي مكان بفضل Firebase.</p>
 
                     <!-- Slot 1 -->
                     <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
@@ -151,7 +151,7 @@
 
                 <!-- Stage Audio Configuration Section -->
                 <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
-                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-music ml-1"></i> تخصيص الأغاني لكل مرحلة (تخزين دائم)</h4>
+                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-music ml-1"></i> تخصيص الأغاني لكل مرحلة (مزامنة سحابية)</h4>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
@@ -172,7 +172,7 @@
 
             <div class="mt-6 pt-4 border-t border-rose-500/20 flex justify-between items-center">
                 <button onclick="resetToDefaultSlots()" class="px-4 py-2 bg-red-900/40 hover:bg-red-800 text-red-300 text-xs font-bold rounded-xl transition">إعادة الصور الافتراضية</button>
-                <button onclick="saveSettingsToIndexedDB()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ دائم في المتصفح</button>
+                <button onclick="saveSettingsToFirebase()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ ومزامنة فورية للجميع</button>
             </div>
         </div>
     </div>
@@ -304,8 +304,26 @@
 
     </main>
 
-    <script>
-        // Default slot images
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global environment variables provided by container
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-apology-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyDummyKey",
+            authDomain: "dummy.firebaseapp.com",
+            projectId: "dummy-project"
+        };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Default slot images & static captions
         const defaultSlots = {
             slot1: 'https://placehold.co/400x500/e11d48/ffffff?text=Slot+1+رسالة',
             slot2: 'https://placehold.co/400x500/be123c/ffffff?text=Slot+2+صورة',
@@ -315,93 +333,61 @@
         window.currentSlots = { ...defaultSlots };
         window.globalAudios = { stage1: '', stage2: '', stage3: '' };
 
-        // Fixed and static captions corresponding strictly to Slot 1, Slot 2, Slot 3
         window.fixedCaptions = [
             "اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
             "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // Robust IndexedDB Persistent Storage Manager
-        const DB_NAME = 'RomanticApologyDB';
-        const STORE_NAME = 'mediaStore';
-        const DB_VERSION = 1;
+        // Firestore Public Settings Document Reference (Rule 1 & 2)
+        const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'config');
 
-        function openIndexedDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains(STORE_NAME)) {
-                        db.createObjectStore(STORE_NAME);
+        // Authenticate and Setup Realtime Firestore Listener (Rule 3)
+        async function initFirebaseAndSync() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.log("Auth fallback to anonymous:", err);
+                try {
+                    await signInAnonymously(auth);
+                } catch (e) {
+                    console.error("Auth error:", e);
+                }
+            }
+
+            // Realtime listener for global synchronization across all visitors
+            onSnapshot(settingsDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.slots) {
+                        window.currentSlots = {
+                            slot1: data.slots.slot1 || defaultSlots.slot1,
+                            slot2: data.slots.slot2 || defaultSlots.slot2,
+                            slot3: data.slots.slot3 || defaultSlots.slot3
+                        };
                     }
-                };
+                    if (data.audios) {
+                        window.globalAudios = {
+                            stage1: data.audios.stage1 || '',
+                            stage2: data.audios.stage2 || '',
+                            stage3: data.audios.stage3 || ''
+                        };
+                    }
+                    if (typeof window.renderAlbumSheets === 'function') {
+                        window.renderAlbumSheets();
+                    }
+                }
+            }, (error) => {
+                console.error("Firestore snapshot error:", error);
             });
         }
 
-        async function saveToIDB(key, value) {
-            try {
-                const db = await openIndexedDB();
-                const transaction = db.transaction(STORE_NAME, 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                store.put(value, key);
-                return new Promise((resolve, reject) => {
-                    transaction.oncomplete = () => resolve(true);
-                    transaction.onerror = () => reject(transaction.error);
-                });
-            } catch (err) {
-                console.error("IDB Save Error:", err);
-            }
-        }
-
-        async function getFromIDB(key) {
-            try {
-                const db = await openIndexedDB();
-                const transaction = db.transaction(STORE_NAME, 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.get(key);
-                return new Promise((resolve, reject) => {
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (err) {
-                console.error("IDB Get Error:", err);
-                return null;
-            }
-        }
-
-        // Load persisted media on startup
-        async function loadPersistedMedia() {
-            const s1 = await getFromIDB('slot1');
-            const s2 = await getFromIDB('slot2');
-            const s3 = await getFromIDB('slot3');
-
-            const a1 = await getFromIDB('audio1');
-            const a2 = await getFromIDB('audio2');
-            const a3 = await getFromIDB('audio3');
-
-            window.currentSlots = {
-                slot1: s1 || defaultSlots.slot1,
-                slot2: s2 || defaultSlots.slot2,
-                slot3: s3 || defaultSlots.slot3
-            };
-
-            window.globalAudios = {
-                stage1: a1 || '',
-                stage2: a2 || '',
-                stage3: a3 || ''
-            };
-
-            if (typeof window.renderAlbumSheets === 'function') {
-                window.renderAlbumSheets();
-            }
-        }
-
-        // Initialize DB load on window load
         window.addEventListener('DOMContentLoaded', () => {
-            loadPersistedMedia();
+            initFirebaseAndSync();
         });
 
         window.getEffectiveSlots = function() {
@@ -412,7 +398,14 @@
             ];
         };
 
-        window.saveSettingsToIndexedDB = async function() {
+        // Save updated settings to Firebase so all visitors instantly sync
+        window.saveSettingsToFirebase = async function() {
+            const user = auth.currentUser;
+            if (!user) {
+                showToast("جاري الاتصال بالسحابة... حاول مرة أخرى.", "error");
+                return;
+            }
+
             const readFileAsDataURL = (fileInputId) => {
                 return new Promise((resolve) => {
                     const fileInput = document.getElementById(fileInputId);
@@ -434,34 +427,59 @@
             const a2 = await readFileAsDataURL('audioStage2');
             const a3 = await readFileAsDataURL('audioStage3');
 
-            if (s1) { window.currentSlots.slot1 = s1; await saveToIDB('slot1', s1); }
-            if (s2) { window.currentSlots.slot2 = s2; await saveToIDB('slot2', s2); }
-            if (s3) { window.currentSlots.slot3 = s3; await saveToIDB('slot3', s3); }
+            const updatedSlots = {
+                slot1: s1 || window.currentSlots.slot1,
+                slot2: s2 || window.currentSlots.slot2,
+                slot3: s3 || window.currentSlots.slot3
+            };
 
-            if (a1) { window.globalAudios.stage1 = a1; await saveToIDB('audio1', a1); }
-            if (a2) { window.globalAudios.stage2 = a2; await saveToIDB('audio2', a2); }
-            if (a3) { window.globalAudios.stage3 = a3; await saveToIDB('audio3', a3); }
+            const updatedAudios = {
+                stage1: a1 || window.globalAudios.stage1,
+                stage2: a2 || window.globalAudios.stage2,
+                stage3: a3 || window.globalAudios.stage3
+            };
 
-            showToast("تم حفظ الملفات محلياً في المتصفح بنجاح ولن تختفي عند التحديث!", "success");
-            closeSettingsPanel();
-            if (typeof window.renderAlbumSheets === 'function') {
-                window.renderAlbumSheets();
+            try {
+                await setDoc(settingsDocRef, {
+                    slots: updatedSlots,
+                    audios: updatedAudios,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                showToast("تم الحفظ والمزامنة السحابية الفورية بنجاح لجميع الزوار!", "success");
+                closeSettingsPanel();
+                if (typeof window.renderAlbumSheets === 'function') {
+                    window.renderAlbumSheets();
+                }
+            } catch (err) {
+                console.error("Error saving to Firestore:", err);
+                showToast("حدث خطأ أثناء الحفظ بالسحابة.", "error");
             }
         };
 
         window.resetToDefaultSlots = async function() {
-            window.currentSlots = { ...defaultSlots };
-            await saveToIDB('slot1', defaultSlots.slot1);
-            await saveToIDB('slot2', defaultSlots.slot2);
-            await saveToIDB('slot3', defaultSlots.slot3);
+            const user = auth.currentUser;
+            if (!user) return;
 
-            showToast("تم استعادة الصور الافتراضية بنجاح.", "success");
-            closeSettingsPanel();
-            if (typeof window.renderAlbumSheets === 'function') {
-                window.renderAlbumSheets();
+            try {
+                await setDoc(settingsDocRef, {
+                    slots: defaultSlots,
+                    audios: { stage1: '', stage2: '', stage3: '' },
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                showToast("تم استعادة الإعدادات والافتراضات بنجاح.", "success");
+                closeSettingsPanel();
+                if (typeof window.renderAlbumSheets === 'function') {
+                    window.renderAlbumSheets();
+                }
+            } catch (err) {
+                console.error("Reset error:", err);
             }
         };
+    </script>
 
+    <script>
         // Toast Notification System (No alert/confirm)
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toastNotification');
