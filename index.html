@@ -495,15 +495,12 @@
         };
 
         async function handleUploads() {
-            if (!auth || !auth.currentUser) {
-                showAlert("عفواً، لا يوجد اتصال بالسيرفر!");
-                return;
-            }
-
             const btn = document.getElementById('btn-save-admin');
             btn.innerText = "جاري الرفع...";
             btn.disabled = true;
-            setStatus("جاري معالجة ورفع الملفات...");
+            setStatus("جاري معالجة الملفات...");
+
+            let savedAny = false;
 
             try {
                 const tasks = [];
@@ -513,7 +510,16 @@
                     const file = document.getElementById(`up-img${i}`).files[0];
                     if (file) {
                         const b64 = await compressImage(file);
-                        tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
+                        state[`img${i}`] = b64; // تحديث المتغيرات في الذاكرة
+                        
+                        // تحديث الصورة في الواجهة فوراً
+                        const el = document.getElementById(`display-img${i}`);
+                        if (el) el.src = b64; 
+                        
+                        if (auth && auth.currentUser) {
+                            tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
+                        }
+                        savedAny = true;
                     }
                 }
 
@@ -521,21 +527,37 @@
                 const audIntro = document.getElementById('up-aud-intro').files[0];
                 if (audIntro) {
                     const b64 = await fileToBase64(audIntro);
-                    tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
+                    state.audioIntro = b64;
+                    audioPlayers.intro.src = b64; // تحديث الصوت فوراً
+                    if (auth && auth.currentUser) {
+                        tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
+                    }
+                    savedAny = true;
                 }
 
                 const audCeleb = document.getElementById('up-aud-celeb').files[0];
                 if (audCeleb) {
                     const b64 = await fileToBase64(audCeleb);
-                    tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
+                    state.audioCeleb = b64;
+                    audioPlayers.celeb.src = b64; // تحديث الصوت فوراً
+                    if (auth && auth.currentUser) {
+                        tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
+                    }
+                    savedAny = true;
                 }
 
-                if (tasks.length === 0) {
+                if (!savedAny) {
                     showAlert("لم تختر أي ملفات جديدة!");
                 } else {
-                    await Promise.all(tasks);
-                    showAlert("تم الرفع والحفظ بنجاح!");
-                    setStatus("تم المزامنة بنجاح.");
+                    if (tasks.length > 0) {
+                        await Promise.all(tasks);
+                        showAlert("تم الرفع والحفظ بالسحابة بنجاح!");
+                        setStatus("تم المزامنة بنجاح.");
+                    } else {
+                        // لو مفيش اتصال بالسيرفر، هنحفظها مؤقتاً عشان تقدر تجربها
+                        showAlert("تم التحديث (تعذر الاتصال بالسحابة، تم الحفظ مؤقتاً للتجربة).");
+                        setStatus("محفوظ محلياً فقط.", true);
+                    }
                 }
             } catch (err) {
                 console.error(err);
