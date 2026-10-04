@@ -876,13 +876,24 @@
             </div>
 
             <div id="admin-panel-box">
-                <!-- إضافة منتج جديد -->
+                <!-- إضافة منتج جديد (مع إمكانية السحب والإفلات أو الرفع أو الرابط) -->
                 <div style="background: rgba(25,25,25,0.9); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد (مع إمكانية وضع سعر الأوفر والخصم)</h4>
+                    <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد (سحب وإفلات أو رفع صورة أو رابط)</h4>
+                    
                     <input type="text" id="new-p-name" placeholder="اسم المنتج الجديد" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="number" id="new-p-price" placeholder="السعر الحالي (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="number" id="new-p-old-price" placeholder="السعر القديم قبل الخصم (اختياري)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                    <input type="text" id="new-p-img" placeholder="رابط صورة المنتج (URL)" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    
+                    <!-- منطقة السحب والإفلات المخصصة للصور -->
+                    <label style="color: var(--text-gray); font-size: 13px; display: block; margin-bottom: 5px;">صورة المنتج (اسحب وأرمي الصورة هنا، أو اضغط للاختيار):</label>
+                    <div id="drop-zone" style="border: 2px dashed var(--primary-gold); padding: 18px; text-align: center; border-radius: 6px; background: #222; margin-bottom: 8px; cursor: pointer; transition: 0.3s;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--primary-gold); margin-bottom: 6px;"></i>
+                        <p style="font-size: 13px; color: var(--text-light);">اسحب الصورة وأفلتها هنا، أو اضغط لاختيار صورة من معرض جهازك</p>
+                        <input type="file" id="new-p-file" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+                    </div>
+
+                    <input type="text" id="new-p-img" placeholder="أو أدخل رابط صورة المنتج (URL) مباشرة" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    
                     <button class="btn-gold" style="width:100%; justify-content:center;" onclick="addNewProduct()">إضافة المنتج</button>
                 </div>
 
@@ -954,17 +965,65 @@
             }
         }
 
+        // إعداد خاصية السحب والإفلات واختيار الملفات للصور
+        let uploadedImageBase64 = '';
+        function setupDropZone() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('new-p-file');
+
+            dropZone.onclick = () => fileInput.click();
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#25d366';
+                dropZone.style.background = 'rgba(37, 211, 102, 0.12)';
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary-gold)';
+                dropZone.style.background = '#222';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary-gold)';
+                dropZone.style.background = '#222';
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    processImageFile(e.dataTransfer.files[0]);
+                }
+            });
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                processImageFile(input.files[0]);
+            }
+        }
+
+        function processImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImageBase64 = e.target.result;
+                const dropZone = document.getElementById('drop-zone');
+                dropZone.innerHTML = `
+                    <i class="fa-solid fa-circle-check" style="font-size: 26px; color: #25d366; margin-bottom: 5px;"></i>
+                    <p style="font-size: 13px; color: #25d366; font-weight: bold;">تم اختيار الصورة بنجاح: ${file.name}</p>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
         // دالة تشغيل صوت تنبيه الأوردر على اللاب توب
         function playAdminAlertSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                // نغمة أولى
                 const osc1 = audioCtx.createOscillator();
                 const gain1 = audioCtx.createGain();
                 osc1.type = 'sine';
-                osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
-                osc1.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                osc1.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc1.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
                 gain1.gain.setValueAtTime(0.4, audioCtx.currentTime);
                 gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                 osc1.connect(gain1);
@@ -972,12 +1031,11 @@
                 osc1.start();
                 osc1.stop(audioCtx.currentTime + 0.4);
 
-                // نغمة ثانية متتابعة (لعمل صوت تنبيه مزدوج فخم)
                 setTimeout(() => {
                     const osc2 = audioCtx.createOscillator();
                     const gain2 = audioCtx.createGain();
                     osc2.type = 'triangle';
-                    osc2.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // C6
+                    osc2.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
                     gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
                     gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
                     osc2.connect(gain2);
@@ -987,7 +1045,7 @@
                 }, 200);
 
             } catch(e) {
-                console.log("AudioContext not allowed or supported until user interaction.");
+                console.log("AudioContext restricted until user interaction.");
             }
         }
 
@@ -1036,6 +1094,7 @@
         let generatedOtpCode = null;
 
         window.addEventListener('DOMContentLoaded', () => {
+            setupDropZone();
             if(window.location.hash === '#admin') {
                 openAdmin();
             }
@@ -1387,10 +1446,8 @@
             orders.unshift(newOrder);
             localStorage.setItem('sanad_orders', JSON.stringify(orders));
 
-            // تشغيل صوت التنبيه فوراً على جهاز الأدمن / اللاب توب
             playAdminAlertSound();
 
-            // إرسال تنبيه البريد الإلكتروني الفوري للأدمن (مهندس محمد جمال)
             let itemsSummaryStr = newOrder.items.map(i => `${i.name} (${i.qty} قطعة)`).join('، ');
             emailjs.send("service_havf752", "template_3bybp8m", {
                 to_email: "medoatlm83@gmail.com",
@@ -1521,24 +1578,35 @@
             const price = parseFloat(document.getElementById('new-p-price').value);
             const oldPriceInput = document.getElementById('new-p-old-price').value.trim();
             const oldPrice = oldPriceInput ? parseFloat(oldPriceInput) : null;
-            const img = document.getElementById('new-p-img').value.trim();
+            const urlImg = document.getElementById('new-p-img').value.trim();
 
-            if(!name || isNaN(price) || !img) {
-                showSiteMessage("بيانات ناقصة", "الرجاء إدخال اسم المنتج، السعر الحالي، ورابط الصورة بشكل صحيح!");
+            // أخذ الصورة المرفوعة عبر السحب والإفلات أو الرابط المكتوب
+            const finalImg = uploadedImageBase64 || urlImg;
+
+            if(!name || isNaN(price) || !finalImg) {
+                showSiteMessage("بيانات ناقصة", "الرجاء إدخال اسم المنتج، السعر، وإرفاق صورة (سحب وإفلات، أو رفع ملف، أو وضع رابط)!");
                 return;
             }
 
-            const newProd = { id: Date.now(), name, price, oldPrice, img };
+            const newProd = { id: Date.now(), name, price, oldPrice, img: finalImg };
             products.push(newProd);
             localStorage.setItem('sanad_products', JSON.stringify(products));
             renderProducts();
             renderAdminProducts();
             showSiteMessage("تمت الإضافة بنجاح", "تم إضافة المنتج الجديد للمتجر بنجاح!");
             
+            // إعادة ضبط الحقول
             document.getElementById('new-p-name').value = '';
             document.getElementById('new-p-price').value = '';
             document.getElementById('new-p-old-price').value = '';
             document.getElementById('new-p-img').value = '';
+            uploadedImageBase64 = '';
+            document.getElementById('drop-zone').innerHTML = `
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--primary-gold); margin-bottom: 6px;"></i>
+                <p style="font-size: 13px; color: var(--text-light);">اسحب الصورة وأفلتها هنا، أو اضغط لاختيار صورة من معرض جهازك</p>
+                <input type="file" id="new-p-file" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
+            `;
+            setupDropZone();
         }
 
         function renderAdminOrders() {
@@ -1601,7 +1669,7 @@
         }
 
         function closeCustomModal() {
-            document.getElementById('customConfirmModal').style.display = 'none';
+            document.getElementById('customModalTitle').parentElement.parentElement.style.display = 'none';
         }
 
         function showSiteMessage(title, text) {
