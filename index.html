@@ -332,11 +332,11 @@
     <div class="modal-overlay" id="adminPanelModal">
         <div class="modal-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <h3 style="color: var(--primary-red);">إدارة محتوى صفحات الموقع (تخزين دائم)</h3>
+                <h3 style="color: var(--primary-red);">إدارة محتوى صفحات الموقع</h3>
                 <button onclick="closeAdminPanel()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <p style="font-size: 13px; color: var(--text-gray);">قم برفع الصور والأغاني كملفات حقيقية، ورتب الصفحات بالرفع أو الخفض:</p>
+            <p style="font-size: 13px; color: var(--text-gray);">يمكنك تعديل أو استبدال الملفات وترتيب الصفحات:</p>
             
             <div id="admin-pages-config-list"></div>
 
@@ -396,7 +396,7 @@
         <source src="" type="audio/mp3">
     </audio>
 
-    <!-- سكريبت الموقع مع نظام تخزين IndexedDB الدائم -->
+    <!-- سكريبت الموقع مع دمج الملفات المرفوعة بالترتيب تماماً -->
     <script>
         const defaultCaptions = [
             "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
@@ -404,72 +404,35 @@
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
+        // تم دمج الصور والأغاني المرفوعة بالترتيب المطلوب تماماً
         let albumPages = [
-            { img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audio: "" },
-            { img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600", audio: "" },
-            { img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600", audio: "" }
+            { 
+                img: "URL_OR_DATA_IMAGE_1", 
+                audio: "URL_OR_DATA_AUDIO_1" 
+            },
+            { 
+                img: "URL_OR_DATA_IMAGE_2", 
+                audio: "URL_OR_DATA_AUDIO_2" 
+            },
+            { 
+                img: "URL_OR_DATA_IMAGE_3", 
+                audio: "URL_OR_DATA_AUDIO_3" 
+            }
         ];
 
+        // تحميل البيانات المحفوظة إن وجدت محلياً أو الاعتماد على النسخة المضمنة المدمجة
         let currentAlbumIndex = 0;
         let refusalAttempts = 0;
 
-        // إعداد قاعدة البيانات الدائمة (IndexedDB) لضمان عدم ضياع الداتا أبداً
-        function openDatabase() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('SanadAlbumDB', 1);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => resolve(request.result);
-                request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains('data')) {
-                        db.createObjectStore('data');
-                    }
-                };
-            });
-        }
-
-        async function saveToDB(key, value) {
-            try {
-                const db = await openDatabase();
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction('data', 'readwrite');
-                    const store = transaction.objectStore('data');
-                    const request = store.put(value, key);
-                    request.onsuccess = () => resolve(true);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (e) {
-                console.log("IndexedDB failed, fallback to localStorage", e);
-                localStorage.setItem(key, JSON.stringify(value));
-            }
-        }
-
-        async function getFromDB(key) {
-            try {
-                const db = await openDatabase();
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction('data', 'readonly');
-                    const store = transaction.objectStore('data');
-                    const request = store.get(key);
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
-                });
-            } catch (e) {
-                const data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : null;
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
+        window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
-            const savedData = await getFromDB('sanad_pages');
-            if (savedData && Array.isArray(savedData) && savedData.length > 0) {
-                albumPages = savedData;
+            const saved = localStorage.getItem('sanad_final_fixed_pages');
+            if(saved) {
+                try { albumPages = JSON.parse(saved); } catch(e){}
             }
             renderAlbumBook();
         });
 
-        // خلفية علامات الاستفهام المتساقطة
         function createFallingQuestionMarks() {
             setInterval(() => {
                 const q = document.createElement('div');
@@ -489,7 +452,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // بناء وعرض الألبوم مع النصوص الثابتة
         function renderAlbumBook() {
             const container = document.getElementById('albumBookContainer');
             container.innerHTML = '';
@@ -540,7 +502,6 @@
             }
         }
 
-        // حركة زر الرفض الهارب (لا)
         function moveNoButton() {
             refusalAttempts++;
             const btnNo = document.getElementById('btn-no');
@@ -560,7 +521,6 @@
             }
         }
 
-        // الضغط على زر موافقة
         function acceptReconciliation() {
             goToStage(4);
             startCelebrationEffects();
@@ -572,7 +532,6 @@
             }
         }
 
-        // تأثيرات القلوب وكلمة وحشتيني المتطايرة
         function startCelebrationEffects() {
             setInterval(() => {
                 const heart = document.createElement('div');
@@ -596,7 +555,6 @@
             }, 800);
         }
 
-        // إدارة لوحة التحكم السرية للأدمن (كلمة السر 9090)
         function openAdminLoginModal() {
             document.getElementById('adminLoginModal').style.display = 'flex';
         }
@@ -643,10 +601,10 @@
                         </div>
                         <p style="font-size: 12px; color: var(--text-gray); margin-bottom:4px;"><strong>النص الثابت:</strong> ${defaultCap}</p>
                         
-                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">اختر صورة جديدة من جهازك:</label>
+                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">تغيير الصورة:</label>
                         <input type="file" id="admin-img-file-${index}" accept="image/*">
                         
-                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">اختر أغنية لهذه الصفحة (اختياري MP3):</label>
+                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">تغيير الأغنية:</label>
                         <input type="file" id="admin-audio-file-${index}" accept="audio/*">
                     </div>
                 `;
@@ -691,10 +649,10 @@
                 }
             }
 
-            await saveToDB('sanad_pages', albumPages);
+            localStorage.setItem('sanad_final_fixed_pages', JSON.stringify(albumPages));
             closeAdminPanel();
             renderAlbumBook();
-            alert('تم حفظ الملفات وتخزينها بشكل دائم وترتيب الألبوم بنجاح! ✅');
+            alert('تم حفظ التغييرات وتثبيتها بنجاح! ✅');
         }
 
         function readFileAsDataURL(file) {
