@@ -75,6 +75,7 @@
             transform-style: preserve-3d;
             display: none; /* Shown after flying photos */
             z-index: 30;
+            direction: ltr; /* Handle 3D math easily, content will be RTL */
         }
 
         .book-page {
@@ -85,16 +86,12 @@
             background: #fff;
             border-radius: 8px 15px 15px 8px;
             box-shadow: inset 5px 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.3);
-            /* RTL Spine is on the right side */
-            transform-origin: right center;
+            transform-origin: left center;
             transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
             transform-style: preserve-3d;
             backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            box-sizing: border-box;
             border: 1px solid #ccc;
+            cursor: pointer;
         }
 
         .page-front, .page-back {
@@ -106,6 +103,7 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
+            direction: rtl; /* Reset direction for Arabic text */
         }
 
         .page-back {
@@ -114,8 +112,7 @@
         }
 
         .book-page.flipped {
-            /* Flip to the left */
-            transform: rotateY(180deg) !important;
+            transform: rotateY(-180deg) !important;
         }
 
         .img-container {
@@ -133,7 +130,7 @@
         .img-container img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: contain; /* CRITICAL: Fixed to contain as requested */
         }
 
         .page-caption {
@@ -166,6 +163,7 @@
             transition: all 0.15s ease-out; /* Fast snappy transition */
             z-index: 50;
             will-change: transform, left, top;
+            touch-action: none;
         }
 
         #celebration-bg {
@@ -230,28 +228,29 @@
             </div>
 
             <div id="admin-dashboard" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <p id="sync-status" class="text-sm text-blue-300 bg-blue-900/30 p-2 rounded">جاري التحقق من الاتصال...</p>
+                <p id="sync-status" class="text-sm text-blue-300 bg-blue-900/30 p-2 rounded">جاري الاتصال بالسحابة...</p>
                 
                 <div class="space-y-3">
-                    <div class="bg-black/40 p-3 rounded">
+                    <div class="bg-black/40 p-3 rounded border border-gray-700">
                         <label class="block text-sm text-gray-300 mb-1">صورة 1 (الرسالة):</label>
-                        <input type="file" id="up-img1" accept="image/*" class="text-sm w-full">
+                        <input type="file" id="up-img1" accept="image/*" class="text-sm w-full text-gray-400">
                     </div>
-                    <div class="bg-black/40 p-3 rounded">
+                    <div class="bg-black/40 p-3 rounded border border-gray-700">
                         <label class="block text-sm text-gray-300 mb-1">صورة 2 (أجمل إنسانة):</label>
-                        <input type="file" id="up-img2" accept="image/*" class="text-sm w-full">
+                        <input type="file" id="up-img2" accept="image/*" class="text-sm w-full text-gray-400">
                     </div>
-                    <div class="bg-black/40 p-3 rounded">
+                    <div class="bg-black/40 p-3 rounded border border-gray-700">
                         <label class="block text-sm text-gray-300 mb-1">صورة 3 (الـ AI):</label>
-                        <input type="file" id="up-img3" accept="image/*" class="text-sm w-full">
+                        <input type="file" id="up-img3" accept="image/*" class="text-sm w-full text-gray-400">
                     </div>
-                    <div class="bg-black/40 p-3 rounded">
-                        <label class="block text-sm text-pink-300 mb-1">مقطع صوت 1 (المقدمة):</label>
-                        <input type="file" id="up-aud-intro" accept="audio/*" class="text-sm w-full">
+                    <div class="bg-black/40 p-3 rounded border border-pink-900/50">
+                        <label class="block text-sm text-pink-300 mb-1">صوت 1 (شاشة الاعتذار):</label>
+                        <input type="file" id="up-aud-intro" accept="audio/*" class="text-sm w-full text-gray-400">
+                        <p class="text-xs text-gray-500 mt-1">يُفضل مقطع قصير (أقل من 1MB)</p>
                     </div>
-                    <div class="bg-black/40 p-3 rounded">
-                        <label class="block text-sm text-pink-300 mb-1">مقطع صوت 2 (الاحتفال):</label>
-                        <input type="file" id="up-aud-celeb" accept="audio/*" class="text-sm w-full">
+                    <div class="bg-black/40 p-3 rounded border border-pink-900/50">
+                        <label class="block text-sm text-pink-300 mb-1">صوت 2 (شاشة الاحتفال):</label>
+                        <input type="file" id="up-aud-celeb" accept="audio/*" class="text-sm w-full text-gray-400">
                     </div>
                 </div>
 
@@ -263,9 +262,9 @@
         </div>
     </div>
 
-    <!-- Alert Modal (Replaces standard alert) -->
+    <!-- Alert Modal -->
     <div id="custom-alert" class="fixed inset-0 z-[1100] hidden items-center justify-center bg-black/80">
-        <div class="bg-white text-black p-6 rounded-xl max-w-sm w-[90%] text-center">
+        <div class="bg-white text-black p-6 rounded-xl max-w-sm w-[90%] text-center shadow-2xl">
             <p id="alert-msg" class="text-lg font-bold mb-4"></p>
             <button id="btn-alert-ok" class="bg-pink-600 text-white px-8 py-2 rounded font-bold">تمام</button>
         </div>
@@ -275,8 +274,8 @@
         <div class="glass-panel p-8 rounded-3xl max-w-md w-full shadow-[0_0_40px_rgba(255,0,100,0.2)]">
             <h1 class="text-5xl mb-6 text-pink-400">آسف يا روحي</h1>
             <p class="text-xl leading-loose mb-8 text-gray-200">
-                عارف إني زعلتك، وعارف إن الكلمة دي لوحدها مش كفاية.. 
-                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى وأحن حاجة في حياتي.
+                أنا عارف إني زعلتك، وعارف إن الكلمة دي لوحدها مش كفاية.. 
+                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى وأحن حاجة في حياتي ووجودك هو اللي بينور دنيتي.
             </p>
             <button id="btn-continue" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-lg transition transform hover:scale-105">
                 كمل
@@ -292,8 +291,9 @@
             <div class="book-page" id="page3">
                 <div class="page-front">
                     <div class="img-container">
-                        <img id="display-img3" src="https://placehold.co/400x500/pink/white?text=الصورة+الثالثة" alt="AI Photo">
+                        <img id="display-img3" src="https://placehold.co/400x500/pink/white?text=صورة+3+الذكاء+الاصطناعي" alt="AI Photo">
                     </div>
+                    <!-- Static Caption -->
                     <p class="page-caption">اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.</p>
                 </div>
                 <div class="page-back"></div>
@@ -303,8 +303,9 @@
             <div class="book-page" id="page2">
                 <div class="page-front">
                     <div class="img-container">
-                        <img id="display-img2" src="https://placehold.co/400x500/purple/white?text=الصورة+الثانية" alt="Beautiful Photo">
+                        <img id="display-img2" src="https://placehold.co/400x500/purple/white?text=صورة+2+أجمل+إنسانة" alt="Beautiful Photo">
                     </div>
+                    <!-- Static Caption -->
                     <p class="page-caption">اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.</p>
                 </div>
                 <div class="page-back"></div>
@@ -314,8 +315,9 @@
             <div class="book-page" id="page1">
                 <div class="page-front">
                     <div class="img-container">
-                        <img id="display-img1" src="https://placehold.co/400x500/red/white?text=الصورة+الأولى" alt="First Message">
+                        <img id="display-img1" src="https://placehold.co/400x500/red/white?text=صورة+1+الرسالة" alt="First Message">
                     </div>
+                    <!-- Static Caption -->
                     <p class="page-caption">اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.</p>
                 </div>
                 <div class="page-back"></div>
@@ -330,18 +332,16 @@
     <div id="screen-question" class="screen">
         <canvas id="q-canvas"></canvas>
         <div class="z-20 text-center w-full px-4 h-full flex flex-col items-center justify-center relative">
-            <h2 class="text-4xl md:text-6xl font-bold mb-16 text-white text-shadow-lg ruqaa" style="text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
-                هتسامحيني ونرجع أقوى من الأول؟
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-20 text-white text-shadow-lg ruqaa leading-tight" style="text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
+                موافقة نرجع ل بعض ونفتح صفحه جديده؟
             </h2>
             
-            <div class="relative w-full max-w-sm h-[200px]">
-                <!-- Static Yes Button -->
-                <button id="btn-yes" class="absolute bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-[0_0_20px_rgba(34,197,94,0.6)] right-[10%] top-[20%] transition transform hover:scale-110">
+            <div class="relative w-full max-w-sm h-[250px] mx-auto">
+                <button id="btn-yes" class="absolute bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-[0_0_30px_rgba(34,197,94,0.6)] right-[5%] top-[10%] transition transform hover:scale-110">
                     موافقة ❤️
                 </button>
                 
-                <!-- Dodging No Button -->
-                <button id="btn-no" class="dodge-btn bg-gray-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-lg left-[10%] top-[20%]">
+                <button id="btn-no" class="dodge-btn bg-gray-700 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-lg left-[5%] top-[10%]">
                     لأ
                 </button>
             </div>
@@ -351,9 +351,10 @@
     <div id="screen-celebration" class="screen bg-[#3a0000]">
         <div id="celebration-bg"></div>
         <div class="z-20 text-center p-8 glass-panel rounded-3xl border border-red-500/50 shadow-[0_0_50px_rgba(255,0,0,0.4)]">
-            <h1 class="text-4xl md:text-6xl font-bold text-red-500 mb-6 ruqaa" style="text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);">
-                كنت عارف ان حبنا اقوي من اي حاجه وانك هتسامحيني
+            <h1 class="text-5xl md:text-7xl font-bold text-red-500 mb-6 ruqaa" style="text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);">
+                بحبك ❤️
             </h1>
+            <p class="text-2xl text-white">كنت عارف إن قلبك أبيض وهتسامحيني</p>
         </div>
     </div>
 
@@ -363,7 +364,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // State & Data
+        // Global State
         const state = {
             img1: '', img2: '', img3: '',
             audioIntro: '', audioCeleb: ''
@@ -373,8 +374,10 @@
             intro: new Audio(),
             celeb: new Audio()
         };
+        // Loop celebration audio
+        audioPlayers.celeb.loop = true;
 
-        // Utility: Custom Alert
+        // Custom UI Alert
         const showAlert = (msg) => {
             document.getElementById('alert-msg').innerText = msg;
             document.getElementById('custom-alert').style.display = 'flex';
@@ -383,8 +386,8 @@
             document.getElementById('custom-alert').style.display = 'none';
         });
 
-        // Safe Environment Variables Parsing
-        let appId = 'apology-app-default';
+        // Initialize Firebase variables securely
+        let appId = 'default-apology-app';
         let firebaseConfig = null;
         let initialToken = null;
 
@@ -395,20 +398,20 @@
             }
             if (typeof __initial_auth_token !== 'undefined') initialToken = __initial_auth_token;
         } catch (e) {
-            console.error("Env extraction error:", e);
+            console.error("Environment extraction error:", e);
         }
 
         let db, auth;
         const statusEl = document.getElementById('sync-status');
         const setStatus = (msg, isError=false) => {
             statusEl.innerText = msg;
-            statusEl.className = isError ? 'text-sm text-red-300 bg-red-900/30 p-2 rounded' : 'text-sm text-blue-300 bg-blue-900/30 p-2 rounded';
+            statusEl.className = isError ? 'text-sm text-red-300 bg-red-900/30 p-2 rounded' : 'text-sm text-green-300 bg-green-900/30 p-2 rounded';
         };
 
-        // Initialize Firebase safely
+        // Initialize App
         async function initApp() {
             if (!firebaseConfig) {
-                console.warn("No Firebase config found. Running in local dummy mode.");
+                setStatus("تعذر العثور على إعدادات السحابة، يعمل محلياً.", true);
                 return;
             }
 
@@ -417,13 +420,14 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
+                // Authentication (Crucial step for Firestore Rules)
                 if (initialToken) {
                     await signInWithCustomToken(auth, initialToken);
                 } else {
                     await signInAnonymously(auth);
                 }
 
-                setStatus("متصل بالسحابة.");
+                setStatus("متصل بقاعدة البيانات ✅");
                 startRealtimeSync();
             } catch (error) {
                 console.error("Firebase Init Error:", error);
@@ -431,9 +435,11 @@
             }
         }
 
-        // Realtime Sync Function
+        // Get Public Collection Document Path
+        // RULE 1: STRICT PATH FORMAT
         const getDocPath = (docId) => doc(db, 'artifacts', appId, 'public', 'data', 'app_data', docId);
 
+        // Realtime Sync Function
         function startRealtimeSync() {
             if (!auth.currentUser) return;
             const items = ['img1', 'img2', 'img3', 'audioIntro', 'audioCeleb'];
@@ -444,7 +450,7 @@
                         const b64 = snap.data().base64;
                         state[itemId] = b64;
                         
-                        // Update UI immediately
+                        // Update UI seamlessly
                         if (itemId.startsWith('img')) {
                             const el = document.getElementById(`display-${itemId}`);
                             if (el) el.src = b64;
@@ -454,10 +460,13 @@
                             audioPlayers.celeb.src = b64;
                         }
                     }
-                }, (error) => console.error(`Error syncing ${itemId}:`, error));
+                }, (error) => {
+                    console.error(`Error syncing ${itemId}:`, error);
+                });
             });
         }
 
+        // Compress Images for Firestore (1MB limit)
         const compressImage = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -468,7 +477,7 @@
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         let { width, height } = img;
-                        const maxD = 600; // Keep it small to avoid Firestore limits
+                        const maxD = 600; 
                         if (width > maxD || height > maxD) {
                             if (width > height) {
                                 height = (height / width) * maxD; width = maxD;
@@ -478,13 +487,14 @@
                         }
                         canvas.width = width; canvas.height = height;
                         canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // 60% quality JPEG
                     };
                 };
                 reader.onerror = error => reject(error);
             });
         };
 
+        // Convert Audio to Base64
         const fileToBase64 = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -495,81 +505,74 @@
         };
 
         async function handleUploads() {
+            if (!auth || !auth.currentUser) {
+                showAlert("يجب أن يكون الاتصال بالسحابة مفعل للحفظ.");
+                return;
+            }
+
             const btn = document.getElementById('btn-save-admin');
             btn.innerText = "جاري الرفع...";
             btn.disabled = true;
-            setStatus("جاري معالجة الملفات...");
+            setStatus("جاري الرفع للسحابة، برجاء الانتظار...");
 
             let savedAny = false;
 
             try {
                 const tasks = [];
                 
-                // Images
+                // Process 3 Images
                 for (let i = 1; i <= 3; i++) {
                     const file = document.getElementById(`up-img${i}`).files[0];
                     if (file) {
                         const b64 = await compressImage(file);
-                        state[`img${i}`] = b64; // تحديث المتغيرات في الذاكرة
-                        
-                        // تحديث الصورة في الواجهة فوراً
-                        const el = document.getElementById(`display-img${i}`);
-                        if (el) el.src = b64; 
-                        
-                        if (auth && auth.currentUser) {
-                            tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
-                        }
+                        state[`img${i}`] = b64;
+                        document.getElementById(`display-img${i}`).src = b64; 
+                        tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
                         savedAny = true;
                     }
                 }
 
-                // Audio
+                // Process Audio 1
                 const audIntro = document.getElementById('up-aud-intro').files[0];
                 if (audIntro) {
+                    if (audIntro.size > 900000) throw new Error("Audio 1 is too large. Max 900KB.");
                     const b64 = await fileToBase64(audIntro);
                     state.audioIntro = b64;
-                    audioPlayers.intro.src = b64; // تحديث الصوت فوراً
-                    if (auth && auth.currentUser) {
-                        tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
-                    }
+                    audioPlayers.intro.src = b64; 
+                    tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
                     savedAny = true;
                 }
 
+                // Process Audio 2
                 const audCeleb = document.getElementById('up-aud-celeb').files[0];
                 if (audCeleb) {
+                    if (audCeleb.size > 900000) throw new Error("Audio 2 is too large. Max 900KB.");
                     const b64 = await fileToBase64(audCeleb);
                     state.audioCeleb = b64;
-                    audioPlayers.celeb.src = b64; // تحديث الصوت فوراً
-                    if (auth && auth.currentUser) {
-                        tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
-                    }
+                    audioPlayers.celeb.src = b64;
+                    tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
                     savedAny = true;
                 }
 
                 if (!savedAny) {
-                    showAlert("لم تختر أي ملفات جديدة!");
+                    showAlert("لم تقم باختيار أي ملفات للرفع.");
+                    setStatus("متصل بقاعدة البيانات ✅");
                 } else {
-                    if (tasks.length > 0) {
-                        await Promise.all(tasks);
-                        showAlert("تم الرفع والحفظ بالسحابة بنجاح!");
-                        setStatus("تم المزامنة بنجاح.");
-                    } else {
-                        // لو مفيش اتصال بالسيرفر، هنحفظها مؤقتاً عشان تقدر تجربها
-                        showAlert("تم التحديث (تعذر الاتصال بالسحابة، تم الحفظ مؤقتاً للتجربة).");
-                        setStatus("محفوظ محلياً فقط.", true);
-                    }
+                    await Promise.all(tasks);
+                    showAlert("تم الرفع بنجاح! الرابط الآن سيعرض هذه الملفات لأي شخص.");
+                    setStatus("تم الحفظ والمزامنة بنجاح ✅");
                 }
             } catch (err) {
                 console.error(err);
-                showAlert("حدث خطأ أثناء الرفع، قد يكون الملف كبيراً جداً.");
-                setStatus("خطأ في الرفع.", true);
+                showAlert("حدث خطأ أثناء الرفع: قد يكون حجم الملف الصوتي كبيراً جداً. يرجى اختيار ملفات بحجم أقل من 1MB.");
+                setStatus("فشل الرفع.", true);
             }
             
             btn.innerText = "حفظ للسحابة";
             btn.disabled = false;
         }
 
-        // Admin UI Event Listeners
+        // Admin Panel Events
         document.getElementById('admin-gear').addEventListener('click', () => {
             document.getElementById('admin-modal').classList.remove('hidden');
             document.getElementById('admin-modal').classList.add('flex');
@@ -580,7 +583,7 @@
                 document.getElementById('admin-login-section').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
             } else {
-                showAlert("كلمة السر غلط يا برو!");
+                showAlert("كلمة السر خاطئة.");
             }
         });
 
@@ -594,7 +597,6 @@
 
         document.getElementById('btn-save-admin').addEventListener('click', handleUploads);
 
-
         const screens = {
             intro: document.getElementById('screen-intro'),
             album: document.getElementById('screen-album'),
@@ -607,13 +609,11 @@
             screens[name].classList.add('active');
         };
 
-        // Intro -> Album Transition
+        // Go to Screen 2
         document.getElementById('btn-continue').addEventListener('click', () => {
-            // Play Intro Audio
             if (audioPlayers.intro.src) {
-                audioPlayers.intro.play().catch(e => console.log("Audio play prevented:", e));
+                audioPlayers.intro.play().catch(e => console.log("Intro audio blocked", e));
             }
-            
             showScreen('album');
             startFlyingSequence();
         });
@@ -622,19 +622,19 @@
             const container = document.getElementById('flying-container');
             container.innerHTML = '';
             
+            // Fallbacks if images not uploaded yet
             const images = [
-                state.img1 || 'https://placehold.co/400x500/red/white?text=1',
-                state.img2 || 'https://placehold.co/400x500/purple/white?text=2',
-                state.img3 || 'https://placehold.co/400x500/pink/white?text=3'
+                state.img1 || document.getElementById('display-img1').src,
+                state.img2 || document.getElementById('display-img2').src,
+                state.img3 || document.getElementById('display-img3').src
             ];
 
-            const total = 9; // Number of flying elements
+            const total = 12; 
             for (let i = 0; i < total; i++) {
                 const img = document.createElement('img');
                 img.src = images[i % 3];
                 img.className = 'flying-photo';
                 
-                // Random start
                 const startX = Math.random() > 0.5 ? -200 : window.innerWidth + 200;
                 const startY = Math.random() * window.innerHeight;
                 img.style.left = `${startX}px`;
@@ -642,33 +642,31 @@
                 
                 container.appendChild(img);
 
-                // Animate to center and fade out
                 setTimeout(() => {
                     img.style.opacity = '1';
-                    img.style.transform = `scale(1) rotate(${(Math.random() - 0.5) * 40}deg) translate(${ (Math.random()-0.5)*100 }px, ${ (Math.random()-0.5)*100 }px)`;
+                    img.style.transform = `scale(1) rotate(${(Math.random() - 0.5) * 60}deg) translate(${ (Math.random()-0.5)*150 }px, ${ (Math.random()-0.5)*150 }px)`;
                     img.style.left = `calc(50% - 75px)`;
                     img.style.top = `calc(50% - 100px)`;
                     
                     setTimeout(() => {
                         img.style.opacity = '0';
                         img.style.transform = 'scale(1.5) rotate(0deg)';
-                    }, 2000);
-                }, i * 250); // Stagger
+                    }, 2500);
+                }, i * 200); 
             }
 
-            // After flying, show book
+            // Show 3D Book after flying
             setTimeout(() => {
                 document.getElementById('the-book').style.display = 'block';
                 document.getElementById('btn-next-page').classList.remove('hidden');
                 setTimeout(() => { document.getElementById('the-book').style.opacity = '1'; }, 50);
-            }, (total * 250) + 1500);
+            }, (total * 200) + 1500);
         }
 
-        // Book Logic
         let currentPage = 1;
         const btnNextPage = document.getElementById('btn-next-page');
         
-        btnNextPage.addEventListener('click', () => {
+        const flipPage = () => {
             if (currentPage === 1) {
                 document.getElementById('page1').classList.add('flipped');
                 currentPage++;
@@ -681,6 +679,17 @@
                 showScreen('question');
                 initQuestionMarks();
             }
+        };
+
+        btnNextPage.addEventListener('click', flipPage);
+        // Allow clicking the book itself to flip
+        document.querySelectorAll('.book-page').forEach(page => {
+            page.addEventListener('click', (e) => {
+                // Ensure we only flip the top-most visible page
+                if (e.currentTarget.id === `page${currentPage}`) {
+                    flipPage();
+                }
+            });
         });
 
         const canvas = document.getElementById('q-canvas');
@@ -692,13 +701,13 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             qMarks = [];
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 30; i++) {
                 qMarks.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    speed: Math.random() * 2 + 1,
-                    size: Math.random() * 20 + 20,
-                    opacity: Math.random() * 0.4 + 0.1
+                    speed: Math.random() * 1.5 + 0.5,
+                    size: Math.random() * 25 + 15,
+                    opacity: Math.random() * 0.3 + 0.1
                 });
             }
             animateQMarks();
@@ -713,8 +722,8 @@
                 ctx.font = `${m.size}px Cairo`;
                 ctx.fillText('؟', m.x, m.y);
                 m.y += m.speed;
-                if (m.y > canvas.height + 30) {
-                    m.y = -30;
+                if (m.y > canvas.height + 40) {
+                    m.y = -40;
                     m.x = Math.random() * canvas.width;
                 }
             });
@@ -728,40 +737,37 @@
             }
         });
 
-        // Dodging Button Logic
         const btnNo = document.getElementById('btn-no');
         let dodgeCount = 0;
 
         const dodgeAction = (e) => {
-            if (e) e.preventDefault(); // crucial for mobile touch
+            if (e) e.preventDefault(); 
             dodgeCount++;
             
             if (dodgeCount === 3) {
                 btnNo.innerText = 'ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض';
                 btnNo.classList.remove('text-2xl', 'py-4', 'px-10', 'rounded-full');
-                btnNo.classList.add('text-sm', 'md:text-base', 'py-3', 'px-6', 'rounded-xl');
+                btnNo.classList.add('text-sm', 'md:text-base', 'py-2', 'px-4', 'rounded-xl');
             }
 
-            // Calculate bounds
             const w = window.innerWidth;
             const h = window.innerHeight;
             const btnW = btnNo.offsetWidth;
             const btnH = btnNo.offsetHeight;
 
-            // Generate safe random position
+            // Constrain to visible area
             const newX = Math.max(10, Math.random() * (w - btnW - 20));
             const newY = Math.max(10, Math.random() * (h - btnH - 20));
 
-            // Fix position to viewport
             btnNo.style.position = 'fixed';
             btnNo.style.left = `${newX}px`;
             btnNo.style.top = `${newY}px`;
         };
 
-        // Attach to both mouse and touch for aggressive dodging
+        // Aggressive event listeners for dodging
         btnNo.addEventListener('mouseenter', dodgeAction);
         btnNo.addEventListener('touchstart', dodgeAction, { passive: false });
-        btnNo.addEventListener('click', dodgeAction); // Backup
+        btnNo.addEventListener('click', dodgeAction); 
 
         const btnYes = document.getElementById('btn-yes');
         btnYes.addEventListener('click', () => {
@@ -769,7 +775,8 @@
             showScreen('celeb');
             
             if (audioPlayers.celeb.src) {
-                audioPlayers.celeb.play().catch(e => console.log("Audio blocked:", e));
+                audioPlayers.celeb.currentTime = 0;
+                audioPlayers.celeb.play().catch(e => console.log("Celeb audio blocked:", e));
             }
             
             startCelebrationFX();
@@ -784,29 +791,29 @@
                 heart.innerHTML = '❤️';
                 heart.className = 'falling-heart';
                 heart.style.left = `${Math.random() * 100}vw`;
-                heart.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                heart.style.animationDuration = `${Math.random() * 2 + 2.5}s`;
                 bg.appendChild(heart);
                 
-                setTimeout(() => heart.remove(), 4000);
-            }, 100);
+                setTimeout(() => heart.remove(), 5000);
+            }, 150);
 
-            // Pop up "وحشتيني"
+            // Pop up "وحشتيني" words randomly
             setInterval(() => {
-                if(Math.random() > 0.4) {
+                if(Math.random() > 0.3) {
                     const txt = document.createElement('div');
-                    txt.innerText = 'وحشتيني';
-                    txt.className = 'pop-text';
+                    txt.innerHTML = 'وحشتيني <br><span class="text-3xl">❤️</span>';
+                    txt.className = 'pop-text text-center leading-none';
                     txt.style.left = `${10 + Math.random() * 70}vw`;
-                    txt.style.top = `${10 + Math.random() * 80}vh`;
+                    txt.style.top = `${10 + Math.random() * 70}vh`;
                     bg.appendChild(txt);
                     
                     setTimeout(() => txt.remove(), 2000);
                 }
-            }, 600);
+            }, 800);
         }
 
-        // Fire Initialization on load
-        initApp();
+        // Initialize App on Load
+        window.addEventListener('load', initApp);
     </script>
 </body>
 </html>
