@@ -91,7 +91,7 @@
     <!-- Canvas for particle background effects -->
     <canvas id="effectCanvas" class="effect-canvas"></canvas>
 
-    <!-- Hidden Settings Gear Icon (No hint on page) -->
+    <!-- Hidden Settings Gear Icon -->
     <button onclick="openSettingsModal()" class="fixed top-4 left-4 z-40 p-3 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 rounded-full border border-rose-500/20 backdrop-blur-md transition shadow-lg" title="الإعدادات">
         <i class="fa-solid fa-gear text-lg"></i>
     </button>
@@ -113,20 +113,40 @@
         </div>
     </div>
 
-    <!-- Hidden Settings Panel Modal (Cloud synced via Firebase) -->
+    <!-- Hidden Settings Panel Modal (Slot-based photo management & audio sync) -->
     <div id="settingsPanelModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card p-6 md:p-8 rounded-3xl max-w-2xl w-full shadow-2xl border border-rose-500/40 max-h-[90vh] overflow-y-auto text-right">
             <div class="flex items-center justify-between mb-6 pb-3 border-b border-rose-500/20">
-                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-cloud-arrow-up ml-2"></i> إعدادات المجلد والأغاني (مزامنة سحابية)</h3>
+                <h3 class="text-2xl font-black text-rose-300"><i class="fa-solid fa-cloud-arrow-up ml-2"></i> إدارة الخانات والأغاني (مزامنة سحابية)</h3>
                 <button onclick="closeSettingsPanel()" class="text-rose-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <div class="space-y-6">
-                <!-- Photo Upload Section -->
-                <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20">
-                    <h4 class="text-sm font-bold text-rose-300 mb-2"><i class="fa-solid fa-images ml-1"></i> رفع صور الألبوم المباشرة (<span id="settingsPhotoCount">0</span> صور مرفوعة سحابياً)</h4>
-                    <p class="text-xs text-rose-300/60 mb-3">الصور تظهر مباشرة لجميع الزوار على اللينك عالمياً (تدعم العرض بالطول والعرض بالكامل تلقائياً).</p>
-                    <input type="file" id="adminPhotoInput" multiple accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
+                <!-- Slot-Based Photo Upload Section -->
+                <div class="bg-rose-950/30 p-4 rounded-2xl border border-rose-500/20 space-y-4">
+                    <h4 class="text-sm font-bold text-rose-300"><i class="fa-solid fa-images ml-1"></i> تخصيص صور الألبوم حسب الخانات (ترتيب ثابت)</h4>
+                    <p class="text-xs text-rose-300/60">كل خانة تقابل صفحة محددة في الألبوم مع النص الثابت الخاص بها.</p>
+
+                    <!-- Slot 1 -->
+                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
+                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الأولى (الصفحة 1):</label>
+                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة."</p>
+                        <input type="file" id="slot1Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
+                    </div>
+
+                    <!-- Slot 2 -->
+                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
+                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الثانية (الصفحة 2):</label>
+                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا."</p>
+                        <input type="file" id="slot2Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
+                    </div>
+
+                    <!-- Slot 3 -->
+                    <div class="p-3 bg-rose-900/20 rounded-xl border border-rose-500/10">
+                        <label class="block text-xs font-bold text-rose-200 mb-1">الخانة الثالثة (الصفحة 3):</label>
+                        <p class="text-[11px] text-rose-300/70 mb-2">النص الثابت: "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."</p>
+                        <input type="file" id="slot3Input" accept="image/*" class="w-full text-xs text-rose-200 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-rose-600 file:text-white hover:file:bg-rose-500 cursor-pointer">
+                    </div>
                 </div>
 
                 <!-- Stage Audio Configuration Section -->
@@ -151,7 +171,7 @@
             </div>
 
             <div class="mt-6 pt-4 border-t border-rose-500/20 flex justify-between items-center">
-                <button onclick="clearAllPhotos()" class="px-4 py-2 bg-red-900/40 hover:bg-red-800 text-red-300 text-xs font-bold rounded-xl transition">حذف كل الصور المخصصة</button>
+                <button onclick="resetToDefaultSlots()" class="px-4 py-2 bg-red-900/40 hover:bg-red-800 text-red-300 text-xs font-bold rounded-xl transition">إعادة الصور الافتراضية</button>
                 <button onclick="saveSettingsToFirebase()" class="px-6 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white font-bold rounded-xl shadow-lg transition">حفظ ومزامنة عالمياً</button>
             </div>
         </div>
@@ -225,7 +245,7 @@
                     <i class="fa-solid fa-arrow-right"></i>
                     <span>السابق</span>
                 </button>
-                <span id="pageIndicator" class="text-xs font-bold text-rose-300 tracking-wider">صفحة 1 من 4</span>
+                <span id="pageIndicator" class="text-xs font-bold text-rose-300 tracking-wider">صفحة 1 من 3</span>
                 <button onclick="nextAlbumPage()" id="nextPageBtn" class="px-5 py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 text-white rounded-xl font-bold transition flex items-center gap-2 shadow-lg">
                     <span>التالي</span>
                     <i class="fa-solid fa-arrow-left"></i>
@@ -254,7 +274,7 @@
                     </button>
 
                     <button id="refusalBtn" onmouseover="dodgeButton()" ontouchstart="dodgeButton()" onclick="dodgeButton()" class="w-full sm:w-auto px-8 py-4 bg-rose-900/80 hover:bg-rose-800 text-rose-200 font-bold text-lg rounded-2xl border border-rose-500/40 transition-all duration-200 absolute sm:relative">
-                        لا
+                        رفض
                     </button>
                 </div>
             </div>
@@ -268,7 +288,7 @@
                 </div>
 
                 <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-pink-300 to-red-400 mb-6 leading-tight">
-                    كنت عارف إن حبنا أقوي من أي حاجة وأنك هتسامحيني
+                    كنت عارف ان حبنا اقوي من اي حاجه وانك هتسامحيني
                 </h1>
 
                 <p class="text-xl md:text-2xl font-bold text-rose-200 mb-8 animate-pulse">
@@ -288,7 +308,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDocs, onSnapshot, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         let app, db, auth;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'romantic-apology-global-app';
@@ -310,98 +330,97 @@
             console.error("Firebase init error:", e);
         }
 
-        // Global state for photos & audio (synced live)
-        let defaultPhotos = [
-            { url: 'https://placehold.co/400x500/e11d48/ffffff?text=ذكرياتنا+الجميلة+1' },
-            { url: 'https://placehold.co/400x500/be123c/ffffff?text=ذكرياتنا+الجميلة+2' },
-            { url: 'https://placehold.co/400x500/9f1239/ffffff?text=ذكرياتنا+الجميلة+3' },
-            { url: 'https://placehold.co/400x500/881337/ffffff?text=ذكرياتنا+الجميلة+4' }
-        ];
+        // Default slot images
+        const defaultSlots = {
+            slot1: 'https://placehold.co/400x500/e11d48/ffffff?text=Slot+1+رسالة',
+            slot2: 'https://placehold.co/400x500/be123c/ffffff?text=Slot+2+صورة',
+            slot3: 'https://placehold.co/400x500/9f1239/ffffff?text=Slot+3+AI'
+        };
 
-        let loadedPhotos = [];
+        window.currentSlots = { ...defaultSlots };
         window.globalAudios = { stage1: '', stage2: '', stage3: '' };
 
-        // Static captions that NEVER change when custom photos are uploaded
-        window.staticCaptions = [
-            "أجمل ضحكة في الدنيا، يوم ما ربنا جمعنا مع بعض وسدنا كل الدنيا بضحكتك.",
-            "أحلى خروجة وأجمل أيام عشناها، كنتِ منورة الدنيا كلها بحضورك.",
-            "اللحظات دي بتفكرني ليه أنا عشقتك من أول نظرة، ربنا ما يحرمني منك.",
-            "صفحة جديدة وبداية أحلى مع الإنسانة اللي سكنت قلبي وروحي للأبد."
+        // Fixed and static captions corresponding strictly to Slot 1, Slot 2, Slot 3
+        window.fixedCaptions = [
+            "اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
+            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
+            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
         // Real-time synchronization via Firebase Firestore
         if (db) {
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), (snapshot) => {
-                const fetched = [];
-                snapshot.forEach(docSnap => {
-                    fetched.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                if (fetched.length > 0) {
-                    loadedPhotos = fetched;
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'slots_config'), (docSnap) => {
+                if (docSnap.exists() && docSnap.data()) {
+                    const data = docSnap.data();
+                    window.currentSlots = {
+                        slot1: data.slot1 || defaultSlots.slot1,
+                        slot2: data.slot2 || defaultSlots.slot2,
+                        slot3: data.slot3 || defaultSlots.slot3
+                    };
                 } else {
-                    loadedPhotos = defaultPhotos;
+                    window.currentSlots = { ...defaultSlots };
                 }
-                updateSettingsPhotoCount();
                 if (typeof window.renderAlbumSheets === 'function') {
                     window.renderAlbumSheets();
                 }
             }, (err) => {
-                console.error("Photos sync error:", err);
-                loadedPhotos = defaultPhotos;
-                updateSettingsPhotoCount();
+                console.error("Slots sync error:", err);
+                window.currentSlots = { ...defaultSlots };
             });
 
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'settings'), (snapshot) => {
-                snapshot.forEach(docSnap => {
-                    if (docSnap.id === 'audio_config') {
-                        window.globalAudios = docSnap.data() || window.globalAudios;
-                    }
-                });
-            }, (err) => console.error("Settings sync error:", err));
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'audio_config'), (docSnap) => {
+                if (docSnap.exists() && docSnap.data()) {
+                    window.globalAudios = docSnap.data();
+                }
+            }, (err) => console.error("Audio sync error:", err));
         } else {
-            loadedPhotos = defaultPhotos;
-            updateSettingsPhotoCount();
+            window.currentSlots = { ...defaultSlots };
         }
 
-        window.getEffectivePhotos = function() {
-            return loadedPhotos.length > 0 ? loadedPhotos : defaultPhotos;
+        window.getEffectiveSlots = function() {
+            return [
+                { url: window.currentSlots.slot1, caption: window.fixedCaptions[0] },
+                { url: window.currentSlots.slot2, caption: window.fixedCaptions[1] },
+                { url: window.currentSlots.slot3, caption: window.fixedCaptions[2] }
+            ];
         };
 
         window.saveSettingsToFirebase = async function() {
-            const photoInput = document.getElementById('adminPhotoInput');
-            if (photoInput.files && photoInput.files.length > 0 && db) {
-                for (let file of photoInput.files) {
-                    const reader = new FileReader();
-                    reader.onload = async function(e) {
-                        const base64Str = e.target.result;
-                        await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'photos'), {
-                            url: base64Str,
-                            createdAt: Date.now()
-                        });
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-
-            const audio1File = document.getElementById('audioStage1').files[0];
-            const audio2File = document.getElementById('audioStage2').files[0];
-            const audio3File = document.getElementById('audioStage3').files[0];
-
-            let newAudios = { ...window.globalAudios };
-            const readFileAsDataURL = (file) => {
+            const readFileAsDataURL = (fileInputId) => {
                 return new Promise((resolve) => {
-                    if (!file) resolve(null);
+                    const fileInput = document.getElementById(fileInputId);
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        resolve(null);
+                        return;
+                    }
                     const reader = new FileReader();
                     reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(fileInput.files[0]);
                 });
             };
 
-            newAudios.stage1 = await readFileAsDataURL(audio1File) || newAudios.stage1;
-            newAudios.stage2 = await readFileAsDataURL(audio2File) || newAudios.stage2;
-            newAudios.stage3 = await readFileAsDataURL(audio3File) || newAudios.stage3;
+            const s1 = await readFileAsDataURL('slot1Input');
+            const s2 = await readFileAsDataURL('slot2Input');
+            const s3 = await readFileAsDataURL('slot3Input');
+
+            const a1 = await readFileAsDataURL('audioStage1');
+            const a2 = await readFileAsDataURL('audioStage2');
+            const a3 = await readFileAsDataURL('audioStage3');
+
+            let newSlots = {
+                slot1: s1 || window.currentSlots.slot1,
+                slot2: s2 || window.currentSlots.slot2,
+                slot3: s3 || window.currentSlots.slot3
+            };
+
+            let newAudios = {
+                stage1: a1 || window.globalAudios.stage1,
+                stage2: a2 || window.globalAudios.stage2,
+                stage3: a3 || window.globalAudios.stage3
+            };
 
             if (db) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'slots_config'), newSlots);
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'audio_config'), newAudios);
             }
 
@@ -409,26 +428,14 @@
             closeSettingsPanel();
         };
 
-        window.clearAllPhotos = async function() {
-            if (!db) return;
-            try {
-                const snapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'photos'));
-                for (let docSnap of snapshot.docs) {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'photos', docSnap.id));
-                }
-                showToast("تم حذف جميع الصور المخصصة وعودة الصور الافتراضية.", "success");
-                closeSettingsPanel();
-            } catch (e) {
-                console.error("Error clearing photos:", e);
+        window.resetToDefaultSlots = async function() {
+            window.currentSlots = { ...defaultSlots };
+            if (db) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'slots_config'), defaultSlots);
             }
+            showToast("تم استعادة الصور الافتراضية بنجاح.", "success");
+            closeSettingsPanel();
         };
-
-        function updateSettingsPhotoCount() {
-            const countEl = document.getElementById('settingsPhotoCount');
-            if (countEl) {
-                countEl.textContent = loadedPhotos.length;
-            }
-        }
     </script>
 
     <!-- Application Script -->
@@ -479,7 +486,6 @@
             if (pass === '9090') {
                 closePasswordModal();
                 document.getElementById('settingsPanelModal').classList.remove('hidden');
-                if (typeof updateSettingsPhotoCount === 'function') updateSettingsPhotoCount();
             } else {
                 document.getElementById('passwordErrorMsg').textContent = 'كلمة المرور غير صحيحة';
             }
@@ -520,15 +526,14 @@
         function generateFlyingPhotos() {
             const container = document.getElementById('flyingPhotosContainer');
             container.innerHTML = '';
-            const photos = window.getEffectivePhotos();
+            const slots = window.getEffectiveSlots();
 
-            for (let i = 0; i < 14; i++) {
+            for (let i = 0; i < 12; i++) {
                 const img = document.createElement('img');
-                const photoObj = photos[i % photos.length];
-                img.src = photoObj.url;
+                const slotObj = slots[i % slots.length];
+                img.src = slotObj.url;
                 img.className = 'absolute w-24 h-32 md:w-32 md:h-44 object-cover rounded-xl shadow-2xl border-2 border-rose-500/40 flying-photo';
                 
-                // Random start positions from all directions
                 const startX = (Math.random() - 0.5) * window.innerWidth * 1.5;
                 const startY = (Math.random() - 0.5) * window.innerHeight * 1.5;
                 const endRot = (Math.random() - 0.5) * 30;
@@ -545,15 +550,15 @@
             }
         }
 
-        // 3D Paper-Flipping Album Logic
+        // 3D Paper-Flipping Album Logic with object-fit: contain & fixed captions
         let currentAlbumIndex = 0;
         window.renderAlbumSheets = function() {
             const wrapper = document.getElementById('bookSheetsWrapper');
             wrapper.innerHTML = '';
-            const photos = window.getEffectivePhotos();
-            const totalPages = photos.length;
+            const slots = window.getEffectiveSlots();
+            const totalPages = slots.length;
 
-            photos.forEach((photo, index) => {
+            slots.forEach((slot, index) => {
                 const sheet = document.createElement('div');
                 sheet.className = `book-sheet absolute inset-0 glass-card rounded-3xl p-6 md:p-8 flex flex-col items-center justify-between border border-rose-500/30 shadow-2xl ${index === currentAlbumIndex ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'}`;
                 sheet.style.zIndex = totalPages - index;
@@ -562,21 +567,18 @@
                 // Photo container with object-fit: contain so portrait and landscape photos fit fully without cropping
                 const photoHtml = `
                     <div class="w-full h-64 md:h-80 bg-black/40 rounded-2xl overflow-hidden flex items-center justify-center p-2 border border-rose-500/20 shadow-inner">
-                        <img src="${photo.url}" alt="ذكرياتنا" class="max-w-full max-h-full object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x500/e11d48/ffffff?text=صورة'">
+                        <img src="${slot.url}" alt="ذكرياتنا" class="max-w-full max-h-full object-contain rounded-xl shadow-md" onerror="this.src='https://placehold.co/400x500/e11d48/ffffff?text=صورة'">
                     </div>
                 `;
 
-                // Fixed static romantic caption (never changes when custom photos are uploaded)
-                const captionText = window.staticCaptions[index % window.staticCaptions.length];
-
                 sheet.innerHTML = `
                     <div class="w-full flex items-center justify-between text-rose-300 text-xs font-bold mb-2">
-                        <span>صفحة ذكريات رقم (${index + 1})</span>
+                        <span>صفحة رقم (${index + 1}) من خانة (${index + 1})</span>
                         <i class="fa-solid fa-heart text-rose-500"></i>
                     </div>
                     ${photoHtml}
                     <div class="mt-4 text-center px-2">
-                        <p class="text-sm md:text-base text-rose-100 font-medium leading-relaxed">${captionText}</p>
+                        <p class="text-sm md:text-base text-rose-100 font-medium leading-relaxed">${slot.caption}</p>
                     </div>
                 `;
 
@@ -597,8 +599,8 @@
         };
 
         function nextAlbumPage() {
-            const photos = window.getEffectivePhotos();
-            if (currentAlbumIndex < photos.length - 1) {
+            const slots = window.getEffectiveSlots();
+            if (currentAlbumIndex < slots.length - 1) {
                 currentAlbumIndex++;
                 renderAlbumSheets();
             } else {
@@ -613,32 +615,23 @@
             }
         }
 
-        // Interactive Refusal Button Dodging Logic
         let refusalAttempts = 0;
-        const refusalPhrases = [
-            "لا مش هينفع",
-            "فكر تاني كده!",
-            "مفيش فرصة ترفضي",
-            "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض"
-        ];
 
         function dodgeButton() {
             const btn = document.getElementById('refusalBtn');
             refusalAttempts++;
 
             if (refusalAttempts <= 3) {
-                // Dodge around randomly on screen
                 const randomX = (Math.random() - 0.5) * 260;
                 const randomY = (Math.random() - 0.5) * 180;
                 btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                btn.textContent = refusalPhrases[Math.min(refusalAttempts - 1, refusalPhrases.length - 1)];
             } else {
-                // Lock in exact requested refusal text and continue dodging continuously
-                btn.textContent = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض";
+                // Lock in exact requested refusal text after 3 dodges
+                btn.textContent = "ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هترفضري/مش هتعرف ترفض";
                 const randomX = (Math.random() - 0.5) * 320;
                 const randomY = (Math.random() - 0.5) * 220;
                 btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                btn.style.fontSize = '0.85rem';
+                btn.style.fontSize = '0.8rem';
                 btn.style.padding = '12px 16px';
             }
         }
@@ -653,7 +646,6 @@
             startCelebrationCanvas();
         }
 
-        // Canvas Effects (Falling Question Marks & Heart/Text Explosions)
         const canvas = document.getElementById('effectCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -675,8 +667,7 @@
                     y: Math.random() * canvas.height - canvas.height,
                     speed: 1.5 + Math.random() * 2.5,
                     size: 18 + Math.random() * 24,
-                    opacity: 0.3 + Math.random() * 0.5,
-                    rot: (Math.random() - 0.5) * 0.5
+                    opacity: 0.3 + Math.random() * 0.5
                 });
             }
         }
@@ -692,8 +683,7 @@
                     speedX: (Math.random() - 0.5) * 3,
                     size: 16 + Math.random() * 28,
                     opacity: 0.6 + Math.random() * 0.4,
-                    type: Math.random() > 0.4 ? 'heart' : 'text',
-                    text: Math.random() > 0.5 ? 'وحشتيني ❤️' : '❤️️'
+                    text: Math.random() > 0.5 ? 'وحشتيني ❤️' : '❤️'
                 });
             }
         }
