@@ -12,6 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- EmailJS SDK لإرسال الإيميلات الحقيقية -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // تهيئة EmailJS بالمفتاح العام الخاص بك
+          emailjs.init("v0DvD6_nalGt48e9u");
+       })();
+    </script>
 
     <style>
         :root {
@@ -651,13 +659,13 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول بـ Google مع رمز التحقق OTP -->
+    <!-- نافذة تسجيل الدخول بـ Google مع رمز التحقق OTP المرسل للإيميل الحقيقي -->
     <div class="custom-modal-overlay" id="googleLoginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
                 <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
                 <h3 id="google-modal-title">تسجيل الدخول بـ Google</h3>
-                <p id="google-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لمتابعة الدخول:</p>
+                <p id="google-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لنرسل لك رمز التحقق:</p>
             </div>
             
             <!-- الخطوة 1: إدخال الإيميل -->
@@ -673,19 +681,19 @@
                 </div>
 
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="sendVerificationCode()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال رمز التحقق OTP</button>
+                    <button class="btn-modal-confirm" id="send-otp-btn" onclick="sendVerificationCode()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال رمز التحقق للإيميل</button>
                     <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
                 </div>
             </div>
 
-            <!-- الخطوة 2: إدخال رمز التحقق -->
+            <!-- الخطوة 2: إدخال رمز التحقق المستلم في Gmail -->
             <div id="google-step-2" style="display:none;">
-                <div style="margin-bottom: 15px; background: rgba(212,175,55,0.1); border: 1px dashed var(--primary-gold); padding: 10px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: var(--primary-gold);" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح!</span>
+                <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 10px; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق (OTP) إلى بريدك الإلكتروني بنجاح. تفقد صندوق الوارد في Gmail!</span>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code):</label>
+                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code) من إيميلك:</label>
                     <input type="text" id="real-user-otp" placeholder="أدخل الرمز المكون من 4 أرقام" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 3px;" maxlength="4">
                 </div>
 
@@ -704,9 +712,7 @@
                 <h3 style="color: var(--primary-gold);"><i class="fa-solid fa-box-open"></i> تتبع طلباتي الشخصية</h3>
                 <button onclick="closeTrackingModal()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="user-orders-container">
-                <!-- أوردرات العميل تظهر هنا -->
-            </div>
+            <div id="user-orders-container"></div>
         </div>
     </div>
 
@@ -744,7 +750,7 @@
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-gray); font-size: 13px;">السعر القديم قبل الخصم (اختياري - للأوفر فقط):</label>
+                <label style="color: var(--text-gray); font-size: 13px;">السعر القديم قبل الخصم (اختياري):</label>
                 <input type="number" id="editModalOldPrice" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;" placeholder="اتركه فارغاً لو بدون خصم">
             </div>
 
@@ -755,12 +761,10 @@
         </div>
     </div>
 
-    <!-- الهيدر العرضي الواسع (بدون أي زر إدارة للسرية التامة) -->
+    <!-- الهيدر العرضي الواسع -->
     <header data-aos="fade-down" data-aos-duration="800">
         <a href="#" class="logo" id="store-logo-btn"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
-        <div class="nav-btns" id="header-nav-buttons">
-            <!-- أزرار الهيدر تتغير تلقائياً حسب تسجيل الدخول -->
-        </div>
+        <div class="nav-btns" id="header-nav-buttons"></div>
     </header>
 
     <!-- المحتوى العرضي الواسع -->
@@ -777,9 +781,7 @@
             </div>
         </div>
 
-        <div class="products-grid" id="products-container" data-aos="fade-up" data-aos-duration="1000">
-            <!-- المنتجات تولد تلقائياً -->
-        </div>
+        <div class="products-grid" id="products-container" data-aos="fade-up" data-aos-duration="1000"></div>
     </div>
 
     <!-- قسم نجاح الأوردر -->
@@ -855,7 +857,7 @@
             <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (مؤمنة)</h3>
             
             <div id="admin-login-box">
-                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة (تم إرسال تنبيه إلى medoatlm83@gmail.com):</p>
+                <p style="color: var(--text-gray); margin-bottom: 8px; font-size: 14px;">كلمة مرور الإدارة (تم إرسال إشعار فوري إلى medoatlm83@gmail.com):</p>
                 <input type="password" id="admin-pass-input" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px;">
                 <button class="btn-gold" style="width:100%; justify-content:center;" onclick="verifyAdmin()">دخول لوحة الإدارة</button>
             </div>
@@ -871,7 +873,7 @@
                     <h4 style="color: var(--primary-gold); margin-bottom: 10px;">إضافة منتج جديد (مع إمكانية وضع سعر الأوفر والخصم)</h4>
                     <input type="text" id="new-p-name" placeholder="اسم المنتج الجديد" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="number" id="new-p-price" placeholder="السعر الحالي (بالجنيه)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
-                    <input type="number" id="new-p-old-price" placeholder="السعر القديم قبل الخصم (اختياري - لو فيه أوفر فقط)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                    <input type="number" id="new-p-old-price" placeholder="السعر القديم قبل الخصم (اختياري)" style="width:100%; padding:8px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <input type="text" id="new-p-img" placeholder="رابط صورة المنتج (URL)" style="width:100%; padding:8px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
                     <button class="btn-gold" style="width:100%; justify-content:center;" onclick="addNewProduct()">إضافة المنتج</button>
                 </div>
@@ -933,9 +935,7 @@
             const govSelect = document.getElementById('cust-gov');
             const citySelect = document.getElementById('cust-city');
             const selectedGov = govSelect.value;
-
             citySelect.innerHTML = '<option value="" disabled selected>اختر الإدارة أو المركز التابع</option>';
-
             if(egyptDistricts[selectedGov]) {
                 egyptDistricts[selectedGov].forEach(district => {
                     const opt = document.createElement('option');
@@ -949,7 +949,6 @@
         // انيميشن سقوط الهدوم في شاشة الترحيب
         const introWrapper = document.getElementById('intro-falling-wrapper');
         const clothingIcons = ['fa-shirt', 'fa-vest', 'fa-socks', 'fa-hat-cowboy', 'fa-mitten'];
-        
         for(let i = 0; i < 22; i++) {
             const item = document.createElement('i');
             const randomIcon = clothingIcons[Math.floor(Math.random() * clothingIcons.length)];
@@ -966,15 +965,12 @@
             const item = document.createElement('i');
             const randomIcon = clothingIcons[Math.floor(Math.random() * clothingIcons.length)];
             item.className = `fa-solid ${randomIcon} bg-falling-item`;
-            
             const randomLeft = Math.random() * 95;
             const randomDuration = 5 + Math.random() * 5;
             const randomSize = 22 + Math.random() * 22;
-
             item.style.left = `${randomLeft}%`;
             item.style.fontSize = `${randomSize}px`;
             item.style.animationDuration = `${randomDuration}s`;
-
             bgContainer.appendChild(item);
             setTimeout(() => { item.remove(); }, randomDuration * 1000);
         }
@@ -991,18 +987,15 @@
         let registeredUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_current_user')) || null;
 
-        // متغيرات مؤقتة للتحقق من رمز OTP للعميل
         let pendingLoginData = null;
         let generatedOtpCode = null;
 
-        // التحقق من الرابط السري عند فتح الموقع (#admin)
         window.addEventListener('DOMContentLoaded', () => {
             if(window.location.hash === '#admin') {
                 openAdmin();
             }
         });
 
-        // الطرق السرية لفتح الإدارة (الضغط 5 مرات على الشعار أو Ctrl + Shift + A)
         let logoClickCount = 0;
         document.getElementById('store-logo-btn').addEventListener('click', (e) => {
             e.preventDefault();
@@ -1055,36 +1048,53 @@
             document.getElementById('google-step-1').style.display = 'block';
             document.getElementById('google-step-2').style.display = 'none';
             document.getElementById('google-modal-title').innerText = 'تسجيل الدخول بـ Google';
-            document.getElementById('google-modal-desc').innerText = 'أدخل بريدك الإلكتروني الحقيقي (Gmail) لمتابعة الدخول:';
+            document.getElementById('google-modal-desc').innerText = 'أدخل بريدك الإلكتروني الحقيقي (Gmail) لنرسل لك رمز التحقق:';
             document.getElementById('real-user-name').value = '';
             document.getElementById('real-user-email').value = '';
             document.getElementById('real-user-otp').value = '';
         }
 
-        // خطوة 1: إرسال رمز التحقق OTP للعميل
+        // إرسال كود التحقق الفعلي عبر EmailJS باستخدام المفاتيح المحدثة
         function sendVerificationCode() {
             const name = document.getElementById('real-user-name').value.trim();
             const email = document.getElementById('real-user-email').value.trim();
 
             if(!name || !email || !email.includes('@gmail.com')) {
-                showSiteMessage("خطأ في البيانات", "الرجاء إدخال الاسم الصحيح والبريد الإلكتروني الصحيح على Gmail!");
+                showSiteMessage("خطأ في البيانات", "الرجاء إدخال الاسم والبريد الإلكتروني الصحيح على Gmail!");
                 return;
             }
 
-            // توليد رمز تحقق عشوائي من 4 أرقام
             generatedOtpCode = Math.floor(1000 + Math.random() * 9000).toString();
             pendingLoginData = { name, email, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100' };
 
-            // إظهار تنبيه يوضح للعميل أن الرمز تم إرساله لإيميله (مع عرض الكود للتجربة السريعة)
-            document.getElementById('otp-info-text').innerHTML = `تم إرسال رمز التحقق (OTP) إلى <strong>${email}</strong>.<br><span style="color:#25d366; font-weight:bold; font-size:14px;">(رمز التحقق التجريبي لإتمام الدخول: ${generatedOtpCode})</span>`;
-            
-            document.getElementById('google-step-1').style.display = 'none';
-            document.getElementById('google-step-2').style.display = 'block';
-            document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
-            document.getElementById('google-modal-desc').innerText = 'تم إرسال رسالة تحقق تحتوي على الكود لبريدك الإلكتروني.';
+            const btn = document.getElementById('send-otp-btn');
+            btn.innerText = "جاري إرسال الإيميل...";
+            btn.disabled = true;
+
+            // استخدام Service ID و Template ID الفعليين
+            emailjs.send("service_havf752", "template_3bybp8m", {
+                to_email: email,
+                to_name: name,
+                otp_code: generatedOtpCode,
+                message: `مرحباً ${name}، رمز التحقق الخاص بك لتسجيل الدخول في متجر سَـنَدْ هو: ${generatedOtpCode}`
+            })
+            .then(function(response) {
+                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.disabled = false;
+                document.getElementById('google-step-1').style.display = 'none';
+                document.getElementById('google-step-2').style.display = 'block';
+                document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
+                document.getElementById('otp-info-text').innerHTML = `تم إرسال الإيميل بنجاح إلى <strong>${email}</strong>.<br>افتح بريدك في Gmail واكتب الكود هنا.`;
+            }, function(error) {
+                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.disabled = false;
+                document.getElementById('google-step-1').style.display = 'none';
+                document.getElementById('google-step-2').style.display = 'block';
+                document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
+                document.getElementById('otp-info-text').innerHTML = `(تعذر الإرسال، تحقق من الاتصال): كود التحقق هو: <strong style="color:yellow; font-size:16px;">${generatedOtpCode}</strong>`;
+            });
         }
 
-        // خطوة 2: التحقق من الكود وإتمام تسجيل الدخول
         function verifyAndLogin() {
             const enteredOtp = document.getElementById('real-user-otp').value.trim();
 
@@ -1094,13 +1104,12 @@
             }
 
             if(enteredOtp !== generatedOtpCode) {
-                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق الذي أدخلته غير صحيح! حاول مرة أخرى.");
+                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق الذي أدخلته غير صحيح! تأكد من إيميلك.");
                 document.getElementById('real-user-otp').classList.add('shake');
                 setTimeout(() => { document.getElementById('real-user-otp').classList.remove('shake'); }, 400);
                 return;
             }
 
-            // الكود صحيح 100%
             currentUser = pendingLoginData;
             localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
 
@@ -1112,7 +1121,7 @@
 
             closeGoogleModal();
             updateHeaderNav();
-            showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}! تم التحقق من هويتك وربط حسابك بنجاح.`);
+            showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}! تم التحقق من إيميلك وربط حسابك بنجاح.`);
         }
 
         function logoutUser() {
@@ -1147,7 +1156,6 @@
             container.innerHTML = '';
             myOrders.forEach((ord) => {
                 let itemsList = ord.items.map(i => `• ${i.name} (${i.qty} قطعة) - ${i.price * i.qty} ج`).join('<br>');
-                
                 let statusColor = '#ffcc00';
                 if(ord.status.includes('تجهيز')) statusColor = '#00cccc';
                 if(ord.status.includes('التوصيل') || ord.status.includes('خرج')) statusColor = '#ff9900';
@@ -1331,30 +1339,26 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // لوحة التحكم وإدارة الأدمن مع نظام إرسال الإشعار لـ medoatlm83@gmail.com
+        // إرسال إيميل تنبيه إلى medoatlm83@gmail.com عند فتح لوحة التحكم
         function openAdmin() {
             document.getElementById('adminModal').style.display = 'flex';
-            
-            // إرسال إشعار تنبيه أمني إلى بريدك الإلكتروني medoatlm83@gmail.com
             sendSecurityAlertToAdmin();
         }
 
         function sendSecurityAlertToAdmin() {
-            const alertData = {
-                to: "medoatlm83@gmail.com",
-                subject: "🚨 تنبيه أمني: محاولة دخول لوحة التحكم",
-                body: `تنبيه يا محمد! تم رصد محاولة فتح أو تسجيل دخول على لوحة تحكم متجر سَـنَدْ في تاريخ: ${new Date().toLocaleString('ar-EG')}.`
-            };
+            const timeNow = new Date().toLocaleString('ar-EG');
             
-            // محاكاة إرسال الإيميل الفوري أو فتح نافذة اتصال بريدية آمنة
-            console.log("Security Email Dispatched to:", alertData.to, alertData.body);
-            
-            // رابط إرسال بريدي خفي لضمان وصول التنبيه لإيميلك الشخصي
-            const hiddenFrame = document.createElement('iframe');
-            hiddenFrame.style.display = 'none';
-            hiddenFrame.src = `mailto:medoatlm83@gmail.com?subject=${encodeURIComponent(alertData.subject)}&body=${encodeURIComponent(alertData.body)}`;
-            document.body.appendChild(hiddenFrame);
-            setTimeout(() => { hiddenFrame.remove(); }, 3000);
+            emailjs.send("service_havf752", "template_3bybp8m", {
+                to_email: "medoatlm83@gmail.com",
+                to_name: "محمد (الأدمن)",
+                otp_code: "تنبيه أمني",
+                message: `تنبيه يا محمد! تم رصد محاولة فتح لوحة تحكم متجر سَـنَدْ في تاريخ: ${timeNow}.`
+            })
+            .then(function(response) {
+                console.log("Admin Security Email Sent Successfully!", response.status, response.text);
+            }, function(error) {
+                console.log("Admin Email Notification Error:", error);
+            });
         }
 
         function closeAdmin() {
@@ -1397,7 +1401,7 @@
                             </div>
                         </div>
                         <div style="display:flex; gap:6px;">
-                            <button onclick="editProductPrice(${p.id})" style="background:var(--primary-gold); color:#000; border:none; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">تعديل السعر/الأوفر</button>
+                            <button onclick="editProductPrice(${p.id})" style="background:var(--primary-gold); color:#000; border:none; padding:5px 10px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer;">تعديل السعر</button>
                             <button onclick="confirmDeleteProduct(${p.id})" style="background:#ff4d4d; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-size:11px; cursor:pointer;">حذف</button>
                         </div>
                     </div>
