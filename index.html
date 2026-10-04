@@ -157,7 +157,7 @@
         .album-img-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* لكي تشمل الصورة كاملة بدون قص مزعج */
+            object-fit: cover; /* لملء إطار الصورة كاملاً بالشكل المطلوب */
         }
 
         .album-caption {
@@ -298,9 +298,9 @@
             overflow-y: auto;
         }
 
-        .modal-box input, .modal-box textarea, .modal-box select {
+        .modal-box input[type="file"], .modal-box select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             margin-bottom: 12px;
             background: #222;
             border: 1px solid #444;
@@ -319,8 +319,8 @@
         <div class="modal-box" style="text-align: center;">
             <i class="fa-solid fa-lock" style="font-size: 40px; color: var(--primary-red); margin-bottom: 15px;"></i>
             <h3>لوحة تحكم الموقع</h3>
-            <p style="font-size: 13px; color: var(--text-gray);">أدخل كلمة السر (9090) للتحكم في الصور والترتيب والأغاني:</p>
-            <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
+            <p style="font-size: 13px; color: var(--text-gray);">أدخل كلمة السر (9090) للتحكم في الملفات والترتيب:</p>
+            <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" style="width:100%; padding:10px; margin-bottom:12px; background:#222; border:1px solid #444; color:#fff; border-radius:8px; text-align: center; font-size: 18px; letter-spacing: 5px;">
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button class="btn-action" style="flex:1; padding: 10px;" onclick="verifyAdminPassword()">دخول</button>
                 <button class="btn-action" style="flex:1; padding: 10px; background: #333;" onclick="closeAdminLoginModal()">إلغاء</button>
@@ -328,15 +328,15 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل وترتيب الصور والأغاني (لوحة التحكم) -->
+    <!-- نافذة تعديل وترتيب الصور والأغاني كملف مرفق -->
     <div class="modal-overlay" id="adminPanelModal">
         <div class="modal-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <h3 style="color: var(--primary-red);">إدارة محتوى صفحات الموقع</h3>
+                <h3 style="color: var(--primary-red);">إدارة محتوى صفحات الموقع (رفع ملفات)</h3>
                 <button onclick="closeAdminPanel()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <p style="font-size: 13px; color: var(--text-gray);">قم بإضافة وترتيب الصور (لا تُضاف عشوائياً، بل تظهر حسب الترتيب الذي تحدده):</p>
+            <p style="font-size: 13px; color: var(--text-gray);">قم برفع الصور والأغاني كملفات من جهازك، ورتب الصفحات بالرفع أو الخفض كما تحب:</p>
             
             <div id="admin-pages-config-list"></div>
 
@@ -359,7 +359,7 @@
         <h2>ألبوم الذكريات اللى بينا</h2>
         
         <div class="album-book" id="albumBookContainer">
-            <!-- سيتم توليد صفحات الألبوم برمجياً حسب الترتيب المحفوظ -->
+            <!-- سيتم توليد صفحات الألبوم برمجياً حسب الترتيب -->
         </div>
 
         <div class="album-nav-btns">
@@ -398,18 +398,18 @@
 
     <!-- سكريبت الموقع وتفاعلاته -->
     <script>
-        // النصوص الثابتة المطلوبة تماماً تحت الصور حسب الترتيب
+        // النصوص الثابتة المطلوبة تحت الصور حسب الترتيب تماماً
         const defaultCaptions = [
             "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
             "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // البيانات الافتتاحية القابلة للتعديل والترتيب من لوحة التحكم
-        let albumPages = JSON.parse(localStorage.getItem('sanad_album_pages')) || [
-            { img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audioUrl: "" },
-            { img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600", audioUrl: "" },
-            { img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600", audioUrl: "" }
+        // بيانات الألبوم الافتتاحية
+        let albumPages = JSON.parse(localStorage.getItem('sanad_album_files')) || [
+            { img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audio: "" },
+            { img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600", audio: "" },
+            { img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600", audio: "" }
         ];
 
         let currentAlbumIndex = 0;
@@ -467,11 +467,8 @@
                 currentAlbumIndex++;
                 document.getElementById(`album-page-${currentAlbumIndex}`).classList.add('active');
                 document.getElementById('album-page-indicator').innerText = `${currentAlbumIndex + 1} / ${albumPages.length}`;
-                
-                // تشغيل الأغنية المخصصة لهذه الصفحة إن وجدت
-                playPageAudio(albumPages[currentAlbumIndex].audioUrl);
+                playPageAudio(albumPages[currentAlbumIndex].audio);
             } else {
-                // الانتقال للمرحلة التالية بعد نهاية الألبوم
                 goToStage(3);
             }
         }
@@ -482,14 +479,14 @@
                 currentAlbumIndex--;
                 document.getElementById(`album-page-${currentAlbumIndex}`).classList.add('active');
                 document.getElementById('album-page-indicator').innerText = `${currentAlbumIndex + 1} / ${albumPages.length}`;
-                playPageAudio(albumPages[currentAlbumIndex].audioUrl);
+                playPageAudio(albumPages[currentAlbumIndex].audio);
             }
         }
 
-        function playPageAudio(url) {
+        function playPageAudio(audioData) {
             const audio = document.getElementById('bgMusic');
-            if(url) {
-                audio.src = url;
+            if(audioData) {
+                audio.src = audioData;
                 audio.play().catch(e => console.log("Audio autoplay prevented"));
             }
         }
@@ -519,10 +516,9 @@
             goToStage(4);
             startCelebrationEffects();
             
-            // تشغيل أغنية نهائية إن وجدت
             const audio = document.getElementById('bgMusic');
-            if(albumPages[0] && albumPages[0].audioUrl) {
-                audio.src = albumPages[0].audioUrl;
+            if(albumPages[0] && albumPages[0].audio) {
+                audio.src = albumPages[0].audio;
                 audio.play().catch(e => console.log("Audio played"));
             }
         }
@@ -597,17 +593,19 @@
                             </div>
                         </div>
                         <p style="font-size: 12px; color: var(--text-gray); margin-bottom:4px;"><strong>النص الثابت:</strong> ${defaultCap}</p>
-                        <label style="font-size:12px; color:#ccc;">رابط الصورة (URL):</label>
-                        <input type="text" id="admin-img-${index}" value="${page.img}" placeholder="رابط الصورة">
-                        <label style="font-size:12px; color:#ccc;">رابط الأغنية لهذه الصفحة (اختياري MP3 URL):</label>
-                        <input type="text" id="admin-audio-${index}" value="${page.audioUrl || ''}" placeholder="رابط الأغنية">
+                        
+                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">اختر صورة جديدة من جهازك:</label>
+                        <input type="file" id="admin-img-file-${index}" accept="image/*">
+                        
+                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">اختر أغنية لهذه الصفحة (اختياري MP3):</label>
+                        <input type="file" id="admin-audio-file-${index}" accept="audio/*">
                     </div>
                 `;
             });
         }
 
         function addNewAlbumPage() {
-            albumPages.push({ img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audioUrl: "" });
+            albumPages.push({ img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audio: "" });
             renderAdminConfigList();
         }
 
@@ -630,18 +628,33 @@
             }
         }
 
-        function saveAdminChanges() {
-            albumPages.forEach((page, index) => {
-                const imgVal = document.getElementById(`admin-img-${index}`).value.trim();
-                const audioVal = document.getElementById(`admin-audio-${index}`).value.trim();
-                if(imgVal) page.img = imgVal;
-                page.audioUrl = audioVal;
-            });
+        async function saveAdminChanges() {
+            for (let index = 0; index < albumPages.length; index++) {
+                const imgInput = document.getElementById(`admin-img-file-${index}`);
+                const audioInput = document.getElementById(`admin-audio-file-${index}`);
 
-            localStorage.setItem('sanad_album_pages', JSON.stringify(albumPages));
+                if (imgInput && imgInput.files && imgInput.files[0]) {
+                    albumPages[index].img = await readFileAsDataURL(imgInput.files[0]);
+                }
+
+                if (audioInput && audioInput.files && audioInput.files[0]) {
+                    albumPages[index].audio = await readFileAsDataURL(audioInput.files[0]);
+                }
+            }
+
+            localStorage.setItem('sanad_album_files', JSON.stringify(albumPages));
             closeAdminPanel();
             renderAlbumBook();
-            alert('تم حفظ التغييرات وتحديث ترتيب الصور والمحتوى بنجاح! ✅');
+            alert('تم حفظ الملفات وتحديث ترتيب الألبوم بنجاح! ✅');
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
         }
     </script>
 </body>
