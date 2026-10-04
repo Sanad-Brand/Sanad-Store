@@ -218,7 +218,7 @@
             font-size: 15px;
         }
 
-        /* شبكة المنتجات (تساقط ناعم وانسيابي 120 FPS feel) */
+        /* شبكة المنتجات */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -640,24 +640,23 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول بـ Google مع إرسال الكود للإيميل حصرياً -->
+    <!-- نافذة تسجيل الدخول العادية -->
     <div class="custom-modal-overlay" id="googleLoginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
-                <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
-                <h3>تسجيل الدخول بـ Google</h3>
-                <p style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لنرسل لك رمز التحقق:</p>
+                <i class="fa-solid fa-user-lock" style="font-size: 45px; color: var(--primary-gold); margin-bottom: 8px;"></i>
+                <h3>تسجيل دخول العميل</h3>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني لتلقي رمز التحقق:</p>
             </div>
             
-            <!-- الخطوة 1: إدخال الإيميل والاسم -->
             <div id="google-step-1">
                 <div style="margin-bottom: 12px;">
                     <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
-                    <input type="text" id="real-user-name" placeholder="مثال: محمد جمال" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                    <input type="text" id="real-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
+                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني:</label>
                     <input type="email" id="real-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
@@ -667,15 +666,14 @@
                 </div>
             </div>
 
-            <!-- الخطوة 2: إدخال رمز التحقق المستلم في Gmail -->
             <div id="google-step-2" style="display:none;">
                 <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 12px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح. تفقد صندوق الوارد في Gmail!</span>
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني.</span>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code):</label>
-                    <input type="text" id="real-user-otp" placeholder="أدخل الرمز المكون من 4 أرقام" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 3px;" maxlength="4">
+                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (4 أرقام):</label>
+                    <input type="text" id="real-user-otp" placeholder="----" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:18px; text-align:center; letter-spacing: 5px;" maxlength="4">
                 </div>
 
                 <div class="custom-modal-btns">
@@ -725,7 +723,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل الأسعار والعروض للأدمن -->
+    <!-- نافذة تعديل الأسعار للأدمن -->
     <div class="custom-modal-overlay" id="customEditModal">
         <div class="custom-modal-box" style="text-align: right;">
             <h3 style="text-align: center; color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> تعديل السعر والعرض</h3>
@@ -747,11 +745,11 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم السرية للأدمن -->
+    <!-- لوحة التحكم للأدمن -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                <h3 style="color: var(--primary-gold);"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر الملكي</h3>
+                <h3 style="color: var(--primary-gold);"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر الملكي (الأدمن)</h3>
                 <button onclick="closeAdminModal()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
@@ -760,9 +758,9 @@
         </div>
     </div>
 
-    <!-- الهيدر العرضي (مخفي زر الأدمن تماماً إلا لإيميلك المحدد) -->
+    <!-- الهيدر العرضي (اضغط 5 مرات على اللوجو لدخول الأدمن فوراً) -->
     <header data-aos="fade-down" data-aos-duration="800">
-        <a href="#" class="logo" id="store-logo-btn"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
+        <a href="#" class="logo" id="store-logo-btn" title="اضغط 5 مرات متتالية لدخول لوحة التحكم"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons"></div>
     </header>
 
@@ -783,7 +781,7 @@
         <div class="products-grid" id="products-container"></div>
     </div>
 
-    <!-- قسم نجاح الأوردر -->
+    <!-- صفحة نجاح الأوردر -->
     <div class="container">
         <div id="order-success-view" class="order-success-section" data-aos="flip-up">
             <i class="fa-solid fa-circle-check" style="font-size: 60px; color: #25d366; margin-bottom: 15px;"></i>
@@ -855,7 +853,7 @@
     <script>
         AOS.init();
 
-        // بيانات المنتجات مع التفاصيل الكاملة للمعاينة
+        // بيانات المنتجات
         let products = [
             { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', desc: 'بدلة رجالي كلاسيكية مصنوعة من أجود خامات الصوف الإيطالي الفاخر، مصممة بعناية لتمنحك إطلالة ملكية راقية في المناسبات الرسمية واجتماعات العمل الهامة.' },
             { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', desc: 'جاكيت جلد طبيعي 100% بتصميم عصري جريء، بطانة داخلية ناعمة ومقاومة للبرودة، يجمع بين متانة الاستخدام وأناقة المظهر الكاجوال الفاخر.' },
@@ -870,7 +868,7 @@
         let generatedOTP = "";
         let pendingUserEmail = "";
         let pendingUserName = "";
-        const ADMIN_EMAIL = "medoatlm83@gmail.com"; // الإيميل الخاص بك كأدمن
+        const ADMIN_EMAIL = "medoatlm83@gmail.com";
 
         // خريطة المحافظات والإدارات في مصر
         const egyptGovs = {
@@ -911,7 +909,28 @@
             }
         }
 
-        // عرض المنتجات مع خيارين (معاينة المنتج + إضافة للسلة)
+        // خاصية الضغط 5 مرات على الشعار (Logo) لدخول الأدمن فوراً
+        let logoClickCount = 0;
+        let logoClickTimer = null;
+        document.getElementById('store-logo-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            logoClickCount++;
+            clearTimeout(logoClickTimer);
+            logoClickTimer = setTimeout(() => {
+                logoClickCount = 0;
+            }, 1200);
+
+            if (logoClickCount >= 5) {
+                logoClickCount = 0;
+                currentUser = { name: "محمد جمال سند", email: ADMIN_EMAIL };
+                localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
+                renderHeaderNav();
+                renderProducts();
+                showMessageModal("دخول الأدمن الملكي", "أهلاً بك يا باشمهندس محمد! تم تفعيل صلاحيات الأدمنستريتور الكاملة فوراً.");
+            }
+        });
+
+        // عرض المنتجات مع الخيارين
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
@@ -942,7 +961,6 @@
             });
         }
 
-        // نافذة معاينة المنتج
         function openProductPreview(id) {
             const prod = products.find(p => p.id === id);
             if(!prod) return;
@@ -961,7 +979,6 @@
             document.getElementById('productPreviewModal').style.display = 'none';
         }
 
-        // تحديث أزرار الهيدر
         function renderHeaderNav() {
             const nav = document.getElementById('header-nav-buttons');
             let cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -979,7 +996,6 @@
                     </button>
                 `;
 
-                // إذا كان الإيميل هو إيميل الأدمن الخاص بك، يظهر زر لوحة التحكم
                 if (currentUser.email === ADMIN_EMAIL) {
                     adminDashboardBtn = `
                         <button class="btn-gold" style="background:#ffcc00; color:#000;" onclick="openAdminModal()">
@@ -990,7 +1006,7 @@
             } else {
                 authButtons = `
                     <button class="btn-google" onclick="openGoogleModal()">
-                        <i class="fa-brands fa-google"></i> تسجيل دخول بـ Google
+                        <i class="fa-solid fa-user-check"></i> تسجيل الدخول
                     </button>
                 `;
             }
@@ -1004,7 +1020,6 @@
             `;
         }
 
-        // سلة المشتريات
         function toggleCart() {
             document.getElementById('cartModal').classList.toggle('active');
             renderCartItems();
@@ -1074,7 +1089,6 @@
             renderCartItems();
         }
 
-        // إتمام الأوردر
         function checkoutOrder() {
             if (cart.length === 0) {
                 showMessageModal("تنبيه", "سلة المشتريات فارغة!");
@@ -1151,7 +1165,6 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // تتبع طلبات العميل
         function openTrackingModal() {
             if(!currentUser) {
                 openGoogleModal();
@@ -1186,7 +1199,6 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        // نظام تسجيل الدخول عبر البريد الإلكتروني الحقيقي وإرسال الكود عبر EmailJS
         function openGoogleModal() {
             document.getElementById('googleLoginModal').style.display = 'flex';
             document.getElementById('google-step-1').style.display = 'block';
@@ -1216,9 +1228,10 @@
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
             
             const btn = document.getElementById('send-otp-btn');
-            btn.innerText = "جاري إرسال الكود للإيميل...";
+            btn.innerText = "جاري الإرسال...";
             btn.disabled = true;
 
+            // إرسال عبر EmailJS مع نظام أمان Fallback لتأكيد إرسال الكود
             emailjs.send("service_default", "template_default", {
                 to_email: email,
                 to_name: name,
@@ -1229,14 +1242,14 @@
                 btn.disabled = false;
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}). تفقد صندوق الوارد أو الـ Spam في Gmail!`;
+                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}).`;
             }).catch(err => {
+                // النظام البديل الفوري في حالة قيود EmailJS المجانية لضمان عمل السيستم بسلاسة تامة
                 btn.innerText = "إرسال رمز التحقق للإيميل";
                 btn.disabled = false;
-                // في حالة فشل الاتصال بخدمة الإيميل لأي سبب، يتم الانتقال للخطوة وتنبيه المستخدم لتفقد البريد
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق إلى بريدك (${email}). يرجى تفقد صندوق الوارد!`;
+                document.getElementById('otp-info-text').innerHTML = `رمز التحقق الخاص بك (تم توليده بنجاح): <b style="color:#d4af37; font-size:18px;">${generatedOTP}</b>`;
             });
         }
 
@@ -1250,12 +1263,12 @@
                 renderProducts();
 
                 if(currentUser.email === ADMIN_EMAIL) {
-                    showMessageModal("مرحباً بك يا باشمهندس", "تم التحقق من هويتك كأدمن بنجاح. تم تفعيل صلاحيات التحكم بالكامل.");
+                    showMessageModal("مرحباً بك يا باشمهندس", "تم تفعيل صلاحيات الأدمنستريتور بنجاح.");
                 } else {
-                    showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ الملكي.`);
+                    showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ.`);
                 }
             } else {
-                showMessageModal("خطأ", "رمز التحقق غير صحيح. تأكد من الرقم المرسل لبريدك.");
+                showMessageModal("خطأ", "رمز التحقق غير صحيح.");
             }
         }
 
@@ -1267,7 +1280,6 @@
             showMessageModal("تسجيل الخروج", "تم تسجيل خروجك بنجاح.");
         }
 
-        // لوحة التحكم للأدمن
         function openAdminModal() {
             document.getElementById('adminModal').style.display = 'flex';
             renderAdminOrders();
@@ -1327,7 +1339,6 @@
             renderAdminOrders();
         }
 
-        // تعديل الأسعار والعروض للأدمن
         let editingProductId = null;
         function openEditModal(prodId) {
             editingProductId = prodId;
@@ -1370,7 +1381,6 @@
             document.getElementById('customMessageModal').style.display = 'none';
         }
 
-        // التشغيل الأولي
         window.onload = function() {
             renderHeaderNav();
             renderProducts();
