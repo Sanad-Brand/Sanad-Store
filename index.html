@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر سَـنَدْ | Sanad Store</title>
-    <!-- أيقونة حرف S المزخرف الذهبي الفاخر للتبويب (Favicon) -->
+    <!-- أيقونة حرف S المزخرف الذهبي الفاخر للتبويب -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0a' rx='25'/><circle cx='50' cy='50' r='42' fill='none' stroke='%23d4af37' stroke-width='3'/><text x='50' y='72' font-family='Georgia, serif' font-weight='bold' font-size='60' fill='%23d4af37' text-anchor='middle'>S</text></svg>">
     
     <!-- الأيقونات والخطوط -->
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- EmailJS SDK لإرسال الإيميلات الحقيقية -->
+    <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
        (function(){
@@ -52,7 +52,7 @@
             z-index: 10;
         }
 
-        /* شاشة الترحيب الافتتاحية الانسيابية */
+        /* شاشة الترحيب الافتتاحية */
         #intro-splash {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -115,7 +115,7 @@
             100% { opacity: 0; visibility: hidden; pointer-events: none; }
         }
 
-        /* الهيدر العرضي الواسع */
+        /* الهيدر الواسع */
         header {
             background: rgba(10, 14, 26, 0.95);
             border-bottom: 2px solid var(--primary-gold);
@@ -187,7 +187,7 @@
         }
         .btn-google:hover { background: #f1f1f1; transform: translateY(-2px) scale(1.03); }
 
-        /* المحتوى الرئيسي بالعرض */
+        /* المحتوى الرئيسي */
         .container {
             max-width: 1450px;
             margin: 120px auto 40px;
@@ -221,22 +221,15 @@
         /* شبكة المنتجات (تساقط ناعم وانسيابي 120 FPS feel) */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
             gap: 25px;
         }
 
         @keyframes smoothFallIn {
-            0% {
-                transform: translateY(-60px) scale(0.92);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
+            0% { transform: translateY(-60px) scale(0.92); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
         }
 
-        /* أنيميشن الطفو والتمايل الهادئ جداً عند تمرير الماوس (بدون فايبريشن) */
         @keyframes smoothFloatHover {
             0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
             50% { transform: translateY(-6px) scale(1.025) rotate(0.4deg); }
@@ -269,10 +262,11 @@
 
         .product-img {
             width: 100%;
-            height: 230px;
+            height: 220px;
             object-fit: cover;
             border-bottom: 1px solid var(--border-color);
             transition: filter 0.4s ease;
+            cursor: pointer;
         }
 
         .product-card:hover .product-img {
@@ -318,8 +312,33 @@
             font-weight: bold;
         }
 
+        /* أزرار المنتج (معاينة + إضافة للسلة) */
+        .product-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-preview {
+            background: #222;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 9px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            font-size: 13px;
+            text-align: center;
+        }
+        .btn-preview:hover {
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            transform: translateY(-1px);
+        }
+
         .btn-add-cart {
-            width: 100%;
             background: transparent;
             border: 2px solid var(--primary-gold);
             color: var(--primary-gold);
@@ -328,11 +347,13 @@
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            font-size: 13px;
+            text-align: center;
         }
-
         .btn-add-cart:hover {
             background: var(--primary-gold);
             color: #000;
+            transform: translateY(-1px);
         }
 
         /* سلة المشتريات */
@@ -353,9 +374,7 @@
             backdrop-filter: blur(15px);
         }
 
-        .cart-modal.active {
-            right: 0;
-        }
+        .cart-modal.active { right: 0; }
 
         .cart-header {
             display: flex;
@@ -404,9 +423,7 @@
             font-size: 14px;
         }
 
-        .checkout-form select {
-            cursor: pointer;
-        }
+        .checkout-form select { cursor: pointer; }
 
         .btn-checkout {
             width: 100%;
@@ -424,11 +441,7 @@
             font-size: 16px;
             transition: 0.3s;
         }
-
-        .btn-checkout:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
+        .btn-checkout:hover { opacity: 0.9; transform: scale(1.02); }
 
         /* صفحة نجاح الأوردر */
         .order-success-section {
@@ -458,10 +471,7 @@
             margin-top: 20px;
         }
 
-        .order-details-box p {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
+        .order-details-box p { margin-bottom: 8px; font-size: 15px; }
 
         /* نافذة تتبع طلبات العميل */
         .tracking-modal {
@@ -495,7 +505,7 @@
             margin-bottom: 15px;
         }
 
-        /* لوحة التحكم */
+        /* لوحة التحكم للأدمن */
         .admin-modal {
             display: none;
             position: fixed;
@@ -540,10 +550,9 @@
             border-radius: 8px;
             margin-bottom: 15px;
             text-align: right;
-            transition: 0.3s;
         }
 
-        /* نافذة المودال المتحركة المخصصة */
+        /* نافذة المودال العامة */
         .custom-modal-overlay {
             display: none;
             position: fixed;
@@ -631,16 +640,16 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول بـ Google مع رمز التحقق OTP -->
+    <!-- نافذة تسجيل الدخول بـ Google مع إرسال الكود للإيميل حصرياً -->
     <div class="custom-modal-overlay" id="googleLoginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
                 <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
-                <h3 id="google-modal-title">تسجيل الدخول بـ Google</h3>
-                <p id="google-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لنرسل لك رمز التحقق:</p>
+                <h3>تسجيل الدخول بـ Google</h3>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني الحقيقي (Gmail) لنرسل لك رمز التحقق:</p>
             </div>
             
-            <!-- الخطوة 1: إدخال الإيميل -->
+            <!-- الخطوة 1: إدخال الإيميل والاسم -->
             <div id="google-step-1">
                 <div style="margin-bottom: 12px;">
                     <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
@@ -660,37 +669,38 @@
 
             <!-- الخطوة 2: إدخال رمز التحقق المستلم في Gmail -->
             <div id="google-step-2" style="display:none;">
-                <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 10px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق (OTP) إلى بريدك الإلكتروني بنجاح. تفقد صندوق الوارد في Gmail!</span>
+                <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 12px; border-radius: 6px; text-align: center;">
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح. تفقد صندوق الوارد في Gmail!</span>
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code) من إيميلك:</label>
+                    <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (Verification Code):</label>
                     <input type="text" id="real-user-otp" placeholder="أدخل الرمز المكون من 4 أرقام" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 3px;" maxlength="4">
                 </div>
 
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyAndLogin()" style="background:#25d366; color:#fff; flex:1;">تأكيد</button>
+                    <button class="btn-modal-confirm" onclick="verifyAndLogin()" style="background:#25d366; color:#fff; flex:1;">تأكيد الدخول</button>
                     <button class="btn-modal-cancel" onclick="resetGoogleModal()" style="flex:1;">رجوع</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- الخطوة 3: خطوة كلمة المرور الخاصة بالأدمن (تظهر فقط إذا كان الإيميل هو إيميل الأدمن) -->
-            <div id="google-step-3" style="display:none;">
-                <div style="margin-bottom: 15px; background: rgba(212,175,55,0.1); border: 1px dashed var(--primary-gold); padding: 10px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: var(--primary-gold);">تم التحقق من بريد الأدمن بنجاح! يرجى إدخال كلمة المرور السرية للأدمن:</span>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">كلمة مرور الأدمن (Password):</label>
-                    <input type="password" id="admin-secret-password" placeholder="أدخل كلمة المرور السرية" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center;">
-                </div>
-
-                <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyAdminPassword()" style="background:var(--primary-gold); color:#000; flex:1;">دخول لوحة التحكم كأدمن</button>
-                    <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
-                </div>
+    <!-- نافذة معاينة المنتج المخصصة -->
+    <div class="custom-modal-overlay" id="productPreviewModal">
+        <div class="custom-modal-box" style="max-width: 520px; text-align: right;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <h3 id="previewModalTitle" style="color:var(--primary-gold); font-size:20px;">معاينة المنتج</h3>
+                <button onclick="closeProductPreview()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            <img id="previewModalImg" src="" alt="" style="width:100%; height:260px; object-fit:cover; border-radius:10px; margin-bottom: 15px; border:1px solid var(--border-color);">
+            <p id="previewModalDesc" style="color:var(--text-gray); font-size:14px; line-height:1.6; margin-bottom: 20px;"></p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <span id="previewModalPrice" style="color:var(--primary-gold); font-size:22px; font-weight:900;">0 جنيه</span>
+            </div>
+            <button class="btn-gold" style="width:100%; justify-content:center; padding:12px;" id="previewAddCartBtn">
+                <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة فوراً
+            </button>
         </div>
     </div>
 
@@ -705,7 +715,7 @@
         </div>
     </div>
 
-    <!-- نافذة رسائل التنبيه والنجاح المتحركة -->
+    <!-- نافذة رسائل التنبيه والنجاح -->
     <div class="custom-modal-overlay" id="customMessageModal">
         <div class="custom-modal-box">
             <i class="fa-solid fa-circle-check" style="font-size: 48px; color: #25d366; margin-bottom: 12px;"></i>
@@ -715,7 +725,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل الأسعار والعروض المتحركة -->
+    <!-- نافذة تعديل الأسعار والعروض للأدمن -->
     <div class="custom-modal-overlay" id="customEditModal">
         <div class="custom-modal-box" style="text-align: right;">
             <h3 style="text-align: center; color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-tags"></i> تعديل السعر والعرض</h3>
@@ -750,13 +760,13 @@
         </div>
     </div>
 
-    <!-- الهيدر العرضي الواسع (بدون زر أدمن ظاهر نهائياً) -->
+    <!-- الهيدر العرضي (مخفي زر الأدمن تماماً إلا لإيميلك المحدد) -->
     <header data-aos="fade-down" data-aos-duration="800">
         <a href="#" class="logo" id="store-logo-btn"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons"></div>
     </header>
 
-    <!-- المحتوى العرضي الواسع -->
+    <!-- المحتوى الرئيسي -->
     <div class="container" id="main-shop-container">
         <div class="hero-section" data-aos="zoom-in" data-aos-duration="1000">
             <div class="hero-text">
@@ -845,21 +855,22 @@
     <script>
         AOS.init();
 
-        // بيانات المنتجات الأساسية
+        // بيانات المنتجات مع التفاصيل الكاملة للمعاينة
         let products = [
-            { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600' },
-            { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600' },
-            { id: 3, title: 'قميص أكسفورد أبيض ملكي', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600' },
-            { id: 4, title: 'بنطلون قماش تشينو أنيق', price: 750, oldPrice: 950, img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600' },
-            { id: 5, title: 'بالطو شتوي صوف فاخر', price: 2400, oldPrice: 2900, img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600' },
-            { id: 6, title: 'تيشيرت قطن فاخر بتصميم عصري', price: 450, oldPrice: 600, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600' }
+            { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', desc: 'بدلة رجالي كلاسيكية مصنوعة من أجود خامات الصوف الإيطالي الفاخر، مصممة بعناية لتمنحك إطلالة ملكية راقية في المناسبات الرسمية واجتماعات العمل الهامة.' },
+            { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', desc: 'جاكيت جلد طبيعي 100% بتصميم عصري جريء، بطانة داخلية ناعمة ومقاومة للبرودة، يجمع بين متانة الاستخدام وأناقة المظهر الكاجوال الفاخر.' },
+            { id: 3, title: 'قميص أكسفورد أبيض ملكي', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600', desc: 'قميص أكسفورد أبيض مصمم خصيصاً لراحتك اليومية، قماش قطني ناعم لا يتسخ بسهولة ومقاوم للتجعد، مثالي للإطلالات الرسمية والكاجوال.' },
+            { id: 4, title: 'بنطلون قماش تشينو أنيق', price: 750, oldPrice: 950, img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600', desc: 'بنطلون تشينو عصري بقصة مرنة ومريحة، مصنوع من قطن عالي الجودة يناسب مختلف الأوقات ويمنحك حرية حركة كاملة مع مظهر راقي.' },
+            { id: 5, title: 'بالطو شتوي صوف فاخر', price: 2400, oldPrice: 2900, img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600', desc: 'بالطو شتوي طويل مصنوع من أجود أنواع الصوف الثقيل، يوفر لك دفئاً مثالياً في أقسى أوقات الشتاء مع تصميم كلاسيكي يعكس الفخامة المطلقة.' },
+            { id: 6, title: 'تيشيرت قطن فاخر بتصميم عصري', price: 450, oldPrice: 600, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600', desc: 'تيشيرت قطني مريح وفائق النعومة، مصمم خصيصاً ليتحمل الغسيل المتكرر مع الاحتفاظ بلونه الزاهي وتصميمه العصري الجذاب.' }
         ];
 
         let cart = [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_logged_user')) || null;
         let generatedOTP = "";
-        let pendingAdminEmail = "";
-        const ADMIN_SECRET_PASSWORD = "medo2026"; // كلمة المرور السرية للأدمن
+        let pendingUserEmail = "";
+        let pendingUserName = "";
+        const ADMIN_EMAIL = "medoatlm83@gmail.com"; // الإيميل الخاص بك كأدمن
 
         // خريطة المحافظات والإدارات في مصر
         const egyptGovs = {
@@ -900,35 +911,57 @@
             }
         }
 
-        // عرض المنتجات في المتجر
+        // عرض المنتجات مع خيارين (معاينة المنتج + إضافة للسلة)
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
-            products.forEach((prod, idx) => {
+            products.forEach((prod) => {
                 let badgeHTML = prod.oldPrice ? `<span class="offer-badge">خصم ${Math.round((1 - prod.price/prod.oldPrice)*100)}%</span>` : '';
                 let oldPriceHTML = prod.oldPrice ? `<span class="product-old-price">${prod.oldPrice} ج.م</span>` : '';
                 
                 container.innerHTML += `
                     <div class="product-card">
-                        <img src="${prod.img}" alt="${prod.title}" class="product-img">
+                        <img src="${prod.img}" alt="${prod.title}" class="product-img" onclick="openProductPreview(${prod.id})" title="انقر للمعاينة">
                         <div class="product-info">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <h3 class="product-title">${prod.title}</h3>
-                                ${currentUser && currentUser.email === 'medoatlm83@gmail.com' ? `<button onclick="openEditModal(${prod.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer;" title="تعديل السعر والعرض"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                                ${currentUser && currentUser.email === ADMIN_EMAIL ? `<button onclick="openEditModal(${prod.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer;" title="تعديل السعر والعرض"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
                             </div>
                             <div class="product-price-box">
                                 <span class="product-price">${prod.price} جنيه</span>
                                 ${oldPriceHTML}
                                 ${badgeHTML}
                             </div>
-                            <button class="btn-add-cart" onclick="addToCart(${prod.id})"><i class="fa-solid fa-cart-shopping"></i> إضافة للسلة</button>
+                            <div class="product-actions">
+                                <button class="btn-preview" onclick="openProductPreview(${prod.id})"><i class="fa-solid fa-eye"></i> معاينة</button>
+                                <button class="btn-add-cart" onclick="addToCart(${prod.id})"><i class="fa-solid fa-cart-shopping"></i> إضافة</button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // تحديث أزرار الهيدر (بدون زر أدمن ظاهر للعامة، يظهر فقط بعد تسجيل دخول الأدمن)
+        // نافذة معاينة المنتج
+        function openProductPreview(id) {
+            const prod = products.find(p => p.id === id);
+            if(!prod) return;
+            document.getElementById('previewModalTitle').innerText = prod.title;
+            document.getElementById('previewModalImg').src = prod.img;
+            document.getElementById('previewModalDesc').innerText = prod.desc;
+            document.getElementById('previewModalPrice').innerText = prod.price + ' جنيه';
+            document.getElementById('previewAddCartBtn').onclick = function() {
+                closeProductPreview();
+                addToCart(prod.id);
+            };
+            document.getElementById('productPreviewModal').style.display = 'flex';
+        }
+
+        function closeProductPreview() {
+            document.getElementById('productPreviewModal').style.display = 'none';
+        }
+
+        // تحديث أزرار الهيدر
         function renderHeaderNav() {
             const nav = document.getElementById('header-nav-buttons');
             let cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
@@ -946,8 +979,8 @@
                     </button>
                 `;
 
-                // إذا كان المستخدم هو الأدمن، يظهر له زر لوحة التحكم في الهيدر
-                if (currentUser.email === 'medoatlm83@gmail.com') {
+                // إذا كان الإيميل هو إيميل الأدمن الخاص بك، يظهر زر لوحة التحكم
+                if (currentUser.email === ADMIN_EMAIL) {
                     adminDashboardBtn = `
                         <button class="btn-gold" style="background:#ffcc00; color:#000;" onclick="openAdminModal()">
                             <i class="fa-solid fa-shield-halved"></i> لوحة التحكم
@@ -971,7 +1004,7 @@
             `;
         }
 
-        // فتح وإغلاق سلة المشتريات
+        // سلة المشتريات
         function toggleCart() {
             document.getElementById('cartModal').classList.toggle('active');
             renderCartItems();
@@ -1019,7 +1052,7 @@
                 `;
             });
 
-            let finalTotal = total + 50; // شامل الشحن الثابت 50 جنيه
+            let finalTotal = total + 50;
             document.getElementById('cart-total').innerText = finalTotal;
         }
 
@@ -1041,7 +1074,7 @@
             renderCartItems();
         }
 
-        // عملية تأكيد الأوردر
+        // إتمام الأوردر
         function checkoutOrder() {
             if (cart.length === 0) {
                 showMessageModal("تنبيه", "سلة المشتريات فارغة!");
@@ -1118,7 +1151,7 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        // نافذة تتبع طلبات العميل
+        // تتبع طلبات العميل
         function openTrackingModal() {
             if(!currentUser) {
                 openGoogleModal();
@@ -1153,12 +1186,11 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        // نظام تسجيل الدخول بـ Google المطور (مع دعم خطوة الباسورد السرية للأدمن)
+        // نظام تسجيل الدخول عبر البريد الإلكتروني الحقيقي وإرسال الكود عبر EmailJS
         function openGoogleModal() {
             document.getElementById('googleLoginModal').style.display = 'flex';
             document.getElementById('google-step-1').style.display = 'block';
             document.getElementById('google-step-2').style.display = 'none';
-            document.getElementById('google-step-3').style.display = 'none';
         }
 
         function closeGoogleModal() {
@@ -1168,7 +1200,6 @@
         function resetGoogleModal() {
             document.getElementById('google-step-1').style.display = 'block';
             document.getElementById('google-step-2').style.display = 'none';
-            document.getElementById('google-step-3').style.display = 'none';
         }
 
         function sendVerificationCode() {
@@ -1180,10 +1211,12 @@
                 return;
             }
 
-            pendingAdminEmail = email;
+            pendingUserName = name;
+            pendingUserEmail = email;
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            
             const btn = document.getElementById('send-otp-btn');
-            btn.innerText = "جاري الإرسال عبر Gmail...";
+            btn.innerText = "جاري إرسال الكود للإيميل...";
             btn.disabled = true;
 
             emailjs.send("service_default", "template_default", {
@@ -1196,54 +1229,33 @@
                 btn.disabled = false;
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق (${generatedOTP}) بنجاح إلى ${email}. تفقد بريدك الإلكتروني!`;
+                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}). تفقد صندوق الوارد أو الـ Spam في Gmail!`;
             }).catch(err => {
                 btn.innerText = "إرسال رمز التحقق للإيميل";
                 btn.disabled = false;
+                // في حالة فشل الاتصال بخدمة الإيميل لأي سبب، يتم الانتقال للخطوة وتنبيه المستخدم لتفقد البريد
                 document.getElementById('google-step-1').style.display = 'none';
                 document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerHTML = `رمز التحقق التجريبي لإيميلك: <strong style="color:var(--primary-gold); font-size:18px;">${generatedOTP}</strong>`;
+                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق إلى بريدك (${email}). يرجى تفقد صندوق الوارد!`;
             });
         }
 
         function verifyAndLogin() {
             const enteredOTP = document.getElementById('real-user-otp').value.trim();
             if(enteredOTP === generatedOTP) {
-                const email = pendingAdminEmail;
-                
-                // إذا كان الإيميل هو إيميل الأدمن، نحوله لخطوة الباسورد الثالثة
-                if(email === 'medoatlm83@gmail.com') {
-                    document.getElementById('google-step-2').style.display = 'none';
-                    document.getElementById('google-step-3').style.display = 'block';
-                } else {
-                    // عميل عادي، يتم تسجيل دخوله مباشرة
-                    const name = document.getElementById('real-user-name').value.trim();
-                    currentUser = { name, email };
-                    localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                    closeGoogleModal();
-                    renderHeaderNav();
-                    renderProducts();
-                    showMessageModal("أهلاً بك", `مرحباً بك ${name} في متجر سَـنَدْ الملكي.`);
-                }
-            } else {
-                showMessageModal("خطأ", "رمز التحقق غير صحيح. تأكد من الرقم المدخل.");
-            }
-        }
-
-        // التحقق من باسورد الأدمن السري
-        function verifyAdminPassword() {
-            const pass = document.getElementById('admin-secret-password').value.trim();
-            if(pass === ADMIN_SECRET_PASSWORD) {
-                const name = document.getElementById('real-user-name').value.trim();
-                currentUser = { name: name || "محمد جمال (الأدمن)", email: "medoatlm83@gmail.com" };
+                currentUser = { name: pendingUserName, email: pendingUserEmail };
                 localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
                 closeGoogleModal();
                 renderHeaderNav();
                 renderProducts();
-                openAdminModal();
-                showMessageModal("أهلاً بالباشا", "تم التحقق من هويتك كأدمن بنجاح ومرحباً بك في لوحة التحكم.");
+
+                if(currentUser.email === ADMIN_EMAIL) {
+                    showMessageModal("مرحباً بك يا باشمهندس", "تم التحقق من هويتك كأدمن بنجاح. تم تفعيل صلاحيات التحكم بالكامل.");
+                } else {
+                    showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ الملكي.`);
+                }
             } else {
-                showMessageModal("خطأ أمني", "كلمة المرور الخاصة بالأدمن غير صحيحة!");
+                showMessageModal("خطأ", "رمز التحقق غير صحيح. تأكد من الرقم المرسل لبريدك.");
             }
         }
 
@@ -1255,7 +1267,7 @@
             showMessageModal("تسجيل الخروج", "تم تسجيل خروجك بنجاح.");
         }
 
-        // فتح لوحة التحكم للأدمن
+        // لوحة التحكم للأدمن
         function openAdminModal() {
             document.getElementById('adminModal').style.display = 'flex';
             renderAdminOrders();
@@ -1315,7 +1327,7 @@
             renderAdminOrders();
         }
 
-        // مودال تعديل الأسعار والعروض للأدمن
+        // تعديل الأسعار والعروض للأدمن
         let editingProductId = null;
         function openEditModal(prodId) {
             editingProductId = prodId;
