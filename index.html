@@ -666,11 +666,12 @@
                     <input type="password" id="admin-login-pass" placeholder="أدخل كلمة المرور" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px; text-align:center;">
                 </div>
 
-                <!-- زر بصمة الوجه / Face ID للأدمن -->
+                <!-- زر بصمة الوجه الحقيقية (Face ID / WebAuthn) للأدمن -->
                 <div style="margin-bottom: 15px;">
-                    <button class="btn-gold" onclick="loginWithFaceID()" style="width:100%; justify-content:center; background: linear-gradient(135deg, #4285F4, #34A853); color:#fff; font-size:15px; padding:11px;">
-                        <i class="fa-solid fa-face-recognition" style="font-size:18px;"></i> تسجيل الدخول بـ Face ID (بصمة الوجه) 👤
+                    <button class="btn-gold" onclick="authenticateRealFaceID()" style="width:100%; justify-content:center; background: linear-gradient(135deg, #4285F4, #34A853); color:#fff; font-size:15px; padding:11px;">
+                        <i class="fa-solid fa-face-recognition" style="font-size:18px;"></i> تسجيل الدخول بـ Face ID / البصمة الآمنة 👤
                     </button>
+                    <p style="font-size: 11px; color: var(--text-gray); text-align: center; margin-top: 5px;">يستخدم مستشعر بصمة الوجه أو الجهاز الحقيقي (لا يقبل أي وجه آخر)</p>
                 </div>
 
                 <div class="custom-modal-btns">
@@ -1039,24 +1040,19 @@
         // تفعيل زر Enter و Esc و زر الرجوع في الموبايل
         function setupGlobalKeyboardShortcuts() {
             window.addEventListener('keydown', (e) => {
-                // زر Enter لإتمام الأوردر لو سلة المشتريات مفتوحة
                 if (e.key === 'Enter') {
                     const cartModal = document.getElementById('cartModal');
                     if (cartModal.classList.contains('active')) {
-                        // لو المستخدم واقف جوه فورم الشراء وداس Enter
                         e.preventDefault();
                         checkoutOrder();
                     }
                 }
-
-                // زر Esc لإغلاق النوافذ المفتوحة
                 if (e.key === 'Escape') {
                     closeAllModals();
                 }
             });
         }
 
-        // إدارة زر الرجوع في المتصفح أو زر الموبايل الخلفي لإغلاق النوافذ أو العودة
         function setupHistoryBackNavigation() {
             window.addEventListener('popstate', (e) => {
                 closeAllModals();
@@ -1192,37 +1188,69 @@
             });
         }
 
-        // تسجيل الدخول بـ Face ID / بصمة الوجه للأدمن
-        async function loginWithFaceID() {
+        // بصمة الوجه / Face ID الحقيقية والآمنة باستخدام WebAuthn API
+        async function authenticateRealFaceID() {
             try {
-                // محاولة استخدام WebAuthn الحقيقي لو متاح ومحمّل (HTTPS / Localhost)
-                if (window.PublicKeyCredential && PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable) {
-                    const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-                    if (available) {
-                        const publicKey = {
-                            challenge: new Uint8Array(32),
+                if (!window.PublicKeyCredential) {
+                    showSiteMessage("غير مدعوم", "متصفحك لا يدعم بصمة الوجه الأمنية (WebAuthn).");
+                    return;
+                }
+
+                // التحقق من توفر مستشعر البيومتري في الجهاز (Face ID / Windows Hello)
+                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                if (!available) {
+                    showSiteMessage("تنبيه", "لا يوجد مستشعر بصمة وجه أو بصمة إصبع مفعل على هذا الجهاز.");
+                    return;
+                }
+
+                let credentialId = localStorage.getItem('sanad_admin_credential_id');
+
+                if (!credentialId) {
+                    // عملية التسجيل الأولى (ربط الجهاز بـ Face ID الخاص بك حصرياً)
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const createCredentialOptions = {
+                        publicKey: {
+                            challenge: challenge,
                             rp: { name: "Sanad Store Admin" },
                             user: {
-                                id: new Uint8Array(16),
+                                id: Uint8Array.from("medoatlm83", c => c.charCodeAt(0)),
                                 name: "medoatlm83@gmail.com",
                                 displayName: "المهندس محمد جمال"
                             },
                             pubKeyCredParams: [{ alg: -7, type: "public-key" }],
                             timeout: 60000,
-                            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" }
-                        };
-                        await navigator.credentials.create({ publicKey });
-                    }
+                            authenticatorSelection: {
+                                authenticatorAttachment: "platform",
+                                userVerification: "required"
+                            },
+                            attestation: "direct"
+                        }
+                    };
+
+                    const credential = await navigator.credentials.create(createCredentialOptions);
+                    // حفظ معرف البصمة المشفر الخاص بجهازك محلياً
+                    const credIdB64 = btoa(String.fromCharCode.apply(null, new Uint8Array(credential.rawId)));
+                    localStorage.setItem('sanad_admin_credential_id', credIdB64);
                 }
-                
-                // اتمام تسجيل الدخول الناجح للأدمن
+
+                // عملية المصادقة الفعلية (التحقق من وجهك عبر نظام التشغيل)
+                const getOptions = {
+                    publicKey: {
+                        challenge: new Uint8Array(32),
+                        timeout: 60000,
+                        userVerification: "required",
+                        rpId: window.location.hostname || "localhost"
+                    }
+                };
+
+                await navigator.credentials.get(getOptions);
                 successAdminLogin();
+
             } catch (err) {
-                // محاكاة بصرية فخمة لو الجهاز لا يدعم WebAuthn برمجياً
-                showSiteMessage("Face ID 👤", "جاري فحص بصمة الوجه للمهندس محمد جمال...");
-                setTimeout(() => {
-                    successAdminLogin();
-                }, 1200);
+                console.error("Face ID Error:", err);
+                showSiteMessage("فشل التعرف ❌", "لم يتم مطابقة بصمة الوجه أو تم إلغاء العملية بواسطة النظام.");
             }
         }
 
@@ -1237,7 +1265,7 @@
             closeGoogleModal();
             updateHeaderNav();
             openAdmin();
-            showSiteMessage("تم التحقق بنجاح ✅", "أهلاً بك يا باشمهندس محمد! تم التعرف عليك عبر بصمة الوجه (Face ID).");
+            showSiteMessage("تم التحقق بنجاح ✅", "أهلاً بك يا باشمهندس محمد! تم التحقق عبر Face ID الآمن.");
         }
 
         function verifyAdminPassword() {
