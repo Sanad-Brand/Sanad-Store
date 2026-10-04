@@ -192,10 +192,10 @@
 
         .btn-gold:hover { opacity: 0.9; transform: scale(1.05); }
 
-        .btn-google {
-            background: #fff;
-            color: #444;
-            border: none;
+        .btn-login {
+            background: #222;
+            color: var(--primary-gold);
+            border: 1px solid var(--primary-gold);
             padding: 8px 18px;
             border-radius: 8px;
             font-weight: 700;
@@ -207,7 +207,7 @@
             font-size: 14px;
             white-space: nowrap;
         }
-        .btn-google:hover { background: #f1f1f1; transform: scale(1.05); }
+        .btn-login:hover { background: var(--primary-gold); color: #000; transform: scale(1.05); }
 
         /* المحتوى الرئيسي */
         .container {
@@ -396,48 +396,48 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول بـ Google وربط حساب الأدمن Mohamed Sand -->
-    <div class="custom-modal-overlay" id="googleLoginModal">
+    <!-- نافذة تسجيل الدخول للعملاء مع نظام التعرف على الأدمن Mohamed Sand -->
+    <div class="custom-modal-overlay" id="customerLoginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
-                <i class="fa-brands fa-google" style="font-size: 45px; color: #4285F4; margin-bottom: 8px;"></i>
-                <h3 id="google-modal-title">تسجيل الدخول بـ Google</h3>
-                <p id="google-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل اسمك وبريدك الإلكتروني:</p>
+                <i class="fa-solid fa-user-circle" style="font-size: 45px; color: var(--primary-gold); margin-bottom: 8px;"></i>
+                <h3 id="login-modal-title">تسجيل دخول العملاء</h3>
+                <p id="login-modal-desc" style="font-size:13px; color:var(--text-gray);">أدخل اسمك وبريدك الإلكتروني:</p>
             </div>
             
             <!-- الخطوة 1: إدخال الاسم والإيميل -->
-            <div id="google-step-1">
+            <div id="login-step-1">
                 <div style="margin-bottom: 12px;">
                     <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
-                    <input type="text" id="real-user-name" placeholder="مثال: Mohamed Sand">
+                    <input type="text" id="real-user-name" placeholder="مثال: Mohamed Sand أو اسم العميل">
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني (Gmail):</label>
-                    <input type="email" id="real-user-email" placeholder="sanad.brand@gmail.com">
+                    <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني:</label>
+                    <input type="email" id="real-user-email" placeholder="example@gmail.com">
                 </div>
                 <div class="custom-modal-btns">
                     <button class="btn-modal-confirm" id="send-otp-btn" onclick="sendVerificationCode()">إرسال رمز التحقق</button>
-                    <button class="btn-modal-cancel" onclick="closeGoogleModal()">إلغاء</button>
+                    <button class="btn-modal-cancel" onclick="closeCustomerLoginModal()">إلغاء</button>
                 </div>
             </div>
 
             <!-- الخطوة 2: إدخال كود الـ OTP -->
-            <div id="google-step-2" style="display:none;">
+            <div id="login-step-2" style="display:none;">
                 <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 10px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق (OTP) إلى بريدك الإلكتروني بنجاح.</span>
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق (OTP) إلى بريدك الإلكتروني.</span>
                 </div>
                 <div style="margin-bottom: 20px;">
                     <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (4 أرقام):</label>
                     <input type="text" id="real-user-otp" placeholder="----" style="text-align:center; letter-spacing: 3px; font-size:18px;" maxlength="4">
                 </div>
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyOtpAndCheckAdmin()" style="background:#25d366; color:#fff;">تأكيد الكود</button>
-                    <button class="btn-modal-cancel" onclick="resetGoogleModal()">رجوع</button>
+                    <button class="btn-modal-confirm" onclick="verifyOtpAndRoute()" style="background:#25d366; color:#fff;">تأكيد الكود</button>
+                    <button class="btn-modal-cancel" onclick="resetCustomerLoginModal()">رجوع</button>
                 </div>
             </div>
 
-            <!-- الخطوة 3: إدخال باسورد الأدمن المخصص لإيميل sanad.brand@gmail.com -->
-            <div id="google-step-3" style="display:none;">
+            <!-- الخطوة 3: إدخال باسورد الأدمن المخصص في حال كان الإيميل sanad.brand@gmail.com -->
+            <div id="login-step-3" style="display:none;">
                 <div style="margin-bottom: 15px; background: rgba(212,175,55,0.1); border: 1px dashed var(--primary-gold); padding: 10px; border-radius: 6px; text-align: center;">
                     <span style="font-size: 13px; color: var(--primary-gold);">مرحباً يا محمد سند! تم التعرف على إيميل الإدارة. يرجى إدخال كلمة مرور الأدمن:</span>
                 </div>
@@ -447,7 +447,7 @@
                 </div>
                 <div class="custom-modal-btns">
                     <button class="btn-modal-confirm" onclick="verifyAdminPassword()" style="background:var(--primary-gold); color:#000;">دخول بصلاحيات الأدمن</button>
-                    <button class="btn-modal-cancel" onclick="closeGoogleModal()">إلغاء</button>
+                    <button class="btn-modal-cancel" onclick="closeCustomerLoginModal()">إلغاء</button>
                 </div>
             </div>
         </div>
@@ -461,19 +461,6 @@
                 <button onclick="closeTrackingModal()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="user-orders-container"></div>
-        </div>
-    </div>
-
-    <!-- نافذة تأكيد العمليات -->
-    <div class="custom-modal-overlay" id="customConfirmModal">
-        <div class="custom-modal-box">
-            <i class="fa-solid fa-triangle-exclamation" style="font-size: 45px; color: #ffcc00; margin-bottom: 12px;"></i>
-            <h3 id="customModalTitle" style="color:var(--primary-gold)">تأكيد العملية</h3>
-            <p id="customModalText" style="color:var(--text-gray); margin:15px 0;">هل أنت متأكد من رغبتك في الاستمرار؟</p>
-            <div class="custom-modal-btns">
-                <button class="btn-modal-confirm" id="modalConfirmBtn">تأكيد</button>
-                <button class="btn-modal-cancel" onclick="closeCustomModal()">تراجع</button>
-            </div>
         </div>
     </div>
 
@@ -591,7 +578,7 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم السرية للأدمن (متاحة أيضاً عبر الاختصار أو الدخول المباشر كأدمن) -->
+    <!-- لوحة التحكم السرية للأدمن -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in">
             <h3 style="color: var(--primary-gold); margin-bottom: 15px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر (صلاحيات كاملة للأدمن)</h3>
@@ -730,7 +717,6 @@
 
         let cart = JSON.parse(localStorage.getItem('sanad_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('sanad_orders')) || [];
-        let registeredUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_current_user')) || null;
 
         let pendingLoginData = null;
@@ -772,40 +758,40 @@
                 `;
             } else {
                 nav.innerHTML = `
-                    <button class="btn-google" onclick="openGoogleModal()"><i class="fa-brands fa-google" style="color:#4285F4;"></i> تسجيل دخول بـ Google</button>
+                    <button class="btn-login" onclick="openCustomerLoginModal()"><i class="fa-solid fa-right-to-bracket"></i> تسجيل دخول</button>
                     <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-count">0</span>)</button>
                 `;
             }
             updateCartUI();
         }
 
-        function openGoogleModal() {
-            resetGoogleModal();
-            document.getElementById('googleLoginModal').style.display = 'flex';
+        function openCustomerLoginModal() {
+            resetCustomerLoginModal();
+            document.getElementById('customerLoginModal').style.display = 'flex';
         }
 
-        function closeGoogleModal() {
-            document.getElementById('googleLoginModal').style.display = 'none';
+        function closeCustomerLoginModal() {
+            document.getElementById('customerLoginModal').style.display = 'none';
         }
 
-        function resetGoogleModal() {
-            document.getElementById('google-step-1').style.display = 'block';
-            document.getElementById('google-step-2').style.display = 'none';
-            document.getElementById('google-step-3').style.display = 'none';
-            document.getElementById('google-modal-title').innerText = 'تسجيل الدخول بـ Google';
+        function resetCustomerLoginModal() {
+            document.getElementById('login-step-1').style.display = 'block';
+            document.getElementById('login-step-2').style.display = 'none';
+            document.getElementById('login-step-3').style.display = 'none';
+            document.getElementById('login-modal-title').innerText = 'تسجيل دخول العملاء';
             document.getElementById('real-user-name').value = '';
             document.getElementById('real-user-email').value = '';
             document.getElementById('real-user-otp').value = '';
             document.getElementById('admin-secret-pass').value = '';
         }
 
-        // إرسال كود الـ OTP الفعلي عبر EmailJS
+        // إرسال كود الـ OTP الفعلي عبر EmailJS للعميل أو الأدمن
         function sendVerificationCode() {
             const name = document.getElementById('real-user-name').value.trim();
             const email = document.getElementById('real-user-email').value.trim();
 
-            if(!name || !email || !email.includes('@gmail.com')) {
-                showSiteMessage("خطأ في البيانات", "الرجاء إدخال الاسم وبريد Gmail صحيح!");
+            if(!name || !email || !email.includes('@')) {
+                showSiteMessage("خطأ في البيانات", "الرجاء إدخال الاسم وبريد إلكتروني صحيح!");
                 return;
             }
 
@@ -825,40 +811,40 @@
             .then(function(response) {
                 btn.innerText = "إرسال رمز التحقق";
                 btn.disabled = false;
-                document.getElementById('google-step-1').style.display = 'none';
-                document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
-                document.getElementById('otp-info-text').innerHTML = `تم إرسال الكود إلى <strong>${email}</strong>. افحص صندوق الوارد في Gmail.`;
+                document.getElementById('login-step-1').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'block';
+                document.getElementById('login-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
+                document.getElementById('otp-info-text').innerHTML = `تم إرسال الكود إلى <strong>${email}</strong>. افحص صندوق الوارد.`;
             }, function(error) {
                 btn.innerText = "إرسال رمز التحقق";
                 btn.disabled = false;
-                document.getElementById('google-step-1').style.display = 'none';
-                document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('google-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
-                document.getElementById('otp-info-text').innerHTML = `(تعذر الإرسال الآلي، كود التجربة هو): <strong style="color:yellow; font-size:16px;">${generatedOtpCode}</strong>`;
+                document.getElementById('login-step-1').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'block';
+                document.getElementById('login-modal-title').innerText = 'أدخل رمز التحقق (OTP)';
+                document.getElementById('otp-info-text').innerHTML = `(كود التجربة الفوري): <strong style="color:yellow; font-size:16px;">${generatedOtpCode}</strong>`;
             });
         }
 
-        function verifyOtpAndCheckAdmin() {
+        function verifyOtpAndRoute() {
             const enteredOtp = document.getElementById('real-user-otp').value.trim();
             if(!enteredOtp || enteredOtp !== generatedOtpCode) {
-                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق غير صحيح! تأكد من إيميلك.");
+                showSiteMessage("رمز غير صحيح ❌", "رمز التحقق غير صحيح!");
                 document.getElementById('real-user-otp').classList.add('shake');
                 setTimeout(() => { document.getElementById('real-user-otp').classList.remove('shake'); }, 400);
                 return;
             }
 
-            // التحقق مما إذا كان الإيميل هو إيميل الأدمن المطلوب
+            // فحص ما إذا كان الإيميل هو إيميل الأدمن المطلوب
             if(pendingLoginData.email.toLowerCase() === 'sanad.brand@gmail.com') {
-                // الانتقال للخطوة 3 لإدخال باسورد الأدمن
-                document.getElementById('google-step-2').style.display = 'none';
-                document.getElementById('google-step-3').style.display = 'block';
-                document.getElementById('google-modal-title').innerText = 'أدخل كلمة مرور الأدمن';
+                // الانتقال للخطوة الثالثة لإدخال باسورد الأدمن
+                document.getElementById('login-step-2').style.display = 'none';
+                document.getElementById('login-step-3').style.display = 'block';
+                document.getElementById('login-modal-title').innerText = 'أدخل كلمة مرور الأدمن';
             } else {
-                // مستخدم عادي
+                // مستخدم عادي يتم تسجيل دخوله فوراً
                 currentUser = pendingLoginData;
                 localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
-                closeGoogleModal();
+                closeCustomerLoginModal();
                 updateHeaderNav();
                 showSiteMessage("تم تسجيل الدخول بنجاح ✅", `أهلاً بك يا ${currentUser.name}!`);
             }
@@ -870,7 +856,7 @@
                 pendingLoginData.isAdmin = true;
                 currentUser = pendingLoginData;
                 localStorage.setItem('sanad_current_user', JSON.stringify(currentUser));
-                closeGoogleModal();
+                closeCustomerLoginModal();
                 updateHeaderNav();
                 showSiteMessage("تم تفعيل صلاحيات الأدمن بنجاح 👑", "مرحباً بك يا محمد سند، تم منحك صلاحيات المدير العام للسيستم بالكامل.");
                 openAdmin();
@@ -890,7 +876,7 @@
 
         function openTrackingModal() {
             if(!currentUser) {
-                openGoogleModal();
+                openCustomerLoginModal();
                 return;
             }
             renderUserOrders();
@@ -1223,18 +1209,6 @@
             document.getElementById('customMessageModal').style.display = 'flex';
         }
         function closeMessageModal() { document.getElementById('customMessageModal').style.display = 'none'; }
-
-        function confirmDeleteOrder(index) {
-            orders.splice(index, 1);
-            localStorage.setItem('sanad_orders', JSON.stringify(orders));
-            renderAdminOrders();
-        }
-
-        function confirmClearAllOrders() {
-            orders = [];
-            localStorage.setItem('sanad_orders', JSON.stringify(orders));
-            renderAdminOrders();
-        }
 
         renderProducts();
         updateHeaderNav();
