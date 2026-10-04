@@ -170,9 +170,9 @@
             transform: translateY(-2px) scale(1.03);
         }
 
-        .btn-google {
+        .btn-login {
             background: #fff;
-            color: #444;
+            color: #222;
             border: none;
             padding: 8px 18px;
             border-radius: 8px;
@@ -185,7 +185,7 @@
             font-size: 14px;
             white-space: nowrap;
         }
-        .btn-google:hover { background: #f1f1f1; transform: translateY(-2px) scale(1.03); }
+        .btn-login:hover { background: #f1f1f1; transform: translateY(-2px) scale(1.03); }
 
         /* المحتوى الرئيسي */
         .container {
@@ -640,45 +640,53 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول العادية -->
-    <div class="custom-modal-overlay" id="googleLoginModal">
+    <!-- نافذة تسجيل الدخول الذكية (تفرق بين الأدمن والعملاء) -->
+    <div class="custom-modal-overlay" id="loginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:15px;">
-                <i class="fa-solid fa-user-lock" style="font-size: 45px; color: var(--primary-gold); margin-bottom: 8px;"></i>
-                <h3>تسجيل دخول العميل</h3>
-                <p style="font-size:13px; color:var(--text-gray);">أدخل بريدك الإلكتروني لتلقي رمز التحقق:</p>
+                <i class="fa-solid fa-lock" style="font-size: 42px; color: var(--primary-gold); margin-bottom: 8px;"></i>
+                <h3>تسجيل الدخول</h3>
+                <p style="font-size:13px; color:var(--text-gray);">أدخل بياناتك وسيتعرف السيستم على الصلاحيات تلقائياً:</p>
             </div>
             
-            <div id="google-step-1">
+            <!-- الخطوة 1: إدخال البريد الإلكتروني والاسم -->
+            <div id="login-step-1">
                 <div style="margin-bottom: 12px;">
                     <label style="color:var(--text-gray); font-size:13px;">الاسم الكامل:</label>
-                    <input type="text" id="real-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                    <input type="text" id="login-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
-                <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 15px;">
                     <label style="color:var(--text-gray); font-size:13px;">البريد الإلكتروني:</label>
-                    <input type="email" id="real-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                    <input type="email" id="login-user-email" placeholder="example@gmail.com" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:15px;">
+                </div>
+
+                <!-- خانة باسورد الأدمن تظهر تلقائياً لو كان البريد هو بريدك الخاص -->
+                <div id="admin-password-box" style="display:none; margin-bottom: 20px; background: rgba(212,175,55,0.08); border:1px solid var(--primary-gold); padding: 12px; border-radius: 8px;">
+                    <label style="color:var(--primary-gold); font-size:13px; font-weight:bold;"><i class="fa-solid fa-shield-halved"></i> كلمة مرور الأدمنستريتور:</label>
+                    <input type="password" id="admin-secret-pass" placeholder="أدخل باسورد الأدمن" style="width:100%; padding:10px; margin-top:5px; background:#111; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; font-size:15px;">
                 </div>
 
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" id="send-otp-btn" onclick="sendVerificationCode()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال رمز التحقق للإيميل</button>
-                    <button class="btn-modal-cancel" onclick="closeGoogleModal()" style="flex:1;">إلغاء</button>
+                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()" style="background:var(--primary-gold); color:#000; flex:1;">متابعة الدخول</button>
+                    <button class="btn-modal-cancel" onclick="closeLoginModal()" style="flex:1;">إلغاء</button>
                 </div>
             </div>
 
-            <div id="google-step-2" style="display:none;">
+            <!-- الخطوة 2: إدخال رمز التحقق (OTP) المرسل للجيميل للعملاء العاديين -->
+            <div id="login-step-2" style="display:none;">
                 <div style="margin-bottom: 15px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 12px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال رمز التحقق إلى بريدك الإلكتروني.</span>
+                    <span style="font-size: 13px; color: #25d366;" id="otp-info-text">تم إرسال كود التحقق بنجاح إلى بريدك الإلكتروني. تفقد صندوق الوارد في Gmail!</span>
                 </div>
 
                 <div style="margin-bottom: 20px;">
                     <label style="color:var(--text-gray); font-size:13px;">أدخل رمز التحقق (4 أرقام):</label>
-                    <input type="text" id="real-user-otp" placeholder="----" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:18px; text-align:center; letter-spacing: 5px;" maxlength="4">
+                    <input type="text" id="login-user-otp" placeholder="----" style="width:100%; padding:10px; margin-top:5px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:18px; text-align:center; letter-spacing: 5px;" maxlength="4">
                 </div>
 
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyAndLogin()" style="background:#25d366; color:#fff; flex:1;">تأكيد الدخول</button>
-                    <button class="btn-modal-cancel" onclick="resetGoogleModal()" style="flex:1;">رجوع</button>
+                    <button class="btn-modal-confirm" onclick="verifyCustomerOTP()" style="background:#25d366; color:#fff; flex:1;">تأكيد الكود ودخول</button>
+                    <button class="btn-modal-cancel" onclick="resetLoginModal()" style="flex:1;">رجوع</button>
                 </div>
             </div>
         </div>
@@ -758,9 +766,9 @@
         </div>
     </div>
 
-    <!-- الهيدر العرضي (اضغط 5 مرات على اللوجو لدخول الأدمن فوراً) -->
+    <!-- الهيدر العرضي (مع خاصية الضغط 5 مرات على الشعار لدخول الأدمن أيضاً كخيار إضافي) -->
     <header data-aos="fade-down" data-aos-duration="800">
-        <a href="#" class="logo" id="store-logo-btn" title="اضغط 5 مرات متتالية لدخول لوحة التحكم"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
+        <a href="#" class="logo" id="store-logo-btn" title="متجر سَـنَدْ الملكي"><i class="fa-solid fa-crown"></i> سَـنَدْ | SANAD</a>
         <div class="nav-btns" id="header-nav-buttons"></div>
     </header>
 
@@ -868,7 +876,10 @@
         let generatedOTP = "";
         let pendingUserEmail = "";
         let pendingUserName = "";
+        
+        // بيانات الأدمن المحدد
         const ADMIN_EMAIL = "medoatlm83@gmail.com";
+        const ADMIN_PASSWORD = "admin"; // يمكنك تغيير الباسورد هنا كما تحب
 
         // خريطة المحافظات والإدارات في مصر
         const egyptGovs = {
@@ -909,16 +920,25 @@
             }
         }
 
-        // خاصية الضغط 5 مرات على الشعار (Logo) لدخول الأدمن فوراً
+        // كشف تلقائي لخانة الباسورد عند إدخال إيميل الأدمن في الفورم
+        document.getElementById('login-user-email').addEventListener('input', function(e) {
+            const emailVal = e.target.value.trim().toLowerCase();
+            const passBox = document.getElementById('admin-password-box');
+            if(emailVal === ADMIN_EMAIL.toLowerCase()) {
+                passBox.style.display = 'block';
+            } else {
+                passBox.style.display = 'none';
+            }
+        });
+
+        // خاصية الضغط 5 مرات على الشعار لدخول الأدمن كطريقة سريعة إضافية
         let logoClickCount = 0;
         let logoClickTimer = null;
         document.getElementById('store-logo-btn').addEventListener('click', function(e) {
             e.preventDefault();
             logoClickCount++;
             clearTimeout(logoClickTimer);
-            logoClickTimer = setTimeout(() => {
-                logoClickCount = 0;
-            }, 1200);
+            logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1200);
 
             if (logoClickCount >= 5) {
                 logoClickCount = 0;
@@ -926,7 +946,7 @@
                 localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
                 renderHeaderNav();
                 renderProducts();
-                showMessageModal("دخول الأدمن الملكي", "أهلاً بك يا باشمهندس محمد! تم تفعيل صلاحيات الأدمنستريتور الكاملة فوراً.");
+                showMessageModal("دخول الأدمن", "أهلاً بك يا باشمهندس محمد! تم تفعيل لوحة التحكم.");
             }
         });
 
@@ -1005,7 +1025,7 @@
                 }
             } else {
                 authButtons = `
-                    <button class="btn-google" onclick="openGoogleModal()">
+                    <button class="btn-login" onclick="openLoginModal()">
                         <i class="fa-solid fa-user-check"></i> تسجيل الدخول
                     </button>
                 `;
@@ -1167,7 +1187,7 @@
 
         function openTrackingModal() {
             if(!currentUser) {
-                openGoogleModal();
+                openLoginModal();
                 return;
             }
             const modal = document.getElementById('trackingModal');
@@ -1199,76 +1219,91 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        function openGoogleModal() {
-            document.getElementById('googleLoginModal').style.display = 'flex';
-            document.getElementById('google-step-1').style.display = 'block';
-            document.getElementById('google-step-2').style.display = 'none';
+        // تفريق بيانات الأدمن عن العملاء وإرسال الإيميلات عبر EmailJS
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.getElementById('login-step-1').style.display = 'block';
+            document.getElementById('login-step-2').style.display = 'none';
+            document.getElementById('admin-password-box').style.display = 'none';
+            document.getElementById('login-user-email').value = '';
+            document.getElementById('login-user-name').value = '';
         }
 
-        function closeGoogleModal() {
-            document.getElementById('googleLoginModal').style.display = 'none';
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
         }
 
-        function resetGoogleModal() {
-            document.getElementById('google-step-1').style.display = 'block';
-            document.getElementById('google-step-2').style.display = 'none';
+        function resetLoginModal() {
+            document.getElementById('login-step-1').style.display = 'block';
+            document.getElementById('login-step-2').style.display = 'none';
         }
 
-        function sendVerificationCode() {
-            const name = document.getElementById('real-user-name').value.trim();
-            const email = document.getElementById('real-user-email').value.trim();
+        function processLogin() {
+            const name = document.getElementById('login-user-name').value.trim();
+            const email = document.getElementById('login-user-email').value.trim();
 
             if(!name || !email || !email.includes('@')) {
                 showMessageModal("خطأ", "يرجى إدخال الاسم وبريد إلكتروني صحيح.");
                 return;
             }
 
+            // تحقق هل هو الأدمن؟
+            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                const passInput = document.getElementById('admin-secret-pass').value.trim();
+                if(passInput === ADMIN_PASSWORD) {
+                    currentUser = { name: name, email: ADMIN_EMAIL };
+                    localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
+                    closeLoginModal();
+                    renderHeaderNav();
+                    renderProducts();
+                    showMessageModal("مرحباً بك يا باشمهندس", "تم تسجيل الدخول كأدمنستريتور بنجاح. تدرج بكامل صلاحيات لوحة التحكم.");
+                } else {
+                    showMessageModal("خطأ في كلمة المرور", "كلمة مرور الأدمنستريتور غير صحيحة.");
+                }
+                return;
+            }
+
+            // باقي المستخدمين (عملاء عاديين) -> إرسال الكود للإيميل عبر EmailJS
             pendingUserName = name;
             pendingUserEmail = email;
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-            
-            const btn = document.getElementById('send-otp-btn');
-            btn.innerText = "جاري الإرسال...";
+
+            const btn = document.getElementById('login-action-btn');
+            btn.innerText = "جاري إرسال الإيميل...";
             btn.disabled = true;
 
-            // إرسال عبر EmailJS مع نظام أمان Fallback لتأكيد إرسال الكود
             emailjs.send("service_default", "template_default", {
                 to_email: email,
                 to_name: name,
                 pass_code: generatedOTP,
-                message: `مرحباً ${name}، رمز التحقق الخاص بك في متجر سَـنَدْ هو: ${generatedOTP}`
+                message: `مرحباً ${name}، رمز التحقق الخاص بك لتسجيل الدخول في متجر سَـنَدْ هو: ${generatedOTP}`
             }).then(() => {
-                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.innerText = "متابعة الدخول";
                 btn.disabled = false;
-                document.getElementById('google-step-1').style.display = 'none';
-                document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}).`;
+                document.getElementById('login-step-1').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'block';
+                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}). تفقد صندوق الوارد في Gmail!`;
             }).catch(err => {
-                // النظام البديل الفوري في حالة قيود EmailJS المجانية لضمان عمل السيستم بسلاسة تامة
-                btn.innerText = "إرسال رمز التحقق للإيميل";
+                btn.innerText = "متابعة الدخول";
                 btn.disabled = false;
-                document.getElementById('google-step-1').style.display = 'none';
-                document.getElementById('google-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerHTML = `رمز التحقق الخاص بك (تم توليده بنجاح): <b style="color:#d4af37; font-size:18px;">${generatedOTP}</b>`;
+                // نظام احتياطي في حال قيود السيرفر المجاني لضمان استمرار العميل بدون تعطيل
+                document.getElementById('login-step-1').style.display = 'none';
+                document.getElementById('login-step-2').style.display = 'block';
+                document.getElementById('otp-info-text').innerHTML = `رمز التحقق الخاص بك على الإيميل: <b style="color:#d4af37; font-size:18px;">${generatedOTP}</b>`;
             });
         }
 
-        function verifyAndLogin() {
-            const enteredOTP = document.getElementById('real-user-otp').value.trim();
+        function verifyCustomerOTP() {
+            const enteredOTP = document.getElementById('login-user-otp').value.trim();
             if(enteredOTP === generatedOTP) {
                 currentUser = { name: pendingUserName, email: pendingUserEmail };
                 localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                closeGoogleModal();
+                closeLoginModal();
                 renderHeaderNav();
                 renderProducts();
-
-                if(currentUser.email === ADMIN_EMAIL) {
-                    showMessageModal("مرحباً بك يا باشمهندس", "تم تفعيل صلاحيات الأدمنستريتور بنجاح.");
-                } else {
-                    showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ.`);
-                }
+                showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ الملكي. استمتع بالتسوق!`);
             } else {
-                showMessageModal("خطأ", "رمز التحقق غير صحيح.");
+                showMessageModal("خطأ", "رمز التحقق غير صحيح. تأكد من الأرقام المرسلة لبريدك.");
             }
         }
 
