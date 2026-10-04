@@ -2,818 +2,647 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>آسف يا نور عيني</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة الاعتذار والذكريات | حقك عليا</title>
+    <!-- أيقونة القلب الذهبي الفاخر للتبويب (Favicon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0a' rx='25'/><path d='M50 85 C20 60 10 40 10 25 A15 15 0 0 1 35 20 L50 35 L65 20 A15 15 0 0 1 90 25 C90 40 80 60 50 85 Z' fill='%23ff4d4d'/></svg>">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
-    
+    <!-- الأيقونات والخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --primary-bg: #110008;
-            --secondary-bg: #2d0a1f;
+            --primary-red: #ff4d4d;
+            --dark-bg: #090a0f;
+            --card-bg: rgba(20, 20, 25, 0.92);
+            --border-color: rgba(255, 77, 77, 0.3);
+            --text-light: #f3f3f3;
+            --text-gray: #b0b0b0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
-            color: white;
-            overflow: hidden; /* Prevent scrolling entirely */
-            touch-action: none; /* Disable default touch actions for smooth dodging */
-            width: 100vw;
-            height: 100vh;
-        }
-
-        h1, h2, .ruqaa {
-            font-family: 'Aref Ruqaa', serif;
-        }
-
-        .screen {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #0f0c1b, #1a0814, #050508);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            opacity: 0;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* خلفية علامات الاستفهام المتساقطة */
+        .falling-q {
+            position: fixed;
+            top: -50px;
+            color: rgba(255, 77, 77, 0.15);
+            font-size: 28px;
+            font-weight: 900;
+            user-select: none;
             pointer-events: none;
-            transition: opacity 0.8s ease-in-out;
+            animation: fallDown linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fallDown {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* الحاويات الرئيسية للمراحل */
+        .stage-container {
+            width: 100%;
+            max-width: 750px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            backdrop-filter: blur(15px);
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            display: none;
+            animation: stageAppear 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .stage-container.active {
+            display: block;
+        }
+
+        @keyframes stageAppear {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1, h2 {
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-light);
+            margin-bottom: 25px;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #ff4d4d, #cc0000);
+            color: #fff;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 77, 77, 0.4);
+        }
+
+        .btn-action:hover {
+            transform: scale(1.05);
+            opacity: 0.95;
+        }
+
+        /* مرحلة الألبوم (الكتاب المتحرك) */
+        .album-book {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 25px;
+            background: #15151b;
+            border: 3px solid var(--primary-red);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        .album-page-content {
+            display: none;
+            padding: 20px;
+            animation: pageTurn 0.5s ease-in-out;
+        }
+
+        .album-page-content.active {
+            display: block;
+        }
+
+        @keyframes pageTurn {
+            0% { transform: rotateY(90deg) scale(0.9); opacity: 0; }
+            100% { transform: rotateY(0deg) scale(1); opacity: 1; }
+        }
+
+        .album-img-frame {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .album-img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* لكي تشمل الصورة كاملة بدون قص مزعج */
+        }
+
+        .album-caption {
+            font-size: 16px;
+            color: var(--text-light);
+            font-weight: 600;
+            padding: 10px;
+            background: rgba(255, 77, 77, 0.1);
+            border-radius: 8px;
+            border: 1px dashed var(--primary-red);
+        }
+
+        .album-nav-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .btn-page {
+            background: #222;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-page:hover { background: var(--primary-red); }
+
+        /* أزرار الموافقة والرفض الهارب */
+        .decision-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
+            min-height: 80px;
+        }
+
+        #btn-yes {
+            background: #25d366;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        #btn-no {
+            background: #ff3333;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            transition: 0.15s ease-out;
             z-index: 10;
         }
 
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        #flying-container {
-            position: absolute;
-            inset: 0;
+        /* قلوب وتأثيرات النجاح */
+        .floating-heart {
+            position: fixed;
+            color: #ff3366;
+            font-size: 24px;
+            animation: floatUpHeart 3s linear infinite;
+            z-index: 999;
             pointer-events: none;
-            z-index: 20;
         }
 
-        .flying-photo {
-            position: absolute;
-            width: 150px;
-            height: 200px;
-            object-fit: cover;
-            border: 5px solid white;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: scale(0.1) rotate(0deg);
-            transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        @keyframes floatUpHeart {
+            0% { transform: translateY(105vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.4); opacity: 0; }
         }
 
-        .book-container {
-            perspective: 2000px;
-            width: 90vw;
-            max-width: 350px;
-            height: 500px;
-            position: relative;
-            transform-style: preserve-3d;
-            display: none; /* Shown after flying photos */
-            z-index: 30;
-            direction: ltr; /* Handle 3D math easily, content will be RTL */
-        }
-
-        .book-page {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0; left: 0;
-            background: #fff;
-            border-radius: 8px 15px 15px 8px;
-            box-shadow: inset 5px 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.3);
-            transform-origin: left center;
-            transition: transform 1.2s cubic-bezier(0.645, 0.045, 0.355, 1);
-            transform-style: preserve-3d;
-            backface-visibility: hidden;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-
-        .page-front, .page-back {
-            position: absolute;
-            inset: 0;
-            backface-visibility: hidden;
-            background: #fdfbf7;
-            border-radius: inherit;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            direction: rtl; /* Reset direction for Arabic text */
-        }
-
-        .page-back {
-            transform: rotateY(180deg);
-            background: #f5f5f5;
-        }
-
-        .book-page.flipped {
-            transform: rotateY(-180deg) !important;
-        }
-
-        .img-container {
-            width: 100%;
-            height: 300px;
-            background: #eaeaea;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* CRITICAL: Fixed to contain as requested */
-        }
-
-        .page-caption {
-            color: #333;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.5;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Z-indexes for proper stacking of pages */
-        #page3 { z-index: 100; }
-        #page2 { z-index: 101; }
-        #page1 { z-index: 102; }
-
-        #q-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .dodge-btn {
-            position: absolute;
-            transition: all 0.15s ease-out; /* Fast snappy transition */
-            z-index: 50;
-            will-change: transform, left, top;
-            touch-action: none;
-        }
-
-        #celebration-bg {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .falling-heart {
-            position: absolute;
-            color: #ff2a2a;
-            font-size: 2rem;
-            animation: fall linear forwards;
-            filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-50px) rotate(0deg) scale(0.8); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
-        }
-
-        .pop-text {
-            position: absolute;
-            color: #ffb3b3;
-            font-size: 2.5rem;
+        .floating-word {
+            position: fixed;
+            color: #ff4d4d;
+            font-size: 28px;
             font-weight: 900;
-            text-shadow: 2px 2px 10px rgba(255,0,0,0.8);
-            animation: popFade 2s ease-out forwards;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+            animation: floatWordAnim 4s ease-in-out infinite;
+            z-index: 998;
             pointer-events: none;
         }
 
-        @keyframes popFade {
-            0% { transform: scale(0.5); opacity: 0; }
-            20% { transform: scale(1.2); opacity: 1; }
-            80% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+        @keyframes floatWordAnim {
+            0% { transform: scale(0.5) translateY(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1.3) translateY(-100px); opacity: 0; }
         }
 
-        /* Custom Modal */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.1);
+        /* زر الدخول لإعدادات الأدمن السرية */
+        .admin-trigger-btn {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(255,255,255,0.08);
+            color: #777;
+            border: 1px solid #333;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 9999;
+            transition: 0.3s;
+        }
+        .admin-trigger-btn:hover { background: var(--primary-red); color: #fff; }
+
+        /* نافذة إعدادات الأدمن */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-box {
+            background: #15151a;
+            border: 2px solid var(--primary-red);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            text-align: right;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-box input, .modal-box textarea, .modal-box select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
 
-    <button id="admin-gear" class="fixed top-4 left-4 z-[999] p-2 bg-white/10 rounded-full hover:bg-white/30 backdrop-blur transition text-2xl">
-        ⚙️
-    </button>
+    <!-- زر فتح إعدادات الأدمن السري -->
+    <button class="admin-trigger-btn" onclick="openAdminLoginModal()"><i class="fa-solid fa-gear"></i> إعدادات الموقع</button>
 
-    <div id="admin-modal" class="fixed inset-0 bg-black/95 z-[1000] hidden flex-col items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md rounded-2xl p-6 text-right">
-            <h2 class="text-2xl font-bold mb-4 text-pink-300">لوحة التحكم</h2>
+    <!-- نافذة إدخال كلمة سر الأدمن 9090 -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal-box" style="text-align: center;">
+            <i class="fa-solid fa-lock" style="font-size: 40px; color: var(--primary-red); margin-bottom: 15px;"></i>
+            <h3>لوحة تحكم الموقع</h3>
+            <p style="font-size: 13px; color: var(--text-gray);">أدخل كلمة السر (9090) للتحكم في الصور والترتيب والأغاني:</p>
+            <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" style="text-align: center; font-size: 18px; letter-spacing: 5px;">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn-action" style="flex:1; padding: 10px;" onclick="verifyAdminPassword()">دخول</button>
+                <button class="btn-action" style="flex:1; padding: 10px; background: #333;" onclick="closeAdminLoginModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل وترتيب الصور والأغاني (لوحة التحكم) -->
+    <div class="modal-overlay" id="adminPanelModal">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <h3 style="color: var(--primary-red);">إدارة محتوى صفحات الموقع</h3>
+                <button onclick="closeAdminPanel()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
             
-            <div id="admin-login-section">
-                <input type="password" id="admin-pwd" placeholder="كلمة السر" class="w-full p-3 rounded bg-black/50 text-white border border-gray-600 mb-4" dir="ltr">
-                <button id="btn-login" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold p-3 rounded">دخول</button>
-            </div>
+            <p style="font-size: 13px; color: var(--text-gray);">قم بإضافة وترتيب الصور (لا تُضاف عشوائياً، بل تظهر حسب الترتيب الذي تحدده):</p>
+            
+            <div id="admin-pages-config-list"></div>
 
-            <div id="admin-dashboard" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-                <p id="sync-status" class="text-sm text-blue-300 bg-blue-900/30 p-2 rounded">جاري الاتصال بالسحابة...</p>
-                
-                <div class="space-y-3">
-                    <div class="bg-black/40 p-3 rounded border border-gray-700">
-                        <label class="block text-sm text-gray-300 mb-1">صورة 1 (الرسالة):</label>
-                        <input type="file" id="up-img1" accept="image/*" class="text-sm w-full text-gray-400">
-                    </div>
-                    <div class="bg-black/40 p-3 rounded border border-gray-700">
-                        <label class="block text-sm text-gray-300 mb-1">صورة 2 (أجمل إنسانة):</label>
-                        <input type="file" id="up-img2" accept="image/*" class="text-sm w-full text-gray-400">
-                    </div>
-                    <div class="bg-black/40 p-3 rounded border border-gray-700">
-                        <label class="block text-sm text-gray-300 mb-1">صورة 3 (الـ AI):</label>
-                        <input type="file" id="up-img3" accept="image/*" class="text-sm w-full text-gray-400">
-                    </div>
-                    <div class="bg-black/40 p-3 rounded border border-pink-900/50">
-                        <label class="block text-sm text-pink-300 mb-1">صوت 1 (شاشة الاعتذار):</label>
-                        <input type="file" id="up-aud-intro" accept="audio/*" class="text-sm w-full text-gray-400">
-                        <p class="text-xs text-gray-500 mt-1">يُفضل مقطع قصير (أقل من 1MB)</p>
-                    </div>
-                    <div class="bg-black/40 p-3 rounded border border-pink-900/50">
-                        <label class="block text-sm text-pink-300 mb-1">صوت 2 (شاشة الاحتفال):</label>
-                        <input type="file" id="up-aud-celeb" accept="audio/*" class="text-sm w-full text-gray-400">
-                    </div>
-                </div>
-
-                <div class="flex gap-2 pt-4">
-                    <button id="btn-close-admin" class="flex-1 bg-gray-600 p-2 rounded text-white">إغلاق</button>
-                    <button id="btn-save-admin" class="flex-1 bg-green-600 p-2 rounded text-white font-bold shadow-lg">حفظ للسحابة</button>
-                </div>
-            </div>
+            <button class="btn-action" style="width:100%; margin-top: 10px; padding: 10px;" onclick="addNewAlbumPage()">+ إضافة صفحة / صورة جديدة للألبوم</button>
+            <button class="btn-action" style="width:100%; margin-top: 10px; padding: 10px; background: #25d366;" onclick="saveAdminChanges()">حفظ وتطبيق التغييرات فوراً</button>
         </div>
     </div>
 
-    <!-- Alert Modal -->
-    <div id="custom-alert" class="fixed inset-0 z-[1100] hidden items-center justify-center bg-black/80">
-        <div class="bg-white text-black p-6 rounded-xl max-w-sm w-[90%] text-center shadow-2xl">
-            <p id="alert-msg" class="text-lg font-bold mb-4"></p>
-            <button id="btn-alert-ok" class="bg-pink-600 text-white px-8 py-2 rounded font-bold">تمام</button>
-        </div>
+    <!-- المرحلة الأولى: رسالة الاعتذار الكبرى -->
+    <div class="stage-container active" id="stage-1">
+        <h1>حقك عليا.. صفحة اعتذار من القلب</h1>
+        <p>
+            أنا بكتب الكلمات دي وأنا حاسس بكل كلمة فيها.. عارف إني زعلتك وغلطت، وعارف إن غلاوتك عندي أكبر بكتیر من أي سوء فهم أو زعل حصل. أنا بجد أسف من كل قلبي على كل لحظة زعلتك فيها أو ضايقتك. أنتي مش مجرد حد غالي، أنتي كل حاجة حلوة في حياتي، ووجودك هو اللي بيملى دنيتي فرحة وهدوء. أنا بتأسف لك قد الدنيا دي كلها، وبتمنى تسامحيني وتعذري تقصيري، لأن مكانتك في قلبي فوق كل وصف.. حقك عليا حقك على رأسي من فوق.
+        </p>
+        <button class="btn-action" onclick="goToStage(2)">كمل ❤️</button>
     </div>
 
-    <div id="screen-intro" class="screen active p-6 text-center">
-        <div class="glass-panel p-8 rounded-3xl max-w-md w-full shadow-[0_0_40px_rgba(255,0,100,0.2)]">
-            <h1 class="text-5xl mb-6 text-pink-400">آسف يا روحي</h1>
-            <p class="text-xl leading-loose mb-8 text-gray-200">
-                أنا عارف إني زعلتك، وعارف إن الكلمة دي لوحدها مش كفاية.. 
-                بس أنا بجد ما يهونش عليا زعلك أبداً. إنتي أغلى وأحن حاجة في حياتي ووجودك هو اللي بينور دنيتي.
-            </p>
-            <button id="btn-continue" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full text-2xl shadow-lg transition transform hover:scale-105">
-                كمل
-            </button>
-        </div>
-    </div>
-
-    <div id="screen-album" class="screen">
-        <div id="flying-container"></div>
+    <!-- المرحلة الثانية: ألبوم الذكريات (الكتاب المتحرك) -->
+    <div class="stage-container" id="stage-2">
+        <h2>ألبوم الذكريات اللى بينا</h2>
         
-        <div class="book-container" id="the-book">
-            <!-- Page 3 (Bottom) -->
-            <div class="book-page" id="page3">
-                <div class="page-front">
-                    <div class="img-container">
-                        <img id="display-img3" src="https://placehold.co/400x500/pink/white?text=صورة+3+الذكاء+الاصطناعي" alt="AI Photo">
-                    </div>
-                    <!-- Static Caption -->
-                    <p class="page-caption">اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.</p>
-                </div>
-                <div class="page-back"></div>
-            </div>
-
-            <!-- Page 2 (Middle) -->
-            <div class="book-page" id="page2">
-                <div class="page-front">
-                    <div class="img-container">
-                        <img id="display-img2" src="https://placehold.co/400x500/purple/white?text=صورة+2+أجمل+إنسانة" alt="Beautiful Photo">
-                    </div>
-                    <!-- Static Caption -->
-                    <p class="page-caption">اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.</p>
-                </div>
-                <div class="page-back"></div>
-            </div>
-
-            <!-- Page 1 (Top) -->
-            <div class="book-page" id="page1">
-                <div class="page-front">
-                    <div class="img-container">
-                        <img id="display-img1" src="https://placehold.co/400x500/red/white?text=صورة+1+الرسالة" alt="First Message">
-                    </div>
-                    <!-- Static Caption -->
-                    <p class="page-caption">اول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.</p>
-                </div>
-                <div class="page-back"></div>
-            </div>
+        <div class="album-book" id="albumBookContainer">
+            <!-- سيتم توليد صفحات الألبوم برمجياً حسب الترتيب المحفوظ -->
         </div>
 
-        <button id="btn-next-page" class="hidden absolute bottom-10 bg-white/20 hover:bg-white/30 text-white font-bold py-3 px-10 rounded-full backdrop-blur border border-white/30 shadow-lg text-xl z-40 transition">
-            التالي
-        </button>
-    </div>
-
-    <div id="screen-question" class="screen">
-        <canvas id="q-canvas"></canvas>
-        <div class="z-20 text-center w-full px-4 h-full flex flex-col items-center justify-center relative">
-            <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-20 text-white text-shadow-lg ruqaa leading-tight" style="text-shadow: 0 4px 15px rgba(0,0,0,0.8);">
-                موافقة نرجع ل بعض ونفتح صفحه جديده؟
-            </h2>
-            
-            <div class="relative w-full max-w-sm h-[250px] mx-auto">
-                <button id="btn-yes" class="absolute bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-[0_0_30px_rgba(34,197,94,0.6)] right-[5%] top-[10%] transition transform hover:scale-110">
-                    موافقة ❤️
-                </button>
-                
-                <button id="btn-no" class="dodge-btn bg-gray-700 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-lg left-[5%] top-[10%]">
-                    لأ
-                </button>
-            </div>
+        <div class="album-nav-btns">
+            <button class="btn-page" onclick="prevAlbumPage()"><i class="fa-solid fa-arrow-right"></i> السابقة</button>
+            <span id="album-page-indicator" style="font-weight: bold; color: var(--primary-red); align-self: center;">1 / 3</span>
+            <button class="btn-page" onclick="nextAlbumPage()">التالية <i class="fa-solid fa-arrow-left"></i></button>
         </div>
     </div>
 
-    <div id="screen-celebration" class="screen bg-[#3a0000]">
-        <div id="celebration-bg"></div>
-        <div class="z-20 text-center p-8 glass-panel rounded-3xl border border-red-500/50 shadow-[0_0_50px_rgba(255,0,0,0.4)]">
-            <h1 class="text-5xl md:text-7xl font-bold text-red-500 mb-6 ruqaa" style="text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);">
-                بحبك ❤️
-            </h1>
-            <p class="text-2xl text-white">كنت عارف إن قلبك أبيض وهتسامحيني</p>
+    <!-- المرحلة الثالثة: سؤال الصلح (نرجع لبعض) -->
+    <div class="stage-container" id="stage-3">
+        <h2>نفتح صفحة جديدة ونرجع لبعض؟</h2>
+        <p style="font-size: 19px; color: var(--text-gray);">مستني ردك بقلب مفتوح وبكل شوق..</p>
+        
+        <div class="decision-box" id="decisionBox">
+            <button id="btn-yes" onclick="acceptReconciliation()">موافقة ❤️</button>
+            <button id="btn-no" onmouseover="moveNoButton()" onclick="moveNoButton()">لا</button>
+        </div>
+        <p id="refusal-msg" style="color: var(--primary-red); font-weight: bold; margin-top: 20px; min-height: 30px;"></p>
+    </div>
+
+    <!-- المرحلة الرابعة: رسالة النجاح والقلوب والأغنية -->
+    <div class="stage-container" id="stage-4">
+        <i class="fa-solid fa-heart-circle-check" style="font-size: 65px; color: #ff3366; margin-bottom: 15px; animation: bounceHeart 1s infinite alternate;"></i>
+        <h1 style="color: #ff3366;">كنت عارف إن حبنا أقوى من أي حاجة وإنك هتسامحيني!</h1>
+        <p style="font-size: 20px; font-weight: bold; color: #fff;">بحبك بجد ومش هقدر أعيش بدونك أبداً.</p>
+        <div style="background: rgba(255,51,102,0.15); border: 1px solid #ff3366; padding: 12px; border-radius: 10px; margin-top: 20px;">
+            <p style="margin: 0; color: #ff99bb; font-size: 15px;"><i class="fa-solid fa-music"></i> تعمل الآن الأغنية الخاصة بنا في الخلفية..</p>
         </div>
     </div>
 
+    <!-- عنصر الصوت والأغنية -->
+    <audio id="bgMusic" loop>
+        <source src="" type="audio/mp3">
+    </audio>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- سكريبت الموقع وتفاعلاته -->
+    <script>
+        // النصوص الثابتة المطلوبة تماماً تحت الصور حسب الترتيب
+        const defaultCaptions = [
+            "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
+            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
+            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
+        ];
 
-        // Global State
-        const state = {
-            img1: '', img2: '', img3: '',
-            audioIntro: '', audioCeleb: ''
-        };
+        // البيانات الافتتاحية القابلة للتعديل والترتيب من لوحة التحكم
+        let albumPages = JSON.parse(localStorage.getItem('sanad_album_pages')) || [
+            { img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audioUrl: "" },
+            { img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600", audioUrl: "" },
+            { img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600", audioUrl: "" }
+        ];
 
-        const audioPlayers = {
-            intro: new Audio(),
-            celeb: new Audio()
-        };
-        // Loop celebration audio
-        audioPlayers.celeb.loop = true;
+        let currentAlbumIndex = 0;
+        let refusalAttempts = 0;
 
-        // Custom UI Alert
-        const showAlert = (msg) => {
-            document.getElementById('alert-msg').innerText = msg;
-            document.getElementById('custom-alert').style.display = 'flex';
-        };
-        document.getElementById('btn-alert-ok').addEventListener('click', () => {
-            document.getElementById('custom-alert').style.display = 'none';
+        window.addEventListener('DOMContentLoaded', () => {
+            createFallingQuestionMarks();
+            renderAlbumBook();
         });
 
-        // Initialize Firebase variables securely
-        let appId = 'default-apology-app';
-        let firebaseConfig = null;
-        let initialToken = null;
-
-        try {
-            if (typeof __app_id !== 'undefined') appId = __app_id;
-            if (typeof __firebase_config !== 'undefined') {
-                firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
-            }
-            if (typeof __initial_auth_token !== 'undefined') initialToken = __initial_auth_token;
-        } catch (e) {
-            console.error("Environment extraction error:", e);
+        // خلفية علامات الاستفهام المتساقطة
+        function createFallingQuestionMarks() {
+            setInterval(() => {
+                const q = document.createElement('div');
+                q.classList.add('falling-q');
+                q.innerText = '؟';
+                q.style.left = Math.random() * 100 + 'vw';
+                q.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                q.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                document.body.appendChild(q);
+                setTimeout(() => q.remove(), 7000);
+            }, 400);
         }
 
-        let db, auth;
-        const statusEl = document.getElementById('sync-status');
-        const setStatus = (msg, isError=false) => {
-            statusEl.innerText = msg;
-            statusEl.className = isError ? 'text-sm text-red-300 bg-red-900/30 p-2 rounded' : 'text-sm text-green-300 bg-green-900/30 p-2 rounded';
-        };
-
-        // Initialize App
-        async function initApp() {
-            if (!firebaseConfig) {
-                setStatus("تعذر العثور على إعدادات السحابة، يعمل محلياً.", true);
-                return;
-            }
-
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Authentication (Crucial step for Firestore Rules)
-                if (initialToken) {
-                    await signInWithCustomToken(auth, initialToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                setStatus("متصل بقاعدة البيانات ✅");
-                startRealtimeSync();
-            } catch (error) {
-                console.error("Firebase Init Error:", error);
-                setStatus("خطأ في الاتصال بقاعدة البيانات.", true);
-            }
+        function goToStage(stageNum) {
+            document.querySelectorAll('.stage-container').forEach(el => el.classList.remove('active'));
+            document.getElementById(`stage-${stageNum}`).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Get Public Collection Document Path
-        // RULE 1: STRICT PATH FORMAT
-        const getDocPath = (docId) => doc(db, 'artifacts', appId, 'public', 'data', 'app_data', docId);
-
-        // Realtime Sync Function
-        function startRealtimeSync() {
-            if (!auth.currentUser) return;
-            const items = ['img1', 'img2', 'img3', 'audioIntro', 'audioCeleb'];
-            
-            items.forEach(itemId => {
-                onSnapshot(getDocPath(itemId), (snap) => {
-                    if (snap.exists() && snap.data().base64) {
-                        const b64 = snap.data().base64;
-                        state[itemId] = b64;
-                        
-                        // Update UI seamlessly
-                        if (itemId.startsWith('img')) {
-                            const el = document.getElementById(`display-${itemId}`);
-                            if (el) el.src = b64;
-                        } else if (itemId === 'audioIntro') {
-                            audioPlayers.intro.src = b64;
-                        } else if (itemId === 'audioCeleb') {
-                            audioPlayers.celeb.src = b64;
-                        }
-                    }
-                }, (error) => {
-                    console.error(`Error syncing ${itemId}:`, error);
-                });
-            });
-        }
-
-        // Compress Images for Firestore (1MB limit)
-        const compressImage = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let { width, height } = img;
-                        const maxD = 600; 
-                        if (width > maxD || height > maxD) {
-                            if (width > height) {
-                                height = (height / width) * maxD; width = maxD;
-                            } else {
-                                width = (width / height) * maxD; height = maxD;
-                            }
-                        }
-                        canvas.width = width; canvas.height = height;
-                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // 60% quality JPEG
-                    };
-                };
-                reader.onerror = error => reject(error);
-            });
-        };
-
-        // Convert Audio to Base64
-        const fileToBase64 = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        };
-
-        async function handleUploads() {
-            if (!auth || !auth.currentUser) {
-                showAlert("يجب أن يكون الاتصال بالسحابة مفعل للحفظ.");
-                return;
-            }
-
-            const btn = document.getElementById('btn-save-admin');
-            btn.innerText = "جاري الرفع...";
-            btn.disabled = true;
-            setStatus("جاري الرفع للسحابة، برجاء الانتظار...");
-
-            let savedAny = false;
-
-            try {
-                const tasks = [];
-                
-                // Process 3 Images
-                for (let i = 1; i <= 3; i++) {
-                    const file = document.getElementById(`up-img${i}`).files[0];
-                    if (file) {
-                        const b64 = await compressImage(file);
-                        state[`img${i}`] = b64;
-                        document.getElementById(`display-img${i}`).src = b64; 
-                        tasks.push(setDoc(getDocPath(`img${i}`), { base64: b64 }));
-                        savedAny = true;
-                    }
-                }
-
-                // Process Audio 1
-                const audIntro = document.getElementById('up-aud-intro').files[0];
-                if (audIntro) {
-                    if (audIntro.size > 900000) throw new Error("Audio 1 is too large. Max 900KB.");
-                    const b64 = await fileToBase64(audIntro);
-                    state.audioIntro = b64;
-                    audioPlayers.intro.src = b64; 
-                    tasks.push(setDoc(getDocPath('audioIntro'), { base64: b64 }));
-                    savedAny = true;
-                }
-
-                // Process Audio 2
-                const audCeleb = document.getElementById('up-aud-celeb').files[0];
-                if (audCeleb) {
-                    if (audCeleb.size > 900000) throw new Error("Audio 2 is too large. Max 900KB.");
-                    const b64 = await fileToBase64(audCeleb);
-                    state.audioCeleb = b64;
-                    audioPlayers.celeb.src = b64;
-                    tasks.push(setDoc(getDocPath('audioCeleb'), { base64: b64 }));
-                    savedAny = true;
-                }
-
-                if (!savedAny) {
-                    showAlert("لم تقم باختيار أي ملفات للرفع.");
-                    setStatus("متصل بقاعدة البيانات ✅");
-                } else {
-                    await Promise.all(tasks);
-                    showAlert("تم الرفع بنجاح! الرابط الآن سيعرض هذه الملفات لأي شخص.");
-                    setStatus("تم الحفظ والمزامنة بنجاح ✅");
-                }
-            } catch (err) {
-                console.error(err);
-                showAlert("حدث خطأ أثناء الرفع: قد يكون حجم الملف الصوتي كبيراً جداً. يرجى اختيار ملفات بحجم أقل من 1MB.");
-                setStatus("فشل الرفع.", true);
-            }
-            
-            btn.innerText = "حفظ للسحابة";
-            btn.disabled = false;
-        }
-
-        // Admin Panel Events
-        document.getElementById('admin-gear').addEventListener('click', () => {
-            document.getElementById('admin-modal').classList.remove('hidden');
-            document.getElementById('admin-modal').classList.add('flex');
-        });
-
-        document.getElementById('btn-login').addEventListener('click', () => {
-            if (document.getElementById('admin-pwd').value === '9090') {
-                document.getElementById('admin-login-section').classList.add('hidden');
-                document.getElementById('admin-dashboard').classList.remove('hidden');
-            } else {
-                showAlert("كلمة السر خاطئة.");
-            }
-        });
-
-        document.getElementById('btn-close-admin').addEventListener('click', () => {
-            document.getElementById('admin-modal').classList.add('hidden');
-            document.getElementById('admin-modal').classList.remove('flex');
-            document.getElementById('admin-pwd').value = '';
-            document.getElementById('admin-login-section').classList.remove('hidden');
-            document.getElementById('admin-dashboard').classList.add('hidden');
-        });
-
-        document.getElementById('btn-save-admin').addEventListener('click', handleUploads);
-
-        const screens = {
-            intro: document.getElementById('screen-intro'),
-            album: document.getElementById('screen-album'),
-            question: document.getElementById('screen-question'),
-            celeb: document.getElementById('screen-celebration')
-        };
-
-        const showScreen = (name) => {
-            Object.values(screens).forEach(s => s.classList.remove('active'));
-            screens[name].classList.add('active');
-        };
-
-        // Go to Screen 2
-        document.getElementById('btn-continue').addEventListener('click', () => {
-            if (audioPlayers.intro.src) {
-                audioPlayers.intro.play().catch(e => console.log("Intro audio blocked", e));
-            }
-            showScreen('album');
-            startFlyingSequence();
-        });
-
-        function startFlyingSequence() {
-            const container = document.getElementById('flying-container');
+        // بناء وعرض الألبوم مع النصوص الثابتة
+        function renderAlbumBook() {
+            const container = document.getElementById('albumBookContainer');
             container.innerHTML = '';
-            
-            // Fallbacks if images not uploaded yet
-            const images = [
-                state.img1 || document.getElementById('display-img1').src,
-                state.img2 || document.getElementById('display-img2').src,
-                state.img3 || document.getElementById('display-img3').src
-            ];
 
-            const total = 12; 
-            for (let i = 0; i < total; i++) {
-                const img = document.createElement('img');
-                img.src = images[i % 3];
-                img.className = 'flying-photo';
-                
-                const startX = Math.random() > 0.5 ? -200 : window.innerWidth + 200;
-                const startY = Math.random() * window.innerHeight;
-                img.style.left = `${startX}px`;
-                img.style.top = `${startY}px`;
-                
-                container.appendChild(img);
-
-                setTimeout(() => {
-                    img.style.opacity = '1';
-                    img.style.transform = `scale(1) rotate(${(Math.random() - 0.5) * 60}deg) translate(${ (Math.random()-0.5)*150 }px, ${ (Math.random()-0.5)*150 }px)`;
-                    img.style.left = `calc(50% - 75px)`;
-                    img.style.top = `calc(50% - 100px)`;
-                    
-                    setTimeout(() => {
-                        img.style.opacity = '0';
-                        img.style.transform = 'scale(1.5) rotate(0deg)';
-                    }, 2500);
-                }, i * 200); 
-            }
-
-            // Show 3D Book after flying
-            setTimeout(() => {
-                document.getElementById('the-book').style.display = 'block';
-                document.getElementById('btn-next-page').classList.remove('hidden');
-                setTimeout(() => { document.getElementById('the-book').style.opacity = '1'; }, 50);
-            }, (total * 200) + 1500);
-        }
-
-        let currentPage = 1;
-        const btnNextPage = document.getElementById('btn-next-page');
-        
-        const flipPage = () => {
-            if (currentPage === 1) {
-                document.getElementById('page1').classList.add('flipped');
-                currentPage++;
-            } else if (currentPage === 2) {
-                document.getElementById('page2').classList.add('flipped');
-                btnNextPage.innerText = 'هتسامحيني؟';
-                currentPage++;
-            } else if (currentPage === 3) {
-                audioPlayers.intro.pause();
-                showScreen('question');
-                initQuestionMarks();
-            }
-        };
-
-        btnNextPage.addEventListener('click', flipPage);
-        // Allow clicking the book itself to flip
-        document.querySelectorAll('.book-page').forEach(page => {
-            page.addEventListener('click', (e) => {
-                // Ensure we only flip the top-most visible page
-                if (e.currentTarget.id === `page${currentPage}`) {
-                    flipPage();
-                }
+            albumPages.forEach((page, index) => {
+                let caption = defaultCaptions[index] || `ذكرى جميلة رقم ${index + 1}`;
+                container.innerHTML += `
+                    <div class="album-page-content ${index === 0 ? 'active' : ''}" id="album-page-${index}">
+                        <div class="album-img-frame">
+                            <img src="${page.img}" alt="ذكرى">
+                        </div>
+                        <div class="album-caption">
+                            <i class="fa-solid fa-quote-right" style="color:var(--primary-red);"></i> ${caption}
+                        </div>
+                    </div>
+                `;
             });
-        });
-
-        const canvas = document.getElementById('q-canvas');
-        const ctx = canvas.getContext('2d');
-        let qMarks = [];
-        let qAnimFrame;
-
-        function initQuestionMarks() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            qMarks = [];
-            for (let i = 0; i < 30; i++) {
-                qMarks.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    speed: Math.random() * 1.5 + 0.5,
-                    size: Math.random() * 25 + 15,
-                    opacity: Math.random() * 0.3 + 0.1
-                });
-            }
-            animateQMarks();
+            document.getElementById('album-page-indicator').innerText = `1 / ${albumPages.length}`;
         }
 
-        function animateQMarks() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#ffffff';
-            
-            qMarks.forEach(m => {
-                ctx.globalAlpha = m.opacity;
-                ctx.font = `${m.size}px Cairo`;
-                ctx.fillText('؟', m.x, m.y);
-                m.y += m.speed;
-                if (m.y > canvas.height + 40) {
-                    m.y = -40;
-                    m.x = Math.random() * canvas.width;
-                }
-            });
-            qAnimFrame = requestAnimationFrame(animateQMarks);
+        function nextAlbumPage() {
+            if(currentAlbumIndex < albumPages.length - 1) {
+                document.getElementById(`album-page-${currentAlbumIndex}`).classList.remove('active');
+                currentAlbumIndex++;
+                document.getElementById(`album-page-${currentAlbumIndex}`).classList.add('active');
+                document.getElementById('album-page-indicator').innerText = `${currentAlbumIndex + 1} / ${albumPages.length}`;
+                
+                // تشغيل الأغنية المخصصة لهذه الصفحة إن وجدت
+                playPageAudio(albumPages[currentAlbumIndex].audioUrl);
+            } else {
+                // الانتقال للمرحلة التالية بعد نهاية الألبوم
+                goToStage(3);
+            }
         }
 
-        window.addEventListener('resize', () => {
-            if (screens.question.classList.contains('active')) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+        function prevAlbumPage() {
+            if(currentAlbumIndex > 0) {
+                document.getElementById(`album-page-${currentAlbumIndex}`).classList.remove('active');
+                currentAlbumIndex--;
+                document.getElementById(`album-page-${currentAlbumIndex}`).classList.add('active');
+                document.getElementById('album-page-indicator').innerText = `${currentAlbumIndex + 1} / ${albumPages.length}`;
+                playPageAudio(albumPages[currentAlbumIndex].audioUrl);
             }
-        });
+        }
 
-        const btnNo = document.getElementById('btn-no');
-        let dodgeCount = 0;
-
-        const dodgeAction = (e) => {
-            if (e) e.preventDefault(); 
-            dodgeCount++;
-            
-            if (dodgeCount === 3) {
-                btnNo.innerText = 'ما تحاولش، ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض';
-                btnNo.classList.remove('text-2xl', 'py-4', 'px-10', 'rounded-full');
-                btnNo.classList.add('text-sm', 'md:text-base', 'py-2', 'px-4', 'rounded-xl');
+        function playPageAudio(url) {
+            const audio = document.getElementById('bgMusic');
+            if(url) {
+                audio.src = url;
+                audio.play().catch(e => console.log("Audio autoplay prevented"));
             }
+        }
 
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const btnW = btnNo.offsetWidth;
-            const btnH = btnNo.offsetHeight;
+        // حركة زر الرفض الهارب (لا)
+        function moveNoButton() {
+            refusalAttempts++;
+            const btnNo = document.getElementById('btn-no');
+            const box = document.getElementById('decisionBox');
+            const msgEl = document.getElementById('refusal-msg');
 
-            // Constrain to visible area
-            const newX = Math.max(10, Math.random() * (w - btnW - 20));
-            const newY = Math.max(10, Math.random() * (h - btnH - 20));
+            const maxX = box.clientWidth - btnNo.clientWidth - 20;
+            const maxY = 120;
 
-            btnNo.style.position = 'fixed';
-            btnNo.style.left = `${newX}px`;
-            btnNo.style.top = `${newY}px`;
-        };
+            const randomX = Math.floor(Math.random() * maxX) - (maxX / 2);
+            const randomY = Math.floor(Math.random() * maxY) - 40;
 
-        // Aggressive event listeners for dodging
-        btnNo.addEventListener('mouseenter', dodgeAction);
-        btnNo.addEventListener('touchstart', dodgeAction, { passive: false });
-        btnNo.addEventListener('click', dodgeAction); 
+            btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
 
-        const btnYes = document.getElementById('btn-yes');
-        btnYes.addEventListener('click', () => {
-            cancelAnimationFrame(qAnimFrame);
-            showScreen('celeb');
-            
-            if (audioPlayers.celeb.src) {
-                audioPlayers.celeb.currentTime = 0;
-                audioPlayers.celeb.play().catch(e => console.log("Celeb audio blocked:", e));
+            if (refusalAttempts >= 3) {
+                msgEl.innerText = "ما تحاولش.. ما هو كده كده أصلاً مش هترفض أو مش هتعرف ترفض!";
             }
-            
-            startCelebrationFX();
-        });
+        }
 
-        function startCelebrationFX() {
-            const bg = document.getElementById('celebration-bg');
+        // الضغط على زر موافقة
+        function acceptReconciliation() {
+            goToStage(4);
+            startCelebrationEffects();
             
-            // Continuous heart rain
+            // تشغيل أغنية نهائية إن وجدت
+            const audio = document.getElementById('bgMusic');
+            if(albumPages[0] && albumPages[0].audioUrl) {
+                audio.src = albumPages[0].audioUrl;
+                audio.play().catch(e => console.log("Audio played"));
+            }
+        }
+
+        // تأثيرات القلوب وكلمة وحشتيني المتطايرة
+        function startCelebrationEffects() {
             setInterval(() => {
                 const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
                 heart.innerHTML = '❤️';
-                heart.className = 'falling-heart';
-                heart.style.left = `${Math.random() * 100}vw`;
-                heart.style.animationDuration = `${Math.random() * 2 + 2.5}s`;
-                bg.appendChild(heart);
-                
-                setTimeout(() => heart.remove(), 5000);
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 4000);
             }, 150);
 
-            // Pop up "وحشتيني" words randomly
             setInterval(() => {
-                if(Math.random() > 0.3) {
-                    const txt = document.createElement('div');
-                    txt.innerHTML = 'وحشتيني <br><span class="text-3xl">❤️</span>';
-                    txt.className = 'pop-text text-center leading-none';
-                    txt.style.left = `${10 + Math.random() * 70}vw`;
-                    txt.style.top = `${10 + Math.random() * 70}vh`;
-                    bg.appendChild(txt);
-                    
-                    setTimeout(() => txt.remove(), 2000);
-                }
+                const word = document.createElement('div');
+                word.classList.add('floating-word');
+                word.innerHTML = 'وحشتيني ❤️';
+                word.style.left = Math.random() * 85 + 'vw';
+                word.style.top = Math.random() * 70 + 15 + 'vh';
+                document.body.appendChild(word);
+                setTimeout(() => word.remove(), 3500);
             }, 800);
         }
 
-        // Initialize App on Load
-        window.addEventListener('load', initApp);
+        // إدارة لوحة التحكم السرية للأدمن (كلمة السر 9090)
+        function openAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('admin-pass-input').value = '';
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-pass-input').value.trim();
+            if(pass === '9090') {
+                closeAdminLoginModal();
+                openAdminPanel();
+            } else {
+                alert('كلمة السر غير صحيحة!');
+            }
+        }
+
+        function openAdminPanel() {
+            renderAdminConfigList();
+            document.getElementById('adminPanelModal').style.display = 'flex';
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').style.display = 'none';
+        }
+
+        function renderAdminConfigList() {
+            const container = document.getElementById('admin-pages-config-list');
+            container.innerHTML = '';
+
+            albumPages.forEach((page, index) => {
+                let defaultCap = defaultCaptions[index] || `صورة رقم ${index + 1}`;
+                container.innerHTML += `
+                    <div style="background:#1f1f26; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #333;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <strong style="color:var(--primary-red);">الصفحة / الصورة رقم ${index + 1}</strong>
+                            <div>
+                                <button onclick="movePageOrder(${index}, -1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬆️ رفع</button>
+                                <button onclick="movePageOrder(${index}, 1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬇️ خفض</button>
+                                <button onclick="deleteAlbumPage(${index})" style="background:#ff4d4d; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:11px;">حذف</button>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-gray); margin-bottom:4px;"><strong>النص الثابت:</strong> ${defaultCap}</p>
+                        <label style="font-size:12px; color:#ccc;">رابط الصورة (URL):</label>
+                        <input type="text" id="admin-img-${index}" value="${page.img}" placeholder="رابط الصورة">
+                        <label style="font-size:12px; color:#ccc;">رابط الأغنية لهذه الصفحة (اختياري MP3 URL):</label>
+                        <input type="text" id="admin-audio-${index}" value="${page.audioUrl || ''}" placeholder="رابط الأغنية">
+                    </div>
+                `;
+            });
+        }
+
+        function addNewAlbumPage() {
+            albumPages.push({ img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audioUrl: "" });
+            renderAdminConfigList();
+        }
+
+        function movePageOrder(index, direction) {
+            const newIndex = index + direction;
+            if(newIndex >= 0 && newIndex < albumPages.length) {
+                const temp = albumPages[index];
+                albumPages[index] = albumPages[newIndex];
+                albumPages[newIndex] = temp;
+                renderAdminConfigList();
+            }
+        }
+
+        function deleteAlbumPage(index) {
+            if(albumPages.length > 1) {
+                albumPages.splice(index, 1);
+                renderAdminConfigList();
+            } else {
+                alert('يجب أن تبقى صفحة واحدة على الأقل في الألبوم!');
+            }
+        }
+
+        function saveAdminChanges() {
+            albumPages.forEach((page, index) => {
+                const imgVal = document.getElementById(`admin-img-${index}`).value.trim();
+                const audioVal = document.getElementById(`admin-audio-${index}`).value.trim();
+                if(imgVal) page.img = imgVal;
+                page.audioUrl = audioVal;
+            });
+
+            localStorage.setItem('sanad_album_pages', JSON.stringify(albumPages));
+            closeAdminPanel();
+            renderAlbumBook();
+            alert('تم حفظ التغييرات وتحديث ترتيب الصور والمحتوى بنجاح! ✅');
+        }
     </script>
 </body>
 </html>
