@@ -298,7 +298,7 @@
             overflow-y: auto;
         }
 
-        .modal-box input[type="file"], .modal-box select {
+        .modal-box input[type="text"], .modal-box select {
             width: 100%;
             padding: 8px;
             margin-bottom: 12px;
@@ -319,7 +319,7 @@
         <div class="modal-box" style="text-align: center;">
             <i class="fa-solid fa-lock" style="font-size: 40px; color: var(--primary-red); margin-bottom: 15px;"></i>
             <h3>لوحة تحكم الموقع</h3>
-            <p style="font-size: 13px; color: var(--text-gray);">أدخل كلمة السر (9090) للتحكم في الملفات والترتيب:</p>
+            <p style="font-size: 13px; color: var(--text-gray);">أدخل كلمة السر (9090) لتعديل الروابط والترتيب:</p>
             <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر" style="width:100%; padding:10px; margin-bottom:12px; background:#222; border:1px solid #444; color:#fff; border-radius:8px; text-align: center; font-size: 18px; letter-spacing: 5px;">
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button class="btn-action" style="flex:1; padding: 10px;" onclick="verifyAdminPassword()">دخول</button>
@@ -328,7 +328,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل وترتيب الصور والأغاني -->
+    <!-- نافذة تعديل وترتيب الصور والأغاني بالروابط المباشرة -->
     <div class="modal-overlay" id="adminPanelModal">
         <div class="modal-box">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
@@ -336,7 +336,7 @@
                 <button onclick="closeAdminPanel()" style="background:none; border:none; color:#ff4d4d; font-size:22px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <p style="font-size: 13px; color: var(--text-gray);">يمكنك تعديل أو استبدال الملفات وترتيب الصفحات:</p>
+            <p style="font-size: 13px; color: var(--text-gray);">يمكنك تعديل روابط الصور والأغاني مباشرة هنا:</p>
             
             <div id="admin-pages-config-list"></div>
 
@@ -351,7 +351,7 @@
         <p>
             أنا بكتب الكلمات دي وأنا حاسس بكل كلمة فيها.. عارف إني زعلتك وغلطت، وعارف إن غلاوتك عندي أكبر بكتیر من أي سوء فهم أو زعل حصل. أنا بجد أسف من كل قلبي على كل لحظة زعلتك فيها أو ضايقتك. أنتي مش مجرد حد غالي، أنتي كل حاجة حلوة في حياتي، ووجودك هو اللي بيملى دنيتي فرحة وهدوء. أنا بتأسف لك قد الدنيا دي كلها، وبتمنى تسامحيني وتعذري تقصيري، لأن مكانتك في قلبي فوق كل وصف.. حقك عليا حقك على رأسي من فوق.
         </p>
-        <button class="btn-action" onclick="goToStage(2)">كمل ❤️</button>
+        <button class="btn-action" onclick="startExperience()">كمل ❤️</button>
     </div>
 
     <!-- المرحلة الثانية: ألبوم الذكريات (الكتاب المتحرك) -->
@@ -392,11 +392,9 @@
     </div>
 
     <!-- عنصر الصوت والأغنية -->
-    <audio id="bgMusic" loop>
-        <source src="" type="audio/mp3">
-    </audio>
+    <audio id="bgMusic" loop></audio>
 
-    <!-- سكريبت الموقع مع دمج الملفات المرفوعة بالترتيب تماماً -->
+    <!-- سكريبت الموقع مع معالجة التشغيل التلقائي والمتصفحات -->
     <script>
         const defaultCaptions = [
             "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
@@ -404,32 +402,27 @@
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // تم دمج الصور والأغاني المرفوعة بالترتيب المطلوب تماماً
-        let albumPages = [
+        // الصور والروابط الثابتة المرتبة بدقة
+        let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
-                img: "URL_OR_DATA_IMAGE_1", 
-                audio: "URL_OR_DATA_AUDIO_1" 
+                img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", 
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" 
             },
             { 
-                img: "URL_OR_DATA_IMAGE_2", 
-                audio: "URL_OR_DATA_AUDIO_2" 
+                img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600", 
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" 
             },
             { 
-                img: "URL_OR_DATA_IMAGE_3", 
-                audio: "URL_OR_DATA_AUDIO_3" 
+                img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600", 
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" 
             }
         ];
 
-        // تحميل البيانات المحفوظة إن وجدت محلياً أو الاعتماد على النسخة المضمنة المدمجة
         let currentAlbumIndex = 0;
         let refusalAttempts = 0;
 
         window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
-            const saved = localStorage.getItem('sanad_final_fixed_pages');
-            if(saved) {
-                try { albumPages = JSON.parse(saved); } catch(e){}
-            }
             renderAlbumBook();
         });
 
@@ -444,6 +437,12 @@
                 document.body.appendChild(q);
                 setTimeout(() => q.remove(), 7000);
             }, 400);
+        }
+
+        function startExperience() {
+            // تشغيل الصوت الأول فور الضغط على زر "كمل" لتجاوز قيود المتصفح
+            playPageAudio(albumPages[0].audio);
+            goToStage(2);
         }
 
         function goToStage(stageNum) {
@@ -494,11 +493,11 @@
             }
         }
 
-        function playPageAudio(audioData) {
+        function playPageAudio(audioUrl) {
             const audio = document.getElementById('bgMusic');
-            if(audioData) {
-                audio.src = audioData;
-                audio.play().catch(e => console.log("Audio autoplay prevented"));
+            if(audioUrl) {
+                audio.src = audioUrl;
+                audio.play().catch(e => console.log("Audio play blocked by browser policy until interaction"));
             }
         }
 
@@ -524,12 +523,7 @@
         function acceptReconciliation() {
             goToStage(4);
             startCelebrationEffects();
-            
-            const audio = document.getElementById('bgMusic');
-            if(albumPages[0] && albumPages[0].audio) {
-                audio.src = albumPages[0].audio;
-                audio.play().catch(e => console.log("Audio played"));
-            }
+            playPageAudio(albumPages[0].audio);
         }
 
         function startCelebrationEffects() {
@@ -592,27 +586,25 @@
                 container.innerHTML += `
                     <div style="background:#1f1f26; padding:12px; border-radius:8px; margin-bottom:10px; border:1px solid #333;">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <strong style="color:var(--primary-red);">الصفحة / الصورة رقم ${index + 1}</strong>
+                            <strong style="color:var(--primary-red);">الصفحة رقم ${index + 1}</strong>
                             <div>
-                                <button onclick="movePageOrder(${index}, -1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬆️ رفع</button>
-                                <button onclick="movePageOrder(${index}, 1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬇️ خفض</button>
+                                <button onclick="movePageOrder(${index}, -1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬆️</button>
+                                <button onclick="movePageOrder(${index}, 1)" class="btn-page" style="padding:2px 8px; font-size:11px;">⬇️</button>
                                 <button onclick="deleteAlbumPage(${index})" style="background:#ff4d4d; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:11px;">حذف</button>
                             </div>
                         </div>
-                        <p style="font-size: 12px; color: var(--text-gray); margin-bottom:4px;"><strong>النص الثابت:</strong> ${defaultCap}</p>
-                        
-                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">تغيير الصورة:</label>
-                        <input type="file" id="admin-img-file-${index}" accept="image/*">
-                        
-                        <label style="font-size:12px; color:#ccc; display:block; margin-top:5px;">تغيير الأغنية:</label>
-                        <input type="file" id="admin-audio-file-${index}" accept="audio/*">
+                        <p style="font-size: 11px; color: var(--text-gray);">${defaultCap}</p>
+                        <label style="font-size:12px; color:#ccc;">رابط الصورة:</label>
+                        <input type="text" id="admin-img-${index}" value="${page.img}">
+                        <label style="font-size:12px; color:#ccc;">رابط الأغنية (MP3):</label>
+                        <input type="text" id="admin-audio-${index}" value="${page.audio}">
                     </div>
                 `;
             });
         }
 
         function addNewAlbumPage() {
-            albumPages.push({ img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600", audio: "" });
+            albumPages.push({ img: "", audio: "" });
             renderAdminConfigList();
         }
 
@@ -631,37 +623,22 @@
                 albumPages.splice(index, 1);
                 renderAdminConfigList();
             } else {
-                alert('يجب أن تبقى صفحة واحدة على الأقل في الألبوم!');
+                alert('يجب أن تبقى صفحة واحدة على الأقل!');
             }
         }
 
-        async function saveAdminChanges() {
-            for (let index = 0; index < albumPages.length; index++) {
-                const imgInput = document.getElementById(`admin-img-file-${index}`);
-                const audioInput = document.getElementById(`admin-audio-file-${index}`);
-
-                if (imgInput && imgInput.files && imgInput.files[0]) {
-                    albumPages[index].img = await readFileAsDataURL(imgInput.files[0]);
-                }
-
-                if (audioInput && audioInput.files && audioInput.files[0]) {
-                    albumPages[index].audio = await readFileAsDataURL(audioInput.files[0]);
-                }
-            }
+        function saveAdminChanges() {
+            albumPages.forEach((page, index) => {
+                const imgVal = document.getElementById(`admin-img-${index}`).value.trim();
+                const audioVal = document.getElementById(`admin-audio-${index}`).value.trim();
+                if(imgVal) page.img = imgVal;
+                if(audioVal) page.audio = audioVal;
+            });
 
             localStorage.setItem('sanad_final_fixed_pages', JSON.stringify(albumPages));
             closeAdminPanel();
             renderAlbumBook();
-            alert('تم حفظ التغييرات وتثبيتها بنجاح! ✅');
-        }
-
-        function readFileAsDataURL(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
+            alert('تم حفظ التغييرات بنجاح! ✅');
         }
     </script>
 </body>
