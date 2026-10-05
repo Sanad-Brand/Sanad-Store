@@ -146,18 +146,21 @@
 
         .album-img-frame {
             width: 100%;
-            height: 380px;
+            height: 420px;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 15px;
             background: #000;
             border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .album-img-frame img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* لعرض الصورة بالكامل وبأعلى جودة ودقة دون قص أي جزء */
+            object-fit: contain; /* وضوح تام وعالي بدون قص أي جزء من الصورة */
             background: #000;
         }
 
@@ -402,22 +405,22 @@
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // الأغنية الأولى التي تعمل فور الضغط على زر كمل رسالة الاعتذار
+        // الأغنية الأولى التي تعمل فور بدء الموقع وبمجرد الضغط على زر كمل
         const openingAudio = "https://d.uguu.se/poZdyaAG.mpeg";
 
-        // روابط الصور الأصلية والواضحة جداً مع الأغاني المرتبة بدقة
+        // ترتيب الصور والأغاني الصحيح والمطابق تماماً لطلبك بجودة عالية
         let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
                 img: "https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg", 
-                audio: "https://archive.org/download/whats-app-audio-2026-10-05-at-2.18.13-am/WhatsApp%20Audio%202026-10-05%20at%202.18.13%20AM.mp3" 
+                audio: "https://d.uguu.se/poZdyaAG.mpeg" 
             },
             { 
                 img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
-                audio: "https://h.uguu.se/QCPuADAp.mpeg" 
+                audio: "https://archive.org/download/whats-app-audio-2026-10-05-at-2.18.13-am/WhatsApp%20Audio%202026-10-05%20at%202.18.13%20AM.mp3" 
             },
             { 
                 img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
-                audio: "https://n.uguu.se/nEjMhyjj.mpeg" 
+                audio: "https://h.uguu.se/QCPuADAp.mpeg" 
             }
         ];
 
@@ -427,6 +430,8 @@
         window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
             renderAlbumBook();
+            // تشغيل الأغنية الأولى مباشرة فور فتح الموقع
+            playAudioDirect(openingAudio);
         });
 
         function createFallingQuestionMarks() {
@@ -443,7 +448,6 @@
         }
 
         function startExperience() {
-            // تشغيل الأغنية الأولى فور الضغط على زر "كمل" لتجاوز قيود المتصفح
             playAudioDirect(openingAudio);
             goToStage(2);
         }
