@@ -146,7 +146,7 @@
 
         .album-img-frame {
             width: 100%;
-            height: 350px;
+            height: 380px;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 15px;
@@ -157,7 +157,8 @@
         .album-img-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* لعرض الصورة بالكامل وبأعلى جودة ودقة دون قص أي جزء */
+            background: #000;
         }
 
         .album-caption {
@@ -401,10 +402,10 @@
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // الأغنية الأولى التي تعمل فور بدء الموقع
+        // الأغنية الأولى التي تعمل فور الضغط على زر كمل رسالة الاعتذار
         const openingAudio = "https://d.uguu.se/poZdyaAG.mpeg";
 
-        // الروابط المباشرة الدقيقة للصور والأغاني مرتبة بالكامل
+        // روابط الصور الأصلية والواضحة جداً مع الأغاني المرتبة بدقة
         let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
                 img: "https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg", 
@@ -426,8 +427,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
             renderAlbumBook();
-            // تفعيل التشغيل التلقائي للأغنية الأولى فور تحميل الصفحة وتجاوز قيود المتصفح
-            playAudioDirect(openingAudio);
         });
 
         function createFallingQuestionMarks() {
@@ -444,7 +443,8 @@
         }
 
         function startExperience() {
-            playAudioDirect(albumPages[0].audio);
+            // تشغيل الأغنية الأولى فور الضغط على زر "كمل" لتجاوز قيود المتصفح
+            playAudioDirect(openingAudio);
             goToStage(2);
         }
 
@@ -526,7 +526,7 @@
         function acceptReconciliation() {
             goToStage(4);
             startCelebrationEffects();
-            playAudioDirect(albumPages[0].audio);
+            playAudioDirect(openingAudio);
         }
 
         function startCelebrationEffects() {
