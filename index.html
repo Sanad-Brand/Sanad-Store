@@ -405,22 +405,22 @@
             "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // الأغنية الأولى التي تعمل فور بدء الموقع وبمجرد الضغط على زر كمل
+        // أغنية بداية الموقع (رسالة الاعتذار)
         const openingAudio = "https://d.uguu.se/poZdyaAG.mpeg";
 
-        // ترتيب الصور والأغاني الصحيح والمطابق تماماً لطلبك بجودة عالية
+        // ترتيب الصور والأغاني الصحيح والمطابق لطلبك 100% بجودة عالية
         let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
                 img: "https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg", 
-                audio: "https://d.uguu.se/poZdyaAG.mpeg" 
-            },
-            { 
-                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
                 audio: "https://archive.org/download/whats-app-audio-2026-10-05-at-2.18.13-am/WhatsApp%20Audio%202026-10-05%20at%202.18.13%20AM.mp3" 
             },
             { 
-                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
+                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
                 audio: "https://h.uguu.se/QCPuADAp.mpeg" 
+            },
+            { 
+                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
+                audio: "https://n.uguu.se/nEjMhyjj.mpeg" 
             }
         ];
 
@@ -430,7 +430,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
             renderAlbumBook();
-            // تشغيل الأغنية الأولى مباشرة فور فتح الموقع
+            // تشغيل أغنية البداية تلقائياً فور تحميل الصفحة
             playAudioDirect(openingAudio);
         });
 
