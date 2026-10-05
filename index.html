@@ -401,25 +401,25 @@
     <script>
         const defaultCaptions = [
             "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
-            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
-            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
+            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.",
+            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا."
         ];
 
         // أغنية بداية الموقع (رسالة الاعتذار)
         const openingAudio = "https://d.uguu.se/poZdyaAG.mpeg";
 
-        // ترتيب الصور والأغاني الصحيح والمطابق لطلبك 100% بجودة عالية
+        // ترتيب الصور والأغاني بالتبديلات المطلوبة بالضبط
         let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
                 img: "https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg", 
                 audio: "https://archive.org/download/whats-app-audio-2026-10-05-at-2.18.13-am/WhatsApp%20Audio%202026-10-05%20at%202.18.13%20AM.mp3" 
             },
             { 
-                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
+                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
                 audio: "https://h.uguu.se/QCPuADAp.mpeg" 
             },
             { 
-                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
+                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
                 audio: "https://n.uguu.se/nEjMhyjj.mpeg" 
             }
         ];
@@ -530,6 +530,7 @@
         function acceptReconciliation() {
             goToStage(4);
             startCelebrationEffects();
+            // تشغيل الأغنية المطلوبة بعد الإجابة على السؤال
             playAudioDirect(openingAudio);
         }
 
