@@ -349,7 +349,7 @@
         </div>
     </div>
 
-    <!-- المرحلة الأولى: رسالة الاعتذار الكبرى -->
+    <!-- المرحلة الأولى: رسالة الاعتذار الكبرى (بدون أي صوت في البداية) -->
     <div class="stage-container active" id="stage-1">
         <h1>حقك عليا.. صفحة اعتذار من القلب</h1>
         <p>
@@ -401,25 +401,25 @@
     <script>
         const defaultCaptions = [
             "أول رسالة منك واللي غيرت مجرى حياتي، وكانت احلى رسالة.",
-            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني.",
-            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا."
+            "اجمل صورة لاجمل انسانة في الدنيا، واحن انسانة في الدنيا.",
+            "اول صورة عملتيها لينا ب AI، وكانت احلى صورة شافتها عيني."
         ];
 
-        // أغنية بداية الموقع (رسالة الاعتذار)
-        const openingAudio = "https://d.uguu.se/poZdyaAG.mpeg";
+        // أغنية ما بعد الإجابة على السؤال
+        const postQuestionAudio = "https://d.uguu.se/poZdyaAG.mpeg";
 
-        // ترتيب الصور والأغاني بالتبديلات المطلوبة بالضبط
+        // الترتيب بالتبديلات المطلوبة بالضبط وبأعلى جودة للصور
         let albumPages = JSON.parse(localStorage.getItem('sanad_final_fixed_pages')) || [
             { 
                 img: "https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg", 
                 audio: "https://archive.org/download/whats-app-audio-2026-10-05-at-2.18.13-am/WhatsApp%20Audio%202026-10-05%20at%202.18.13%20AM.mp3" 
             },
             { 
-                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
+                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
                 audio: "https://h.uguu.se/QCPuADAp.mpeg" 
             },
             { 
-                img: "https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg", 
+                img: "https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg", 
                 audio: "https://n.uguu.se/nEjMhyjj.mpeg" 
             }
         ];
@@ -430,8 +430,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             createFallingQuestionMarks();
             renderAlbumBook();
-            // تشغيل أغنية البداية تلقائياً فور تحميل الصفحة
-            playAudioDirect(openingAudio);
+            // لا يتم تشغيل أي أغنية عند بدء الموقع (صامت تماماً)
         });
 
         function createFallingQuestionMarks() {
@@ -448,8 +447,9 @@
         }
 
         function startExperience() {
-            playAudioDirect(openingAudio);
             goToStage(2);
+            // عند الانتقال للألبوم تبدأ أغنية الصورة الأولى
+            playAudioDirect(albumPages[0].audio);
         }
 
         function goToStage(stageNum) {
@@ -530,8 +530,8 @@
         function acceptReconciliation() {
             goToStage(4);
             startCelebrationEffects();
-            // تشغيل الأغنية المطلوبة بعد الإجابة على السؤال
-            playAudioDirect(openingAudio);
+            // تشغيل الأغنية المخصصة بعد الإجابة على السؤال
+            playAudioDirect(postQuestionAudio);
         }
 
         function startCelebrationEffects() {
