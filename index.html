@@ -164,7 +164,7 @@
     <!-- شاشة عرض الفيديو بملء الشاشة بجودة عالية -->
     <div class="video-screen" id="videoScreen">
         <video id="mainVideo" controls playsinline preload="auto">
-            <source src="https://archive.org/download/whats-app-video-2026-10-07-at-1.26.47-am/WhatsApp%20Video%202026-10-07-at-1.26.47-AM.mp4" type="video/mp4">
+            <source src="https://h.uguu.se/QRrrfOaP.mp4" type="video/mp4">
             متصفحك لا يدعم عرض الفيديو.
         </video>
         <div class="exit-hint">عرض بملء الشاشة بجودة عالية</div>
@@ -176,12 +176,12 @@
             const videoScreen = document.getElementById('videoScreen');
             const videoElem = document.getElementById('mainVideo');
 
-            // إخفاء واجهة الدخول
+            // إخفاء واجهة الدخول بتأثير سلس
             gatewayBox.style.opacity = '0';
             setTimeout(() => {
                 gatewayBox.style.display = 'none';
                 
-                // إظهار شاشة الفيديو وتشغيله بملء الشاشة
+                // إظهار شاشة الفيديو بملء الشاشة
                 videoScreen.classList.add('active');
                 
                 if (videoScreen.requestFullscreen) {
