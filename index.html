@@ -15,7 +15,6 @@
         :root {
             --bg-color: #050508;
             --card-bg: rgba(15, 15, 20, 0.85);
-            --accent-color: #222;
             --text-main: #e0e0e0;
             --text-muted: #888;
         }
@@ -136,7 +135,6 @@
             outline: none;
         }
 
-        /* زر رجوع أو إخفاء اختياري أثناء الفيديو */
         .exit-hint {
             position: absolute;
             bottom: 20px;
@@ -146,11 +144,6 @@
             font-size: 12px;
             pointer-events: none;
             letter-spacing: 1px;
-            transition: opacity 0.5s;
-        }
-        
-        .video-screen:hover .exit-hint {
-            opacity: 0;
         }
     </style>
 </head>
@@ -170,7 +163,7 @@
 
     <!-- شاشة عرض الفيديو بملء الشاشة بجودة عالية -->
     <div class="video-screen" id="videoScreen">
-        <video id="mainVideo" controls playsinline>
+        <video id="mainVideo" controls playsinline preload="auto">
             <source src="https://archive.org/download/whats-app-video-2026-10-07-at-1.26.47-am/WhatsApp%20Video%202026-10-07-at-1.26.47-AM.mp4" type="video/mp4">
             متصفحك لا يدعم عرض الفيديو.
         </video>
@@ -183,25 +176,24 @@
             const videoScreen = document.getElementById('videoScreen');
             const videoElem = document.getElementById('mainVideo');
 
-            // إخفاء واجهة الدخول بتأثير سلس
+            // إخفاء واجهة الدخول
             gatewayBox.style.opacity = '0';
             setTimeout(() => {
                 gatewayBox.style.display = 'none';
                 
-                // إظهار شاشة الفيديو وتشغيله فوراً وبملء الشاشة
+                // إظهار شاشة الفيديو وتشغيله بملء الشاشة
                 videoScreen.classList.add('active');
                 
-                // طلب تفعيل وضع ملء الشاشة التلقائي (Full Screen)
                 if (videoScreen.requestFullscreen) {
                     videoScreen.requestFullscreen().catch(err => console.log(err));
-                } else if (videoScreen.webkitRequestFullscreen) { /* Safari */
+                } else if (videoScreen.webkitRequestFullscreen) {
                     videoScreen.webkitRequestFullscreen();
-                } else if (videoScreen.msRequestFullscreen) { /* IE11 */
+                } else if (videoScreen.msRequestFullscreen) {
                     videoScreen.msRequestFullscreen();
                 }
 
                 videoElem.play().catch(e => {
-                    console.log("Auto-play blocked or requires interaction, controls are available.");
+                    console.log("Auto-play restricted, controls are available.");
                 });
             }, 500);
         }
