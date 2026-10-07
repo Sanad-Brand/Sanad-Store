@@ -321,7 +321,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* قسم السؤال الأخير والأزرار التفاعلية */
+        /* قسم السؤال الأخير والأزرار التفاعلية (منفصلين تماماً ومش فوق بعض) */
         .final-question-section {
             max-width: 600px;
             margin: 50px auto 80px;
@@ -339,7 +339,7 @@
         .fq-buttons {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 40px;
             position: relative;
             min-height: 70px;
             align-items: center;
@@ -355,6 +355,8 @@
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(37,211,102,0.3);
             transition: 0.3s;
+            position: relative;
+            z-index: 5;
         }
         .btn-yes-fq:hover { transform: scale(1.08); }
 
@@ -367,21 +369,97 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            position: absolute;
+            position: relative;
+            z-index: 10;
             box-shadow: 0 5px 15px rgba(255,77,77,0.3);
             transition: all 0.15s ease-out;
         }
         .fq-result-msg {
             margin-top: 25px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 900;
             color: var(--dark-pink);
             min-height: 40px;
             animation: popIn 0.5s ease;
         }
+
+        /* زرار لوحة الأدمن المخفي في الزاوية */
+        .admin-trigger-btn {
+            position: fixed;
+            bottom: 15px; left: 15px;
+            background: rgba(0,0,0,0.6);
+            color: #aaa;
+            border: 1px solid #444;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 99999;
+            transition: 0.3s;
+        }
+        .admin-trigger-btn:hover { background: var(--dark-pink); color: #fff; }
+
+        /* نافذة لوحة الأدمن */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+        .admin-box {
+            background: #15151a;
+            border: 2px solid var(--primary-pink);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            text-align: right;
+            max-height: 85vh;
+            overflow-y: auto;
+            color: #fff;
+        }
+        .admin-box input {
+            width: 100%; padding: 10px; margin-bottom: 15px; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; text-align: center; font-size: 16px;
+        }
+        .log-item {
+            background: #222; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; border-right: 4px solid var(--primary-pink);
+        }
     </style>
 </head>
 <body>
+
+    <!-- زر لوحة الأدمن السري -->
+    <button class="admin-trigger-btn" onclick="openAdminLogin()"><i class="fa-solid fa-gear"></i> لوحة الأدمن</button>
+
+    <!-- نافذة تسجيل دخول الأدمن -->
+    <div class="admin-modal" id="adminLoginModal">
+        <div class="admin-box" style="text-align: center;">
+            <i class="fa-solid fa-lock" style="font-size: 35px; color: var(--primary-pink); margin-bottom: 15px;"></i>
+            <h3>لوحة تحكم الأدمن</h3>
+            <p style="font-size: 12px; color: #aaa; margin-bottom: 15px;">أدخل الباسوورد (2006) لمشاهدة الردود:</p>
+            <input type="password" id="adminPassInput" placeholder="أدخل الباسوورد">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-enter" style="flex:1; padding:8px;" onclick="verifyAdmin()">دخول</button>
+                <button class="btn-enter" style="flex:1; padding:8px; background:#444;" onclick="closeAdminLogin()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة عرض الردود والأكشنات المسجلة -->
+    <div class="admin-modal" id="adminLogsModal">
+        <div class="admin-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <h3 style="color: var(--primary-pink);">سجل الردود والأكشنات</h3>
+                <button onclick="closeAdminLogs()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="logsContainer"></div>
+            <button class="btn-enter" style="background:#ff4d4d; margin-top: 15px; padding: 8px;" onclick="clearLogs()">مسح السجل</button>
+        </div>
+    </div>
 
     <!-- المرحلة الأولى: بوابة الدخول -->
     <div class="gateway-section" id="gatewaySection">
@@ -498,7 +576,7 @@
             <div class="final-msg-card" id="msg3"></div>
         </div>
 
-        <!-- زر السؤال الأخير (بتحبيني؟) -->
+        <!-- زر السؤال الأخير (بتحبيني؟) مع أزرار منفصلة ومنظمة -->
         <div class="final-question-section">
             <div class="fq-title">بتحبيني ؟ ❤️</div>
             <div class="fq-buttons" id="fqButtonsBox">
@@ -542,7 +620,6 @@
         }
 
         function showFlowerAnimation() {
-            // الخروج تلقائياً من وضع ملء الشاشة عند الضغط على زر جاهزة
             if (document.exitFullscreen) {
                 document.exitFullscreen().catch(err => {});
             } else if (document.webkitExitFullscreen) {
@@ -558,23 +635,28 @@
             music.volume = 0.8;
             music.play().catch(e => {});
 
-            for (let i = 0; i < 100; i++) {
+            triggerMassiveFlowers();
+
+            startTypingEffect();
+            startTimerLive();
+            generateBrownHearts();
+            setupScrollObserver();
+        }
+
+        // تساقط ورود كثيف جداً
+        function triggerMassiveFlowers() {
+            for (let i = 0; i < 120; i++) {
                 setTimeout(() => {
                     const flower = document.createElement('div');
                     flower.classList.add('falling-flower');
                     flower.innerHTML = ['🌸', '🌷', '🌹', '❤', '✨', '💖'][Math.floor(Math.random() * 6)];
                     flower.style.left = Math.random() * 100 + 'vw';
                     flower.style.animationDuration = (Math.random() * 2 + 1) + 's';
-                    flower.style.fontSize = (Math.random() * 28 + 16) + 'px';
+                    flower.style.fontSize = (Math.random() * 30 + 16) + 'px';
                     document.body.appendChild(flower);
                     setTimeout(() => flower.remove(), 4000);
-                }, i * 40);
+                }, i * 35);
             }
-
-            startTypingEffect();
-            startTimerLive();
-            generateBrownHearts();
-            setupScrollObserver();
         }
 
         const fullTypedText = "حبيت اعمل هدية جديده وعايزك تعرفي اني بحبك وربنا يخليكي ليا يقلبييي ويلا بقا انبهري 😂❤️";
@@ -661,30 +743,76 @@
             addNext();
         }
 
+        // تسجيل الأكشن في اللوكال ستوريج للأدمن
+        function logAction(actionName) {
+            let logs = JSON.parse(localStorage.getItem('admin_love_logs')) || [];
+            const timeStr = new Date().toLocaleString('ar-EG');
+            logs.unshift({ action: actionName, time: timeStr });
+            localStorage.setItem('admin_love_logs', JSON.stringify(logs));
+        }
+
+        // تفاعل زرار "بتحبيني؟"
         let noAttemptCount = 0;
         function moveNoButton() {
             noAttemptCount++;
             const btnNo = document.getElementById('btnNoFq');
-            const box = document.getElementById('fqButtonsBox');
-
+            
             if (noAttemptCount < 4) {
-                const maxX = box.clientWidth - btnNo.clientWidth - 20;
-                const maxY = 100;
-                const randomX = Math.floor(Math.random() * maxX) - (maxX / 2);
-                const randomY = Math.floor(Math.random() * maxY) - 40;
+                const randomX = (Math.random() - 0.5) * 220;
+                const randomY = (Math.random() - 0.5) * 100;
                 btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                logAction('حاولت تدوس "لا" وهرب الزرار');
             } else {
                 btnNo.style.transform = 'translate(0px, 0px)';
                 document.getElementById('fqResultMsg').innerText = "متحاوليش ومتكدبيش علي نفسك احنا لسه بنحب بعض لان حبنا كان حقيقي مش كدبه ❤️❤️";
+                logAction('وصلت لمحاولات "لا" النهائية وظهرت رسالة الحقيقة');
             }
         }
 
         function answerYes() {
-            document.getElementById('fqResultMsg').innerText = "وأنا بحبك أكتر من الدنيا دي كلها يا أجمل حاجة في حياتي! 🥰💖";
+            triggerMassiveFlowers();
+            document.getElementById('fqResultMsg').innerHTML = "ونا كمان بحبكككككككككك ❤️❤️";
+            logAction('اختارت "أه ❤️" وظهرت رسالة ونا كمان بحبك');
         }
 
         function answerNo() {
             moveNoButton();
+        }
+
+        // دوال لوحة الأدمن
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('adminPassInput').value = '';
+        }
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPassInput').value.trim();
+            if (pass === '2006') {
+                closeAdminLogin();
+                showLogsModal();
+            } else {
+                alert('الباسوورد خطأ! (الباسوورد هو 2006)');
+            }
+        }
+        function showLogsModal() {
+            const container = document.getElementById('logsContainer');
+            let logs = JSON.parse(localStorage.getItem('admin_love_logs')) || [];
+            
+            if (logs.length === 0) {
+                container.innerHTML = '<p style="color:#888; text-align:center;">لا توجد أكشنات مسجلة حتى الآن.</p>';
+            } else {
+                container.innerHTML = logs.map(l => `<div class="log-item"><b>${l.action}</b><br><span style="font-size:11px; color:#aaa;">${l.time}</span></div>`).join('');
+            }
+            document.getElementById('adminLogsModal').style.display = 'flex';
+        }
+        function closeAdminLogs() {
+            document.getElementById('adminLogsModal').style.display = 'none';
+        }
+        function clearLogs() {
+            localStorage.removeItem('admin_love_logs');
+            showLogsModal();
         }
     </script>
 </body>
