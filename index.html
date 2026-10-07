@@ -22,6 +22,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Cairo', sans-serif;
+            scroll-behavior: smooth;
         }
 
         body {
@@ -111,7 +112,7 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(255,105,180,0.8);
+            box-shadow: 0 0 25px rgba(255,105,180,0.9);
             animation: pulseReady 1.5s infinite;
         }
         @keyframes pulseReady {
@@ -120,11 +121,10 @@
             100% { transform: scale(1); }
         }
 
-        /* تساقط الورود البينك */
+        /* تساقط الورود المكثف والساحر */
         .falling-flower {
             position: fixed;
             top: -50px;
-            font-size: 24px;
             z-index: 99999;
             user-select: none;
             pointer-events: none;
@@ -132,7 +132,7 @@
         }
         @keyframes flowerFall {
             0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+            100% { transform: translateY(105vh) rotate(1080deg); opacity: 0; }
         }
 
         /* المحتوى الرئيسي (الصفحة البينك) */
@@ -223,7 +223,7 @@
             position: relative;
             margin: 60px auto;
             padding: 50px 20px;
-            background: url('https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg') center/cover no-repeat;
+            background: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
             border-radius: 25px;
             max-width: 700px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -278,7 +278,7 @@
             100% { transform: translateY(-100%) scale(1.2); opacity: 0; }
         }
 
-        /* معرض الصور (سلايدر/فيسبوك style) */
+        /* معرض الصور الجديد (أشخاص ودبدوب وبوكيه وبحر) */
         .memory-gallery {
             max-width: 600px;
             margin: 50px auto;
@@ -360,7 +360,7 @@
         <!-- صندوق الكتابة بالصوت -->
         <div class="typing-box-container">
             <div class="typed-text" id="typedTextOutput"></div>
-            <button class="cartoon-next-btn" onclick="showLoveWord()">Next</button>
+            <button class="cartoon-next-btn" onclick="scrollToNextSection()">Next</button>
             <div class="hidden-love-msg" id="hiddenLoveMsg">بحبك💕</div>
         </div>
 
@@ -389,26 +389,26 @@
             </div>
         </div>
 
-        <!-- معرض الصور (سلايدر ذكريات) -->
-        <div class="memory-gallery">
+        <!-- معرض الصور الجديد كلياً (أشخاص، دبدوب، ورد، بحر) -->
+        <div class="memory-gallery" id="memoryGallery">
             <div class="memory-card">
-                <img src="https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg" alt="صورة 1">
+                <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=800&auto=format&fit=crop" alt="صورة حب">
                 <div class="memory-caption">بحبك</div>
             </div>
             <div class="memory-card">
-                <img src="https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg" alt="صورة 2">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop" alt="دبدوب">
                 <div class="memory-caption">يا أجمل حاجة دخلت حياتي</div>
             </div>
             <div class="memory-card">
-                <img src="https://i.ibb.co/YBBwbLNT/Whats-App-Image-2026-10-05-at-2-17-33-AM-1.jpg" alt="صورة 3">
+                <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=800&auto=format&fit=crop" alt="بوكيه ورد">
                 <div class="memory-caption">ربنا ما يحرمني من حبك أبداً</div>
             </div>
             <div class="memory-card">
-                <img src="https://i.ibb.co/KzbwbVcZ/Whats-App-Image-2026-10-05-at-2-17-32-AM.jpg" alt="صورة 4">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="البحر">
                 <div class="memory-caption">أحلى ذكريات عشتها معاكي</div>
             </div>
             <div class="memory-card">
-                <img src="https://i.ibb.co/zK29ZVQ/Whats-App-Image-2026-10-05-at-2-17-33-AM.jpg" alt="صورة 5">
+                <img src="https://images.unsplash.com/photo-1494774157365-9e04c6720e47?q=80&w=800&auto=format&fit=crop" alt="ذكريات">
                 <div class="memory-caption">هفضل احبك طول عمري</div>
             </div>
         </div>
@@ -429,8 +429,6 @@
     <audio id="keySound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" preload="auto"></audio>
 
     <script>
-        const videoUrl = "https://h.uguu.se/QRrrfOaP.mp4";
-
         function startExperience() {
             document.getElementById('gatewaySection').style.opacity = '0';
             setTimeout(() => {
@@ -439,55 +437,49 @@
                 const videoElem = document.getElementById('mainVideo');
                 videoScreen.classList.add('active');
                 
-                // ملء الشاشة وتفعيل الفيديو
                 if (videoScreen.requestFullscreen) {
                     videoScreen.requestFullscreen().catch(err => {});
                 }
                 videoElem.play();
 
-                // إظهار زر جاهزة بعد انتهاء الفيديو
                 videoElem.onended = () => {
                     document.getElementById('readyBtnContainer').style.display = 'block';
                 };
-                // احتياطي في حال الفيديو طول أو المستخدم عاوز يدوس قبله
                 setTimeout(() => {
                     document.getElementById('readyBtnContainer').style.display = 'block';
                 }, 5000);
             }, 800);
         }
 
-        // أنيميشن تساقط الورود عند الضغط على جاهزة
+        // أنيميشن تساقط الورود الغزير والمكثف
         function showFlowerAnimation() {
             document.getElementById('videoScreen').style.display = 'none';
             document.getElementById('mainContentPage').classList.add('active');
             
-            // تشغيل الأغنية الخلفية
             const music = document.getElementById('bgMusic');
             music.volume = 0.8;
-            music.play().catch(e => console.log("Audio play interaction needed"));
+            music.play().catch(e => {});
 
-            // توليد الورد المتساقط يملى الشاشة وينزل لتحت
-            for (let i = 0; i < 40; i++) {
+            // زيادة عدد الورود لتملأ الشاشة بغزارة وسحر
+            for (let i = 0; i < 70; i++) {
                 setTimeout(() => {
                     const flower = document.createElement('div');
                     flower.classList.add('falling-flower');
-                    flower.innerHTML = '🌸';
+                    flower.innerHTML = ['🌸', '🌷', '🌹', '❤️', '✨'][Math.floor(Math.random() * 5)];
                     flower.style.left = Math.random() * 100 + 'vw';
-                    flower.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    flower.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    flower.style.animationDuration = (Math.random() * 2.5 + 1.5) + 's';
+                    flower.style.fontSize = (Math.random() * 25 + 15) + 'px';
                     document.body.appendChild(flower);
-                    setTimeout(() => flower.remove(), 5000);
-                }, i * 100);
+                    setTimeout(() => flower.remove(), 4000);
+                }, i * 60);
             }
 
-            // بدء الكتابة بالصوت
             startTypingEffect();
             startTimerLive();
             generateBrownHearts();
             setupScrollObserver();
         }
 
-        // تأثير الكتابة مع صوت الكيبورد
         const fullTypedText = "حبيت اعمل هدية جديده وعايزك تعرفي اني بحبك وربنا يخليكي ليا يقلبييي ويلا بقا انبهري 😂❤️";
         let charIndex = 0;
 
@@ -498,22 +490,22 @@
             function typeChar() {
                 if (charIndex < fullTypedText.length) {
                     output.innerHTML += fullTypedText.charAt(charIndex);
-                    // تشغيل صوت الكيبورد بشكل خفيف ومتناسق
                     keySound.currentTime = 0;
                     keySound.volume = 0.3;
                     keySound.play().catch(e => {});
                     charIndex++;
-                    setTimeout(typeChar, 80);
+                    setTimeout(typeChar, 75);
                 }
             }
             typeChar();
         }
 
-        function showLoveWord() {
+        // وظيفة زر Next لعمل سكرول تلقائي للمرحلة التالية وإظهار كلمة بحبك
+        function scrollToNextSection() {
             document.getElementById('hiddenLoveMsg').style.display = 'block';
+            document.getElementById('timelineSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // تايمر لايف دقيق من 12/4/2026
         function startTimerLive() {
             const startDate = new Date('2026-04-12T00:00:00');
             setInterval(() => {
@@ -532,7 +524,6 @@
             }, 1000);
         }
 
-        // قلوب بنية تظهر في الخلفية باستمرار
         function generateBrownHearts() {
             setInterval(() => {
                 const h = document.createElement('div');
@@ -543,10 +534,9 @@
                 h.style.animationDuration = (Math.random() * 3 + 4) + 's';
                 document.getElementById('timelineSection').appendChild(h);
                 setTimeout(() => h.remove(), 6000);
-            }, 800);
+            }, 700);
         }
 
-        // تفعيل كتابة الرسائل الأخيرة عند السكرول وصلولها
         function setupScrollObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
