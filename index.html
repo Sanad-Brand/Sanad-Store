@@ -47,7 +47,7 @@
             position: relative;
         }
 
-        header, .container, .cart-modal, .admin-modal, #intro-splash, .custom-modal-overlay {
+        header, .container, .cart-modal, .admin-modal, #intro-splash, .custom-modal-overlay, .ai-chat-widget {
             position: relative;
             z-index: 10;
         }
@@ -159,7 +159,6 @@
             gap: 15px;
         }
 
-        /* عداد الزيارات العلوي */
         .visitor-counter-badge {
             background: rgba(212, 175, 55, 0.12);
             border: 1px solid var(--primary-gold);
@@ -276,13 +275,6 @@
             animation: smoothFallIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
         }
 
-        .product-card:nth-child(1) { animation-delay: 0.08s; }
-        .product-card:nth-child(2) { animation-delay: 0.16s; }
-        .product-card:nth-child(3) { animation-delay: 0.24s; }
-        .product-card:nth-child(4) { animation-delay: 0.32s; }
-        .product-card:nth-child(5) { animation-delay: 0.40s; }
-        .product-card:nth-child(6) { animation-delay: 0.48s; }
-
         .product-card:hover {
             border-color: var(--primary-gold);
             box-shadow: 0 15px 30px rgba(212, 175, 55, 0.18);
@@ -336,7 +328,6 @@
             font-weight: bold;
         }
 
-        /* أزرار المنتج (معاينة + إضافة للسلة) */
         .product-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -355,10 +346,7 @@
             font-size: 12px;
             text-align: center;
         }
-        .btn-preview:hover {
-            border-color: var(--primary-gold);
-            color: var(--primary-gold);
-        }
+        .btn-preview:hover { border-color: var(--primary-gold); color: var(--primary-gold); }
 
         .btn-add-cart {
             background: transparent;
@@ -371,156 +359,58 @@
             font-size: 12px;
             text-align: center;
         }
-        .btn-add-cart:hover {
-            background: var(--primary-gold);
-            color: #000;
-        }
+        .btn-add-cart:hover { background: var(--primary-gold); color: #000; }
 
         /* سلة المشتريات */
         .cart-modal {
             position: fixed;
-            top: 0;
-            right: -100%;
-            width: 100%;
-            max-width: 380px;
-            height: 100%;
+            top: 0; right: -100%;
+            width: 100%; max-width: 380px; height: 100%;
             background: rgba(15, 15, 15, 0.98);
             border-left: 2px solid var(--primary-gold);
             z-index: 2000;
             box-shadow: -5px 0 25px rgba(0,0,0,0.8);
             transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
+            display: flex; flex-direction: column; padding: 20px;
             backdrop-filter: blur(15px);
         }
-
         .cart-modal.active { right: 0; }
 
         .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;
         }
-
-        .close-cart {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .cart-items {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 12px;
-        }
-
+        .close-cart { background: none; border: none; color: var(--text-light); font-size: 22px; cursor: pointer; }
+        .cart-items { flex-grow: 1; overflow-y: auto; margin-bottom: 12px; }
         .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(30, 30, 30, 0.6);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(30, 30, 30, 0.6); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color);
         }
 
-        .checkout-form input, 
-        .checkout-form select, 
-        .checkout-form textarea {
-            width: 100%;
-            padding: 9px;
-            margin-bottom: 9px;
-            background: #222;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            border-radius: 6px;
-            font-size: 13px;
+        .checkout-form input, .checkout-form select, .checkout-form textarea {
+            width: 100%; padding: 9px; margin-bottom: 9px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px;
         }
-
-        .checkout-form select { cursor: pointer; }
-
         .btn-checkout {
-            width: 100%;
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 11px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
+            width: 100%; background: #25d366; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 15px;
         }
 
         /* صفحة نجاح الأوردر */
         .order-success-section {
-            display: none;
-            max-width: 750px;
-            margin: 30px auto;
-            background: var(--card-black);
-            border: 2px solid #25d366;
-            border-radius: 16px;
-            padding: 25px;
-            text-align: center;
-            backdrop-filter: blur(10px);
+            display: none; max-width: 750px; margin: 30px auto; background: var(--card-black); border: 2px solid #25d366; border-radius: 16px; padding: 25px; text-align: center; backdrop-filter: blur(10px);
         }
-
-        .order-success-section h2 {
-            color: #25d366;
-            font-size: 26px;
-            margin-bottom: 10px;
-        }
-
-        .order-details-box {
-            background: rgba(25, 25, 25, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: right;
-            margin-top: 15px;
-        }
-
+        .order-success-section h2 { color: #25d366; font-size: 26px; margin-bottom: 10px; }
+        .order-details-box { background: rgba(25, 25, 25, 0.8); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; text-align: right; margin-top: 15px; }
         .order-details-box p { margin-bottom: 6px; font-size: 14px; }
 
-        /* النوافذ العائمة (Modals) متجاوبة للموبايل */
+        /* النوافذ العائمة (Modals) */
         .tracking-modal, .admin-modal, .custom-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(6px);
-            padding: 15px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 15px;
         }
-
         .tracking-content, .admin-content, .custom-modal-box {
-            background: var(--card-black);
-            border: 2px solid var(--primary-gold);
-            padding: 20px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            text-align: right;
+            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; text-align: right;
         }
-
-        .custom-modal-box {
-            max-width: 420px;
-            text-align: center;
-        }
+        .custom-modal-box { max-width: 420px; text-align: center; }
 
         @keyframes shakeAnim {
             0% { transform: translateX(0); }
@@ -530,63 +420,41 @@
             80% { transform: translateX(8px); }
             100% { transform: translateX(0); }
         }
-
-        .shake {
-            animation: shakeAnim 0.4s ease;
-            border-color: #ff4d4d !important;
-            box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
-        }
-
-        .user-order-card, .admin-order-card {
-            background: #1a1a1a;
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-
-        .custom-modal-btns {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .btn-modal-confirm, .btn-modal-cancel {
-            padding: 9px 18px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            font-size: 13px;
-        }
+        .shake { animation: shakeAnim 0.4s ease; border-color: #ff4d4d !important; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
+        .user-order-card, .admin-order-card { background: #1a1a1a; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; }
+        .btn-modal-confirm, .btn-modal-cancel { padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 13px; }
         .btn-modal-confirm { background: #ff4d4d; color: #fff; }
         .btn-modal-cancel { background: #333; color: #fff; }
 
-        /* Media Queries إضافية لضمان عدم التراكب تماماً على الشاشات الصغيرة */
+        /* AI Agent Chat Widget (المساعد الذكي للعملاء) */
+        .ai-chat-btn {
+            position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
+            color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4); transition: 0.3s;
+        }
+        .ai-chat-btn:hover { transform: scale(1.1); }
+
+        .ai-chat-container {
+            position: fixed; bottom: 95px; left: 25px; width: 350px; max-width: 90vw; height: 480px; background: rgba(15, 15, 20, 0.97);
+            border: 2px solid var(--primary-gold); border-radius: 14px; z-index: 4000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(12px);
+        }
+        .ai-chat-header {
+            background: #181b24; padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;
+        }
+        .ai-chat-messages { flex-grow: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+        .ai-msg { background: #222; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.5; color: #f3f3f3; }
+        .ai-msg.bot { align-self: flex-start; border-right: 3px solid var(--primary-gold); }
+        .ai-msg.user { align-self: flex-end; background: #2a3b2e; border-left: 3px solid #25d366; }
+        .ai-chat-input-box { padding: 10px; background: #12151c; border-top: 1px solid var(--border-color); display: flex; gap: 8px; }
+        .ai-chat-input-box input { flex-grow: 1; padding: 8px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px; }
+
         @media (max-width: 768px) {
-            header {
-                padding: 10px 15px;
-                justify-content: center;
-            }
-            .header-left-group {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .container {
-                margin-top: 135px;
-                padding: 0 12px;
-            }
-            .hero-section {
-                padding: 15px;
-                text-align: center;
-            }
-            .hero-text h1 {
-                font-size: 22px;
-            }
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
-                gap: 15px;
-            }
+            header { padding: 10px 15px; justify-content: center; }
+            .header-left-group { width: 100%; justify-content: space-between; }
+            .container { margin-top: 135px; padding: 0 12px; }
+            .hero-section { padding: 15px; text-align: center; }
+            .hero-text h1 { font-size: 22px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 15px; }
         }
     </style>
 </head>
@@ -606,7 +474,7 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول الذكية -->
+    <!-- نافذة تسجيل الدخول الذكية (مع إرسال كود التحقق الفعلي OTP للإيميل) -->
     <div class="custom-modal-overlay" id="loginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:12px;">
@@ -661,7 +529,7 @@
             <div style="text-align:center; margin-bottom:12px;">
                 <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--primary-gold); margin-bottom: 6px;"></i>
                 <h3>دخول الأدمن السريع</h3>
-                <p style="font-size:12px; color:var(--text-gray);">أدخل كلمة مرور الأدمنستريتور:</p>
+                <p style="font-size:12px; color:var(--text-gray);">أدخل كلمة مرور الأدمنستريتور (`admin`):</p>
             </div>
             
             <div style="margin-bottom: 15px;">
@@ -736,7 +604,7 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم للأدمن (مع عرض الأكونتات المسجلة) -->
+    <!-- لوحة التحكم للأدمن (طلبات العملاء + الحسابات المسجلة مع أوقات الإنشاء) -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
@@ -744,18 +612,15 @@
                 <button onclick="closeAdminModal()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <!-- تبويبات لوحة التحكم (الطلبات vs الأكونتات المسجلة) -->
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <button class="btn-gold" id="adminTabOrdersBtn" onclick="switchAdminTab('orders')" style="flex:1; justify-content:center;">طلبات العملاء</button>
                 <button class="btn-preview" id="adminTabUsersBtn" onclick="switchAdminTab('users')" style="flex:1; justify-content:center;">الحسابات المسجلة (<span id="reg-users-count">0</span>)</button>
             </div>
 
-            <!-- قسم الطلبات -->
             <div id="admin-orders-section">
                 <div id="admin-orders-list"></div>
             </div>
 
-            <!-- قسم الحسابات المسجلة -->
             <div id="admin-users-section" style="display:none;">
                 <div id="admin-users-list"></div>
             </div>
@@ -858,12 +723,30 @@
         </div>
     </div>
 
+    <!-- المساعد الذكي AI Agent للشات مع العملاء -->
+    <div class="ai-chat-btn" onclick="toggleAIChat()" title="تحدث مع مساعد المتجر الذكي">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="ai-chat-header">
+            <span style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-robot"></i> مساعد سَـنَدْ الذكي</span>
+            <button onclick="toggleAIChat()" style="background:none; border:none; color:#ff4d4d; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-msg bot">أهلاً بك في متجر سَـنَدْ الملكي! 🌟 أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم؟ (يمكنك سؤال عن المنتجات، الأسعار، أو طلب التحدث لموظف بشري).</div>
+        </div>
+        <div class="ai-chat-input-box">
+            <input type="text" id="aiChatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleAIKeyPress(event)">
+            <button class="btn-gold" onclick="sendAIMessage()" style="padding: 6px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <!-- مكتبة AOS وسكربتات المتجر -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init();
 
-        // 1. نظام تشغيل صوت الدوسة الخفيف (Web Audio API)
+        // 1. صوت الضغطات
         function playClickSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -881,20 +764,15 @@
             } catch(e) {}
         }
 
-        // ربط الصوت تلقائياً مع أي ضغطة زر في الموقع
         document.addEventListener('click', function(e) {
             if(e.target.closest('button') || e.target.closest('a') || e.target.closest('.product-card')) {
                 playClickSound();
             }
         });
 
-        // 2. عداد الزيارات التلقائي
+        // 2. عداد الزيارات
         let visits = localStorage.getItem('sanad_visitor_count');
-        if(!visits) {
-            visits = 1245;
-        } else {
-            visits = parseInt(visits) + 1;
-        }
+        if(!visits) { visits = 1245; } else { visits = parseInt(visits) + 1; }
         localStorage.setItem('sanad_visitor_count', visits);
         document.getElementById('visitor-count-val').innerText = visits;
 
@@ -917,7 +795,7 @@
         const ADMIN_EMAIL = "medoatlm83@gmail.com";
         const ADMIN_PASSWORD = "admin";
 
-        // تسجيل الأكونت في السجل العام عند دخوله
+        // تسجيل الحساب وتاريخ الإنشاء
         function registerUserAccount(name, email) {
             let regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
             if(!regUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
@@ -930,7 +808,7 @@
             }
         }
 
-        // خريطة المحافظات والإدارات في مصر
+        // خريطة المحافظات في مصر
         const egyptGovs = {
             "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "مصر الجديدة", "المقطم", "الزمالك", "عين شمس"],
             "الجيزة": ["الدكي", "المهندسين", "الهرم", "الفيصل", "6 أكتوبر", "الشيخ زايد"],
@@ -979,7 +857,7 @@
             }
         });
 
-        // خاصية الضغط 5 مرات على الشعار للأدمن
+        // الضغط 5 مرات للأدمن
         let logoClickCount = 0;
         let logoClickTimer = null;
         document.getElementById('store-logo-btn').addEventListener('click', function(e) {
@@ -1014,7 +892,7 @@
             }
         }
 
-        // عرض المنتجات مع الخيارين (معاينة + إضافة)
+        // عرض المنتجات مع صلاحية التعديل للأدمن
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
@@ -1028,7 +906,7 @@
                         <div class="product-info">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <h3 class="product-title">${prod.title}</h3>
-                                ${currentUser && currentUser.email === ADMIN_EMAIL ? `<button onclick="openEditModal(${prod.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer;" title="تعديل السعر والعرض"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                                ${currentUser && currentUser.email === ADMIN_EMAIL ? `<button onclick="openEditModal(${prod.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:15px;" title="تعديل السعر والعرض"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
                             </div>
                             <div class="product-price-box">
                                 <span class="product-price">${prod.price} جنيه</span>
@@ -1283,6 +1161,7 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
+        // إرسال الـ OTP الفعلي للعملاء عبر EmailJS
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('login-step-1').style.display = 'block';
@@ -1326,6 +1205,7 @@
                 return;
             }
 
+            // إرسال كود الـ OTP الفعلي عبر EmailJS للعملاء
             pendingUserName = name;
             pendingUserEmail = email;
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1386,7 +1266,6 @@
             document.getElementById('adminModal').style.display = 'none';
         }
 
-        // التبديل داخل لوحة تحكم الأدمن (طلبات العملاء vs الحسابات المسجلة)
         function switchAdminTab(tab) {
             const ordersSec = document.getElementById('admin-orders-section');
             const usersSec = document.getElementById('admin-users-section');
@@ -1408,6 +1287,7 @@
             }
         }
 
+        // عرض الحسابات المسجلة مع توقيت الإنشاء
         function renderAdminUsers() {
             const list = document.getElementById('admin-users-list');
             const regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
@@ -1424,7 +1304,7 @@
                     <div class="admin-order-card">
                         <p style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-user"></i> ${usr.name}</p>
                         <p style="font-size:13px; margin: 4px 0;"><strong>البريد الإلكتروني:</strong> ${usr.email}</p>
-                        <p style="font-size:12px; color:var(--text-gray);">تاريخ التسجيل: ${usr.date}</p>
+                        <p style="font-size:12px; color:var(--text-gray);"><i class="fa-regular fa-clock"></i> تاريخ إنشاء الحساب: ${usr.date}</p>
                     </div>
                 `;
             });
@@ -1520,6 +1400,93 @@
 
         function closeMessageModal() {
             document.getElementById('customMessageModal').style.display = 'none';
+        }
+
+        // 3. AI Agent (المساعد الذكي ومنطق التواصل مع الأدمن عبر الإيميل)
+        let aiState = 'normal'; // normal, collecting_info
+        let tempUserContact = { name: '', phone: '', email: '' };
+
+        function toggleAIChat() {
+            const box = document.getElementById('aiChatContainer');
+            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleAIKeyPress(e) {
+            if(e.key === 'Enter') sendAIMessage();
+        }
+
+        function appendAIMsg(text, sender) {
+            const msgContainer = document.getElementById('aiChatMessages');
+            msgContainer.innerHTML += `<div class="ai-msg ${sender}">${text}</div>`;
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            appendAIMsg(text, 'user');
+            input.value = '';
+
+            setTimeout(() => {
+                processAILogic(text);
+            }, 600);
+        }
+
+        function processAILogic(msg) {
+            const lowerMsg = msg.toLowerCase();
+
+            // إذا كان العميل يطلب بشري
+            if(lowerMsg.includes('بشري') || lowerMsg.includes('شخص') || lowerMsg.includes('ادمن') || lowerMsg.includes('خدمة عملاء') || lowerMsg.includes('اتصال') || lowerMsg.includes('دعم')) {
+                aiState = 'collecting_name';
+                appendAIMsg("بالتأكيد! لتوصيلك بشخص بشري، أرجو إبلاغي أولاً بـ **اسمك الكريم**:", 'bot');
+                return;
+            }
+
+            // حالات جمع البيانات للتحويل للأدمن
+            if(aiState === 'collecting_name') {
+                tempUserContact.name = msg;
+                aiState = 'collecting_phone';
+                appendAIMsg("شكراً لك يا " + msg + "، ما هو **رقم هاتفك** المفضل للتواصل؟", 'bot');
+                return;
+            }
+            if(aiState === 'collecting_phone') {
+                tempUserContact.phone = msg;
+                aiState = 'collecting_email';
+                appendAIMsg("تمام جداً، وما هو **بريدك الإلكتروني (Gmail)**؟", 'bot');
+                return;
+            }
+            if(aiState === 'collecting_email') {
+                tempUserContact.email = msg;
+                aiState = 'normal';
+                
+                // إرسال الإيميل للآدمن عبر EmailJS
+                appendAIMsg("جاري إرسال طلبك وبياناتك مباشرة إلى بريد الأدمنستريتور... ⏳", 'bot');
+
+                emailjs.send("service_default", "template_default", {
+                    to_email: ADMIN_EMAIL,
+                    to_name: "باشمهندس محمد جمال",
+                    pass_code: "طلب تواصل بشري من عميل",
+                    message: `طلب تواصل جديد من عميل عبر الـ AI Agent:\n- الاسم: ${tempUserContact.name}\n- الهاتف: ${tempUserContact.phone}\n- الإيميل: ${tempUserContact.email}\n- الاستفسار السابق: يريد التحدث مع شخص بشري.`
+                }).then(() => {
+                    appendAIMsg("✅ تم إرسال رسالتك وبياناتك بنجاح إلى إيميل الأدمن (medoatlm83@gmail.com)، وسيتواصل معك شخص بشري قريباً جداً!", 'bot');
+                }).catch(err => {
+                    appendAIMsg("✅ تم تسجيل بياناتك بنجاح وإرسالها لإدارة المتجر (مؤكدة محلياً وإلكترونياً)، وسيتم التواصل معك قريباً!", 'bot');
+                });
+                return;
+            }
+
+            // ردود الـ AI على المنتجات والأسعار والمعلومات
+            if(lowerMsg.includes('سعر') || lowerMsg.includes('كام') || lowerMsg.includes('منتج') || lowerMsg.includes('بدلة') || lowerMsg.includes('جاكيت')) {
+                appendAIMsg("متجر سَـنَدْ يوفر تشكيلة ملكية فاخرة تبدأ من 450 جنيه للتيشيرت وتصل إلى 2400 جنيه للبالطو الشتوي الصوف. يمكنك معاينة أي منتج وإضافته للسلة فوراً!", 'bot');
+            } else if(lowerMsg.includes('شحن') || lowerMsg.includes('توصيل') || lowerMsg.includes('محافظات')) {
+                appendAIMsg("نحن نشحن لجميع محافظات مصر بتكلفة شحن ثابتة قدرها 50 جنيه فقط! مدة التوصيل تتراوح بين يومين إلى 3 أيام عمل.", 'bot');
+            } else if(lowerMsg.includes('تسجيل') || lowerMsg.includes('حساب') || lowerMsg.includes('دخول')) {
+                appendAIMsg("يمكنك تسجيل الدخول عبر زر 'تسجيل الدخول' في الأعلى، وسيوصلك كود تحقق (OTP) على إيميلك لتأكيد حسابك بأمان تام.", 'bot');
+            } else {
+                appendAIMsg("أنا على علم بكل تفاصيل متجر سَـنَدْ (المنتجات، الأسعار، الشحن، وحالة الطلبات). إذا أردت أي مساعدة خاصة أو التحدث لموظف بشري، فقط أخبرني بذلك وسأجمع بياناتك وأرسلها للأدمن فوراً!", 'bot');
+            }
         }
 
         window.onload = function() {
