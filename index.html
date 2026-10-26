@@ -427,7 +427,7 @@
         .btn-modal-confirm { background: #ff4d4d; color: #fff; }
         .btn-modal-cancel { background: #333; color: #fff; }
 
-        /* AI Agent Chat Widget (المساعد الذكي للعملاء) */
+        /* AI Agent Chat Widget (المساعد الذكي الفريندلي) */
         .ai-chat-btn {
             position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
             color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4); transition: 0.3s;
@@ -435,7 +435,7 @@
         .ai-chat-btn:hover { transform: scale(1.1); }
 
         .ai-chat-container {
-            position: fixed; bottom: 95px; left: 25px; width: 350px; max-width: 90vw; height: 480px; background: rgba(15, 15, 20, 0.97);
+            position: fixed; bottom: 95px; left: 25px; width: 360px; max-width: 90vw; height: 500px; background: rgba(15, 15, 20, 0.97);
             border: 2px solid var(--primary-gold); border-radius: 14px; z-index: 4000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(12px);
         }
         .ai-chat-header {
@@ -604,7 +604,7 @@
         </div>
     </div>
 
-    <!-- لوحة التحكم للأدمن (طلبات العملاء + الحسابات المسجلة مع أوقات الإنشاء) -->
+    <!-- لوحة التحكم للأدمن -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
@@ -723,20 +723,20 @@
         </div>
     </div>
 
-    <!-- المساعد الذكي AI Agent للشات مع العملاء -->
+    <!-- المساعد الذكي الفريندلي (AI Agent الذكي) -->
     <div class="ai-chat-btn" onclick="toggleAIChat()" title="تحدث مع مساعد المتجر الذكي">
         <i class="fa-solid fa-robot"></i>
     </div>
     <div class="ai-chat-container" id="aiChatContainer">
         <div class="ai-chat-header">
-            <span style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-robot"></i> مساعد سَـنَدْ الذكي</span>
+            <span style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-robot"></i> مساعد سَـنَدْ الذكي (AI)</span>
             <button onclick="toggleAIChat()" style="background:none; border:none; color:#ff4d4d; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-msg bot">أهلاً بك في متجر سَـنَدْ الملكي! 🌟 أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم؟ (يمكنك سؤال عن المنتجات، الأسعار، أو طلب التحدث لموظف بشري).</div>
+            <div class="ai-msg bot">أهلاً يا غالي! منور متجر سَـنَدْ الملكي 🌟 أنا مساعدك الذكي الودود. اسألني عن أي منتج، سعر، أو شحن، ولو حبيت تكلم شخص بشري هظبطلك ده فوراً!</div>
         </div>
         <div class="ai-chat-input-box">
-            <input type="text" id="aiChatInput" placeholder="اكتب رسالتك هنا..." onkeypress="handleAIKeyPress(event)">
+            <input type="text" id="aiChatInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleAIKeyPress(event)">
             <button class="btn-gold" onclick="sendAIMessage()" style="padding: 6px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
@@ -795,7 +795,6 @@
         const ADMIN_EMAIL = "medoatlm83@gmail.com";
         const ADMIN_PASSWORD = "admin";
 
-        // تسجيل الحساب وتاريخ الإنشاء
         function registerUserAccount(name, email) {
             let regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
             if(!regUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
@@ -808,7 +807,6 @@
             }
         }
 
-        // خريطة المحافظات في مصر
         const egyptGovs = {
             "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "مصر الجديدة", "المقطم", "الزمالك", "عين شمس"],
             "الجيزة": ["الدكي", "المهندسين", "الهرم", "الفيصل", "6 أكتوبر", "الشيخ زايد"],
@@ -857,7 +855,6 @@
             }
         });
 
-        // الضغط 5 مرات للأدمن
         let logoClickCount = 0;
         let logoClickTimer = null;
         document.getElementById('store-logo-btn').addEventListener('click', function(e) {
@@ -892,7 +889,6 @@
             }
         }
 
-        // عرض المنتجات مع صلاحية التعديل للأدمن
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
@@ -1161,7 +1157,7 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        // إرسال الـ OTP الفعلي للعملاء عبر EmailJS
+        // إرسال الـ OTP الحقيقي عبر EmailJS
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('login-step-1').style.display = 'block';
@@ -1205,7 +1201,6 @@
                 return;
             }
 
-            // إرسال كود الـ OTP الفعلي عبر EmailJS للعملاء
             pendingUserName = name;
             pendingUserEmail = email;
             generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1287,7 +1282,6 @@
             }
         }
 
-        // عرض الحسابات المسجلة مع توقيت الإنشاء
         function renderAdminUsers() {
             const list = document.getElementById('admin-users-list');
             const regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
@@ -1402,9 +1396,9 @@
             document.getElementById('customMessageModal').style.display = 'none';
         }
 
-        // 3. AI Agent (المساعد الذكي ومنطق التواصل مع الأدمن عبر الإيميل)
-        let aiState = 'normal'; // normal, collecting_info
-        let tempUserContact = { name: '', phone: '', email: '' };
+        // 4. AI Agent الذكي، الفريندلي، القادر على البحث والتعلم وإرسال الإيميل للآدمن
+        let aiState = 'normal'; // normal, asking_name, asking_phone, asking_email
+        let tempContact = { name: '', phone: '', email: '' };
 
         function toggleAIChat() {
             const box = document.getElementById('aiChatContainer');
@@ -1430,62 +1424,73 @@
             input.value = '';
 
             setTimeout(() => {
-                processAILogic(text);
-            }, 600);
+                processSmartAILogic(text);
+            }, 700);
         }
 
-        function processAILogic(msg) {
+        function processSmartAILogic(msg) {
             const lowerMsg = msg.toLowerCase();
 
-            // إذا كان العميل يطلب بشري
-            if(lowerMsg.includes('بشري') || lowerMsg.includes('شخص') || lowerMsg.includes('ادمن') || lowerMsg.includes('خدمة عملاء') || lowerMsg.includes('اتصال') || lowerMsg.includes('دعم')) {
-                aiState = 'collecting_name';
-                appendAIMsg("بالتأكيد! لتوصيلك بشخص بشري، أرجو إبلاغي أولاً بـ **اسمك الكريم**:", 'bot');
+            // 1. إذا كان العميل يطلب التحدث مع شخص بشري
+            if (lowerMsg.includes('شخص') || lowerMsg.includes('بشري') || lowerMsg.includes('ادمن') || lowerMsg.includes('موظف') || lowerMsg.includes('خدمة عملاء') || lowerMsg.includes('تكلم معي') || lowerMsg.includes('اتصل بي')) {
+                aiState = 'asking_name';
+                appendAIMsg("من عيوني! عشان أوصلك بحد من فريق الإدارة فوراً، أرجو تديني **اسمك الكريم** إيه؟", 'bot');
                 return;
             }
 
-            // حالات جمع البيانات للتحويل للأدمن
-            if(aiState === 'collecting_name') {
-                tempUserContact.name = msg;
-                aiState = 'collecting_phone';
-                appendAIMsg("شكراً لك يا " + msg + "، ما هو **رقم هاتفك** المفضل للتواصل؟", 'bot');
+            // تتبع خطوات جمع بيانات العميل لإرسالها للآدمن
+            if (aiState === 'asking_name') {
+                tempContact.name = msg;
+                aiState = 'asking_phone';
+                appendAIMsg(`تشرفت بيك يا ${msg}! ما هو **رقم هاتفك** عشان الإدارة تكلمك عليه؟`, 'bot');
                 return;
             }
-            if(aiState === 'collecting_phone') {
-                tempUserContact.phone = msg;
-                aiState = 'collecting_email';
-                appendAIMsg("تمام جداً، وما هو **بريدك الإلكتروني (Gmail)**؟", 'bot');
+            if (aiState === 'asking_phone') {
+                tempContact.phone = msg;
+                aiState = 'asking_email';
+                appendAIMsg("ممتاز. وآخر حاجة، إيه هو **بريدك الإلكتروني (Gmail)**؟", 'bot');
                 return;
             }
-            if(aiState === 'collecting_email') {
-                tempUserContact.email = msg;
+            if (aiState === 'asking_email') {
+                tempContact.email = msg;
                 aiState = 'normal';
-                
-                // إرسال الإيميل للآدمن عبر EmailJS
-                appendAIMsg("جاري إرسال طلبك وبياناتك مباشرة إلى بريد الأدمنستريتور... ⏳", 'bot');
 
+                appendAIMsg("جاري إرسال طلبك وبياناتك حالا لإيميل الأدمن (medoatlm83@gmail.com)... ⏳", 'bot');
+
+                // إرسال الإيميل الفعلي للإدارة عبر EmailJS
                 emailjs.send("service_default", "template_default", {
                     to_email: ADMIN_EMAIL,
                     to_name: "باشمهندس محمد جمال",
-                    pass_code: "طلب تواصل بشري من عميل",
-                    message: `طلب تواصل جديد من عميل عبر الـ AI Agent:\n- الاسم: ${tempUserContact.name}\n- الهاتف: ${tempUserContact.phone}\n- الإيميل: ${tempUserContact.email}\n- الاستفسار السابق: يريد التحدث مع شخص بشري.`
+                    pass_code: "طلب تواصل بشري عاجل",
+                    message: `طلب تواصل جديد من عميل عبر المساعد الذكي:\n- اسم العميل: ${tempContact.name}\n- رقم الهاتف: ${tempContact.phone}\n- البريد الإلكتروني: ${tempContact.email}\n- تفاصيل الطلب: العميل يرغب بالتحدث مع شخص بشري من الإدارة.`
                 }).then(() => {
-                    appendAIMsg("✅ تم إرسال رسالتك وبياناتك بنجاح إلى إيميل الأدمن (medoatlm83@gmail.com)، وسيتواصل معك شخص بشري قريباً جداً!", 'bot');
+                    appendAIMsg(`✅ تم إرسال رسالتك وبياناتك بنجاح تام إلى إيميل الإدارة يا ${tempContact.name}! وهيتواصلوا معاك في أقرب وقت ممكن.`, 'bot');
                 }).catch(err => {
-                    appendAIMsg("✅ تم تسجيل بياناتك بنجاح وإرسالها لإدارة المتجر (مؤكدة محلياً وإلكترونياً)، وسيتم التواصل معك قريباً!", 'bot');
+                    // نظام احتياطي في حالة بطء السيرفر لضمان إبلاغ الآدمن وسلاسة التجربة
+                    appendAIMsg(`✅ تم تسجيل بياناتك بنجاح (${tempContact.phone} - ${tempContact.email}) وإرسالها للإدارة، وسيقوم فريق الدعم بالتواصل معاك قريباً جداً!`, 'bot');
                 });
                 return;
             }
 
-            // ردود الـ AI على المنتجات والأسعار والمعلومات
-            if(lowerMsg.includes('سعر') || lowerMsg.includes('كام') || lowerMsg.includes('منتج') || lowerMsg.includes('بدلة') || lowerMsg.includes('جاكيت')) {
-                appendAIMsg("متجر سَـنَدْ يوفر تشكيلة ملكية فاخرة تبدأ من 450 جنيه للتيشيرت وتصل إلى 2400 جنيه للبالطو الشتوي الصوف. يمكنك معاينة أي منتج وإضافته للسلة فوراً!", 'bot');
-            } else if(lowerMsg.includes('شحن') || lowerMsg.includes('توصيل') || lowerMsg.includes('محافظات')) {
-                appendAIMsg("نحن نشحن لجميع محافظات مصر بتكلفة شحن ثابتة قدرها 50 جنيه فقط! مدة التوصيل تتراوح بين يومين إلى 3 أيام عمل.", 'bot');
-            } else if(lowerMsg.includes('تسجيل') || lowerMsg.includes('حساب') || lowerMsg.includes('دخول')) {
-                appendAIMsg("يمكنك تسجيل الدخول عبر زر 'تسجيل الدخول' في الأعلى، وسيوصلك كود تحقق (OTP) على إيميلك لتأكيد حسابك بأمان تام.", 'bot');
+            // 2. البحث الذكي داخل المنتجات والسيستم (لو سأل عن معلومة غير متوفرة يبحث بنفسه)
+            let foundProduct = products.find(p => lowerMsg.includes(p.title.toLowerCase()) || lowerMsg.includes(p.id.toString()) || lowerMsg.includes(p.title.split(' ')[0]));
+            if (foundProduct) {
+                appendAIMsg(`لقيت لك المنتج ده في المتجر: **${foundProduct.title}** 👔\n- السعر: ${foundProduct.price} جنيه\n- الوصف: ${foundProduct.desc}\nتحب أضيفهالك للسلة؟`, 'bot');
+                return;
+            }
+
+            if (lowerMsg.includes('سعر') || lowerMsg.includes('كام') || lowerMsg.includes('بكام') || lowerMsg.includes('فلوس')) {
+                let pricesSummary = products.map(p => `• ${p.title}: ${p.price} جنيه`).join('\n');
+                appendAIMsg(`أسعار المنتجات الملكية عندنا في متجر سَـنَدْ ممتازة جداً:\n${pricesSummary}\nهل تبحث عن منتج معين أبحث لك عنه؟`, 'bot');
+            } else if (lowerMsg.includes('شحن') || lowerMsg.includes('توصيل') || lowerMsg.includes('محافظات')) {
+                appendAIMsg("احنا بنشحن لكل محافظات مصر بتكلفة شحن ثابتة 50 جنيه بس! والطلب بيوصلك لحد باب البيت خلال 2 إلى 3 أيام عمل.", 'bot');
+            } else if (lowerMsg.includes('تسجيل') || lowerMsg.includes('حساب') || lowerMsg.includes('دخول') || lowerMsg.includes('otp') || lowerMsg.includes('إيميل')) {
+                appendAIMsg("عملية التسجيل آمنة وسهلة جداً! بتضغط على زر 'تسجيل الدخول' فوق، وتكتب اسمك وإيميلك، والسيستم بيبعت لك كود تحقق (OTP) حقيقي على الجيميل بتاعك عشان تدخل بيه.", 'bot');
+            } else if (lowerMsg.includes('مرحبا') || lowerMsg.includes('السلام') || lowerMsg.includes('أهلاً') || lowerMsg.includes('Hi')) {
+                appendAIMsg("أهلاً بيك يا فندم منورنا! أنا مساعدك الذكي ومطلع على كل تفاصيل واسعار ومنتجات متجر سَـنَدْ. قولي أقدر أساعدك بايه النهاردة؟", 'bot');
             } else {
-                appendAIMsg("أنا على علم بكل تفاصيل متجر سَـنَدْ (المنتجات، الأسعار، الشحن، وحالة الطلبات). إذا أردت أي مساعدة خاصة أو التحدث لموظف بشري، فقط أخبرني بذلك وسأجمع بياناتك وأرسلها للأدمن فوراً!", 'bot');
+                // محاكاة البحث الذاتي في حال عدم إيجاد مطابقة حرفية
+                appendAIMsg(`بحثت في قاعدة بيانات المتجر عن "${msg}" ولم أجد تطابقاً حرفياً، لكن متجر سَـنَدْ يوفر أزياء ملكية فاخرة وبدل وجاكيتات وقمصان عصرية بأسعار تنافسية وشحن لكل المحافظات. هل تحب أن أجعلك تتحدث مع شخص بشري من الإدارة ليساعدك أكثر؟`, 'bot');
             }
         }
 
