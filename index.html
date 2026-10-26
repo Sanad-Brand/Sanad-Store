@@ -427,7 +427,7 @@
         .btn-modal-confirm { background: #ff4d4d; color: #fff; }
         .btn-modal-cancel { background: #333; color: #fff; }
 
-        /* AI Agent Chat Widget (المساعد الذكي الفريندلي) */
+        /* AI Agent Chat Widget (المساعد الذكي الآمن والذكي جداً) */
         .ai-chat-btn {
             position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
             color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4); transition: 0.3s;
@@ -474,7 +474,7 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول الذكية (مع إرسال كود التحقق الفعلي OTP للإيميل) -->
+    <!-- نافذة تسجيل الدخول الذكية (مع كود التحقق الفعلي OTP) -->
     <div class="custom-modal-overlay" id="loginModal">
         <div class="custom-modal-box" style="text-align:right;">
             <div style="text-align:center; margin-bottom:12px;">
@@ -723,7 +723,7 @@
         </div>
     </div>
 
-    <!-- المساعد الذكي الفريندلي (AI Agent الذكي) -->
+    <!-- المساعد الذكي الآمن (AI Agent الشامل) -->
     <div class="ai-chat-btn" onclick="toggleAIChat()" title="تحدث مع مساعد المتجر الذكي">
         <i class="fa-solid fa-robot"></i>
     </div>
@@ -733,10 +733,10 @@
             <button onclick="toggleAIChat()" style="background:none; border:none; color:#ff4d4d; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-msg bot">أهلاً يا غالي! منور متجر سَـنَدْ الملكي 🌟 أنا مساعدك الذكي الودود. اسألني عن أي منتج، سعر، أو شحن، ولو حبيت تكلم شخص بشري هظبطلك ده فوراً!</div>
+            <div class="ai-msg bot">أهلاً يا غالي! أنا مساعدك الذكي 🌟 اسألني في أي مجال في الدنيا (منتجات المتجر، رياضة، تاريخ، برمجة، إلخ)، ولو عاوز تكلم شخص بشري من الإدارة هظبطهالك فوراً بكل أمان!</div>
         </div>
         <div class="ai-chat-input-box">
-            <input type="text" id="aiChatInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleAIKeyPress(event)">
+            <input type="text" id="aiChatInput" placeholder="اكتب سؤالك في أي مجال..." onkeypress="handleAIKeyPress(event)">
             <button class="btn-gold" onclick="sendAIMessage()" style="padding: 6px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
@@ -1157,7 +1157,6 @@
             document.getElementById('trackingModal').style.display = 'none';
         }
 
-        // إرسال الـ OTP الحقيقي عبر EmailJS
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
             document.getElementById('login-step-1').style.display = 'block';
@@ -1396,108 +1395,4 @@
             document.getElementById('customMessageModal').style.display = 'none';
         }
 
-        // 4. AI Agent الذكي، الفريندلي، القادر على البحث والتعلم وإرسال الإيميل للآدمن
-        let aiState = 'normal'; // normal, asking_name, asking_phone, asking_email
-        let tempContact = { name: '', phone: '', email: '' };
-
-        function toggleAIChat() {
-            const box = document.getElementById('aiChatContainer');
-            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        function handleAIKeyPress(e) {
-            if(e.key === 'Enter') sendAIMessage();
-        }
-
-        function appendAIMsg(text, sender) {
-            const msgContainer = document.getElementById('aiChatMessages');
-            msgContainer.innerHTML += `<div class="ai-msg ${sender}">${text}</div>`;
-            msgContainer.scrollTop = msgContainer.scrollHeight;
-        }
-
-        function sendAIMessage() {
-            const input = document.getElementById('aiChatInput');
-            const text = input.value.trim();
-            if(!text) return;
-
-            appendAIMsg(text, 'user');
-            input.value = '';
-
-            setTimeout(() => {
-                processSmartAILogic(text);
-            }, 700);
-        }
-
-        function processSmartAILogic(msg) {
-            const lowerMsg = msg.toLowerCase();
-
-            // 1. إذا كان العميل يطلب التحدث مع شخص بشري
-            if (lowerMsg.includes('شخص') || lowerMsg.includes('بشري') || lowerMsg.includes('ادمن') || lowerMsg.includes('موظف') || lowerMsg.includes('خدمة عملاء') || lowerMsg.includes('تكلم معي') || lowerMsg.includes('اتصل بي')) {
-                aiState = 'asking_name';
-                appendAIMsg("من عيوني! عشان أوصلك بحد من فريق الإدارة فوراً، أرجو تديني **اسمك الكريم** إيه؟", 'bot');
-                return;
-            }
-
-            // تتبع خطوات جمع بيانات العميل لإرسالها للآدمن
-            if (aiState === 'asking_name') {
-                tempContact.name = msg;
-                aiState = 'asking_phone';
-                appendAIMsg(`تشرفت بيك يا ${msg}! ما هو **رقم هاتفك** عشان الإدارة تكلمك عليه؟`, 'bot');
-                return;
-            }
-            if (aiState === 'asking_phone') {
-                tempContact.phone = msg;
-                aiState = 'asking_email';
-                appendAIMsg("ممتاز. وآخر حاجة، إيه هو **بريدك الإلكتروني (Gmail)**؟", 'bot');
-                return;
-            }
-            if (aiState === 'asking_email') {
-                tempContact.email = msg;
-                aiState = 'normal';
-
-                appendAIMsg("جاري إرسال طلبك وبياناتك حالا لإيميل الأدمن (medoatlm83@gmail.com)... ⏳", 'bot');
-
-                // إرسال الإيميل الفعلي للإدارة عبر EmailJS
-                emailjs.send("service_default", "template_default", {
-                    to_email: ADMIN_EMAIL,
-                    to_name: "باشمهندس محمد جمال",
-                    pass_code: "طلب تواصل بشري عاجل",
-                    message: `طلب تواصل جديد من عميل عبر المساعد الذكي:\n- اسم العميل: ${tempContact.name}\n- رقم الهاتف: ${tempContact.phone}\n- البريد الإلكتروني: ${tempContact.email}\n- تفاصيل الطلب: العميل يرغب بالتحدث مع شخص بشري من الإدارة.`
-                }).then(() => {
-                    appendAIMsg(`✅ تم إرسال رسالتك وبياناتك بنجاح تام إلى إيميل الإدارة يا ${tempContact.name}! وهيتواصلوا معاك في أقرب وقت ممكن.`, 'bot');
-                }).catch(err => {
-                    // نظام احتياطي في حالة بطء السيرفر لضمان إبلاغ الآدمن وسلاسة التجربة
-                    appendAIMsg(`✅ تم تسجيل بياناتك بنجاح (${tempContact.phone} - ${tempContact.email}) وإرسالها للإدارة، وسيقوم فريق الدعم بالتواصل معاك قريباً جداً!`, 'bot');
-                });
-                return;
-            }
-
-            // 2. البحث الذكي داخل المنتجات والسيستم (لو سأل عن معلومة غير متوفرة يبحث بنفسه)
-            let foundProduct = products.find(p => lowerMsg.includes(p.title.toLowerCase()) || lowerMsg.includes(p.id.toString()) || lowerMsg.includes(p.title.split(' ')[0]));
-            if (foundProduct) {
-                appendAIMsg(`لقيت لك المنتج ده في المتجر: **${foundProduct.title}** 👔\n- السعر: ${foundProduct.price} جنيه\n- الوصف: ${foundProduct.desc}\nتحب أضيفهالك للسلة؟`, 'bot');
-                return;
-            }
-
-            if (lowerMsg.includes('سعر') || lowerMsg.includes('كام') || lowerMsg.includes('بكام') || lowerMsg.includes('فلوس')) {
-                let pricesSummary = products.map(p => `• ${p.title}: ${p.price} جنيه`).join('\n');
-                appendAIMsg(`أسعار المنتجات الملكية عندنا في متجر سَـنَدْ ممتازة جداً:\n${pricesSummary}\nهل تبحث عن منتج معين أبحث لك عنه؟`, 'bot');
-            } else if (lowerMsg.includes('شحن') || lowerMsg.includes('توصيل') || lowerMsg.includes('محافظات')) {
-                appendAIMsg("احنا بنشحن لكل محافظات مصر بتكلفة شحن ثابتة 50 جنيه بس! والطلب بيوصلك لحد باب البيت خلال 2 إلى 3 أيام عمل.", 'bot');
-            } else if (lowerMsg.includes('تسجيل') || lowerMsg.includes('حساب') || lowerMsg.includes('دخول') || lowerMsg.includes('otp') || lowerMsg.includes('إيميل')) {
-                appendAIMsg("عملية التسجيل آمنة وسهلة جداً! بتضغط على زر 'تسجيل الدخول' فوق، وتكتب اسمك وإيميلك، والسيستم بيبعت لك كود تحقق (OTP) حقيقي على الجيميل بتاعك عشان تدخل بيه.", 'bot');
-            } else if (lowerMsg.includes('مرحبا') || lowerMsg.includes('السلام') || lowerMsg.includes('أهلاً') || lowerMsg.includes('Hi')) {
-                appendAIMsg("أهلاً بيك يا فندم منورنا! أنا مساعدك الذكي ومطلع على كل تفاصيل واسعار ومنتجات متجر سَـنَدْ. قولي أقدر أساعدك بايه النهاردة؟", 'bot');
-            } else {
-                // محاكاة البحث الذاتي في حال عدم إيجاد مطابقة حرفية
-                appendAIMsg(`بحثت في قاعدة بيانات المتجر عن "${msg}" ولم أجد تطابقاً حرفياً، لكن متجر سَـنَدْ يوفر أزياء ملكية فاخرة وبدل وجاكيتات وقمصان عصرية بأسعار تنافسية وشحن لكل المحافظات. هل تحب أن أجعلك تتحدث مع شخص بشري من الإدارة ليساعدك أكثر؟`, 'bot');
-            }
-        }
-
-        window.onload = function() {
-            renderHeaderNav();
-            renderProducts();
-        };
-    </script>
-</body>
-</html>
+        // 5. AI Agent شامل، فريندلي، يجيب على أي سؤال، ولا
