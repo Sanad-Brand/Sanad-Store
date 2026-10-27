@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>متجر سَـنَدْ | Sanad Store</title>
-    <!-- أيقونة حرف S المزخرف الذهبي الفاخر للتبويب -->
+    <!-- أيقونة التبويب -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0a' rx='25'/><circle cx='50' cy='50' r='42' fill='none' stroke='%23d4af37' stroke-width='3'/><text x='50' y='72' font-family='Georgia, serif' font-weight='bold' font-size='60' fill='%23d4af37' text-anchor='middle'>S</text></svg>">
     
-    <!-- الأيقونات والخطوط -->
+    <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
@@ -24,616 +22,145 @@
         :root {
             --primary-gold: #d4af37;
             --dark-gold: #aa7c11;
-            --card-black: rgba(20, 20, 20, 0.94);
+            --card-black: rgba(20, 20, 20, 0.95);
             --border-color: #333333;
             --text-light: #f3f3f3;
             --text-gray: #aaaaaa;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, rgba(10, 14, 26, 0.92), rgba(30, 10, 20, 0.92), rgba(15, 10, 5, 0.94)), 
+            background: linear-gradient(135deg, rgba(10, 14, 26, 0.94), rgba(30, 10, 20, 0.94)), 
                         url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-light);
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
 
-        header, .container, .cart-modal, .admin-modal, #intro-splash, .custom-modal-overlay, .ai-chat-widget {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* أنيميشن وصوت الضغطات على جميع الأزرار */
-        button, .btn-gold, .btn-login, .btn-preview, .btn-add-cart, .btn-checkout, .product-card img {
-            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease, background 0.3s ease;
-        }
-        button:active, .btn-gold:active, .btn-login:active, .btn-preview:active, .btn-add-cart:active, .btn-checkout:active {
-            transform: scale(0.92) !important;
-        }
-
-        /* شاشة الترحيب الافتتاحية */
-        #intro-splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(8, 11, 20, 0.98);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            animation: fadeOutSplash 0.7s cubic-bezier(0.25, 1, 0.5, 1) 2.4s forwards;
-        }
-
-        .splash-content {
-            text-align: center;
-            z-index: 20;
-            padding: 0 20px;
-        }
-
-        .splash-content h1 {
-            color: var(--primary-gold);
-            font-size: 38px;
-            font-weight: 900;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            text-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
-        }
-
-        .splash-content h1 span {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(20px) scale(0.85);
-            animation: wordFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .splash-content h1 span:nth-child(1) { animation-delay: 0.3s; }
-        .splash-content h1 span:nth-child(2) { animation-delay: 0.45s; }
-        .splash-content h1 span:nth-child(3) { animation-delay: 0.6s; }
-        .splash-content h1 span:nth-child(4) { animation-delay: 0.75s; }
-        .splash-content h1 span:nth-child(5) { animation-delay: 0.9s; }
-
-        @keyframes wordFadeIn {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .splash-content p {
-            color: var(--text-gray);
-            font-size: 15px;
-            opacity: 0;
-            animation: fadeInDesc 0.6s ease 1.3s forwards;
-        }
-
-        @keyframes fadeInDesc {
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeOutSplash {
-            0% { opacity: 1; visibility: visible; }
-            100% { opacity: 0; visibility: hidden; pointer-events: none; }
-        }
-
-        /* الهيدر الواسع (متجاوب تماماً) */
         header {
-            background: rgba(10, 14, 26, 0.95);
+            background: rgba(10, 14, 26, 0.96);
             border-bottom: 2px solid var(--primary-gold);
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 30px;
-            backdrop-filter: blur(12px);
-            gap: 15px;
-            flex-wrap: wrap;
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 30px; backdrop-filter: blur(12px); gap: 15px; flex-wrap: wrap;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 900;
-            color: var(--primary-gold);
-            letter-spacing: 1px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            user-select: none;
+            font-size: 24px; font-weight: 900; color: var(--primary-gold);
+            text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
         }
 
-        .header-left-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .header-left-group { display: flex; align-items: center; gap: 15px; }
 
         .visitor-counter-badge {
-            background: rgba(212, 175, 55, 0.12);
-            border: 1px solid var(--primary-gold);
-            color: var(--primary-gold);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
+            background: rgba(212, 175, 55, 0.12); border: 1px solid var(--primary-gold);
+            color: var(--primary-gold); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
         }
 
-        .nav-btns {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
+        .nav-btns { display: flex; gap: 10px; align-items: center; }
 
         .btn-gold {
             background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
-            color: #000;
-            border: none;
-            padding: 7px 15px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            white-space: nowrap;
+            color: #000; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px;
         }
+        .btn-login { background: #fff; color: #222; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
 
-        .btn-gold:hover { opacity: 0.92; }
-
-        .btn-login {
-            background: #fff;
-            color: #222;
-            border: none;
-            padding: 7px 15px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-        .btn-login:hover { background: #f1f1f1; }
-
-        /* المحتوى الرئيسي */
-        .container {
-            max-width: 1450px;
-            margin: 110px auto 30px;
-            padding: 0 20px;
-        }
+        .container { max-width: 1450px; margin: 110px auto 30px; padding: 0 20px; }
 
         .hero-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(18, 22, 34, 0.85);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 25px 30px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            gap: 15px;
-            flex-wrap: wrap;
+            background: rgba(18, 22, 34, 0.9); border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 25px 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
         }
+        .hero-text h1 { color: var(--primary-gold); font-size: 26px; margin-bottom: 6px; }
+        .hero-text p { color: var(--text-gray); font-size: 14px; }
 
-        .hero-text h1 {
-            color: var(--primary-gold);
-            font-size: 28px;
-            margin-bottom: 6px;
-            font-weight: 900;
-        }
-
-        .hero-text p {
-            color: var(--text-gray);
-            font-size: 14px;
-        }
-
-        /* شبكة المنتجات */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        @keyframes smoothFallIn {
-            0% { transform: translateY(-40px) scale(0.95); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        @keyframes smoothFloatHover {
-            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-            50% { transform: translateY(-5px) scale(1.02) rotate(0.3deg); }
-        }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
 
         .product-card {
-            background: var(--card-black);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            backdrop-filter: blur(10px);
-            will-change: transform, opacity;
-            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
-            animation: smoothFallIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            background: var(--card-black); border: 1px solid var(--border-color);
+            border-radius: 12px; overflow: hidden; transition: 0.3s;
         }
-
-        .product-card:hover {
-            border-color: var(--primary-gold);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.18);
-            animation: smoothFloatHover 2.2s ease-in-out infinite;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 210px;
-            object-fit: cover;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-
-        .product-info {
-            padding: 15px;
-        }
-
-        .product-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .product-price-box {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .product-price {
-            color: var(--primary-gold);
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        .product-old-price {
-            text-decoration: line-through;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .offer-badge {
-            background: #ff4d4d;
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .product-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .btn-preview {
-            background: #222;
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            padding: 8px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 12px;
-            text-align: center;
-        }
-        .btn-preview:hover { border-color: var(--primary-gold); color: var(--primary-gold); }
-
-        .btn-add-cart {
-            background: transparent;
-            border: 2px solid var(--primary-gold);
-            color: var(--primary-gold);
-            padding: 8px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 12px;
-            text-align: center;
-        }
+        .product-card:hover { border-color: var(--primary-gold); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15); }
+        .product-img { width: 100%; height: 210px; object-fit: cover; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .product-info { padding: 15px; }
+        .product-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .product-price { color: var(--primary-gold); font-size: 18px; font-weight: 900; }
+        .product-old-price { text-decoration: line-through; color: #888; font-size: 12px; margin-right: 6px; }
+        
+        .product-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .btn-preview { background: #222; border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer; text-align: center; }
+        .btn-add-cart { background: transparent; border: 2px solid var(--primary-gold); color: var(--primary-gold); padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
         .btn-add-cart:hover { background: var(--primary-gold); color: #000; }
 
-        /* سلة المشتريات */
+        /* السلة والمودالز */
         .cart-modal {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 100%; max-width: 380px; height: 100%;
-            background: rgba(15, 15, 15, 0.98);
-            border-left: 2px solid var(--primary-gold);
-            z-index: 2000;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
-            transition: 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex; flex-direction: column; padding: 20px;
-            backdrop-filter: blur(15px);
+            position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
+            background: rgba(15, 15, 15, 0.98); border-left: 2px solid var(--primary-gold); z-index: 2000;
+            transition: 0.4s; display: flex; flex-direction: column; padding: 20px;
         }
         .cart-modal.active { right: 0; }
-
-        .cart-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;
-        }
-        .close-cart { background: none; border: none; color: var(--text-light); font-size: 22px; cursor: pointer; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; }
+        .close-cart { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
         .cart-items { flex-grow: 1; overflow-y: auto; margin-bottom: 12px; }
-        .cart-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(30, 30, 30, 0.6); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color);
-        }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30,30,30,0.6); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
 
         .checkout-form input, .checkout-form select, .checkout-form textarea {
             width: 100%; padding: 9px; margin-bottom: 9px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px;
         }
-        .btn-checkout {
-            width: 100%; background: #25d366; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 15px;
-        }
+        .btn-checkout { width: 100%; background: #25d366; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; }
 
-        /* صفحة نجاح الأوردر */
-        .order-success-section {
-            display: none; max-width: 750px; margin: 30px auto; background: var(--card-black); border: 2px solid #25d366; border-radius: 16px; padding: 25px; text-align: center; backdrop-filter: blur(10px);
-        }
-        .order-success-section h2 { color: #25d366; font-size: 26px; margin-bottom: 10px; }
-        .order-details-box { background: rgba(25, 25, 25, 0.8); border: 1px solid var(--border-color); border-radius: 10px; padding: 15px; text-align: right; margin-top: 15px; }
-        .order-details-box p { margin-bottom: 6px; font-size: 14px; }
-
-        /* النوافذ العائمة (Modals) */
-        .tracking-modal, .admin-modal, .custom-modal-overlay {
+        .custom-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88); z-index: 3000; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 15px;
+            background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 15px;
         }
-        .tracking-content, .admin-content, .custom-modal-box {
-            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; text-align: right;
+        .custom-modal-box {
+            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 450px; text-align: right;
         }
-        .custom-modal-box { max-width: 420px; text-align: center; }
-
-        @keyframes shakeAnim {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-8px); }
-            80% { transform: translateX(8px); }
-            100% { transform: translateX(0); }
-        }
-        .shake { animation: shakeAnim 0.4s ease; border-color: #ff4d4d !important; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
-        .user-order-card, .admin-order-card { background: #1a1a1a; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; }
-        .btn-modal-confirm, .btn-modal-cancel { padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 13px; }
-        .btn-modal-confirm { background: #ff4d4d; color: #fff; }
+        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+        .btn-modal-confirm, .btn-modal-cancel { padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 13px; flex: 1; }
+        .btn-modal-confirm { background: var(--primary-gold); color: #000; }
         .btn-modal-cancel { background: #333; color: #fff; }
 
-        /* AI Agent Chat Widget (المساعد الذكي الآمن والذكي جداً) */
-        .ai-chat-btn {
-            position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
-            color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4); transition: 0.3s;
+        /* الأضمن واللوحة */
+        .admin-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); z-index: 3000; justify-content: center; align-items: center; padding: 15px;
         }
-        .ai-chat-btn:hover { transform: scale(1.1); }
+        .admin-content {
+            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; text-align: right;
+        }
+        .admin-order-card { background: #1a1a1a; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
 
+        /* AI Chatbot */
+        .ai-chat-btn {
+            position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold)); color: #000;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4);
+        }
         .ai-chat-container {
-            position: fixed; bottom: 95px; left: 25px; width: 360px; max-width: 90vw; height: 500px; background: rgba(15, 15, 20, 0.97);
-            border: 2px solid var(--primary-gold); border-radius: 14px; z-index: 4000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(12px);
+            position: fixed; bottom: 95px; left: 25px; width: 360px; max-width: 90vw; height: 500px;
+            background: rgba(15, 15, 20, 0.98); border: 2px solid var(--primary-gold); border-radius: 14px;
+            z-index: 4000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .ai-chat-header {
-            background: #181b24; padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;
-        }
+        .ai-chat-header { background: #181b24; padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .ai-chat-messages { flex-grow: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
         .ai-msg { background: #222; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.5; color: #f3f3f3; }
         .ai-msg.bot { align-self: flex-start; border-right: 3px solid var(--primary-gold); }
         .ai-msg.user { align-self: flex-end; background: #2a3b2e; border-left: 3px solid #25d366; }
         .ai-chat-input-box { padding: 10px; background: #12151c; border-top: 1px solid var(--border-color); display: flex; gap: 8px; }
         .ai-chat-input-box input { flex-grow: 1; padding: 8px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px; }
-
-        @media (max-width: 768px) {
-            header { padding: 10px 15px; justify-content: center; }
-            .header-left-group { width: 100%; justify-content: space-between; }
-            .container { margin-top: 135px; padding: 0 12px; }
-            .hero-section { padding: 15px; text-align: center; }
-            .hero-text h1 { font-size: 22px; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); gap: 15px; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- شاشة الترحيب الافتتاحية -->
-    <div id="intro-splash">
-        <div class="splash-content">
-            <h1>
-                <span>أهلاً</span>
-                <span>بك</span>
-                <span>في</span>
-                <span>متجر</span>
-                <span>سَـنَدْ</span>
-            </h1>
-            <p>حيث الفخامة والأناقة تلتقي بروح العصر</p>
-        </div>
-    </div>
-
-    <!-- نافذة تسجيل الدخول الذكية (مع كود التحقق الفعلي OTP) -->
-    <div class="custom-modal-overlay" id="loginModal">
-        <div class="custom-modal-box" style="text-align:right;">
-            <div style="text-align:center; margin-bottom:12px;">
-                <i class="fa-solid fa-lock" style="font-size: 38px; color: var(--primary-gold); margin-bottom: 6px;"></i>
-                <h3>تسجيل الدخول</h3>
-                <p style="font-size:12px; color:var(--text-gray);">أدخل بياناتك وسيتم إرسال كود التحقق (OTP) إلى بريدك الإلكتروني:</p>
-            </div>
-            
-            <div id="login-step-1">
-                <div style="margin-bottom: 10px;">
-                    <label style="color:var(--text-gray); font-size:12px;">الاسم الكامل:</label>
-                    <input type="text" id="login-user-name" placeholder="مثال: أحمد محمد" style="width:100%; padding:9px; margin-top:4px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:14px;">
-                </div>
-
-                <div style="margin-bottom: 12px;">
-                    <label style="color:var(--text-gray); font-size:12px;">البريد الإلكتروني (Gmail):</label>
-                    <input type="email" id="login-user-email" placeholder="example@gmail.com" style="width:100%; padding:9px; margin-top:4px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:14px;">
-                </div>
-
-                <div id="admin-password-box" style="display:none; margin-bottom: 15px; background: rgba(212,175,55,0.08); border:1px solid var(--primary-gold); padding: 10px; border-radius: 8px;">
-                    <label style="color:var(--primary-gold); font-size:12px; font-weight:bold;"><i class="fa-solid fa-shield-halved"></i> كلمة مرور الأدمنستريتور:</label>
-                    <input type="password" id="admin-secret-pass" placeholder="أدخل باسورد الأدمن" style="width:100%; padding:9px; margin-top:4px; background:#111; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; font-size:14px;">
-                </div>
-
-                <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()" style="background:var(--primary-gold); color:#000; flex:1;">إرسال كود التحقق ومتابعة</button>
-                    <button class="btn-modal-cancel" onclick="closeLoginModal()" style="flex:1;">إلغاء</button>
-                </div>
-            </div>
-
-            <div id="login-step-2" style="display:none;">
-                <div style="margin-bottom: 12px; background: rgba(37,211,102,0.1); border: 1px dashed #25d366; padding: 10px; border-radius: 6px; text-align: center;">
-                    <span style="font-size: 12px; color: #25d366;" id="otp-info-text">تم إرسال كود التحقق بنجاح إلى بريدك الإلكتروني عبر EmailJS. تفقد صندوق الوارد في Gmail!</span>
-                </div>
-
-                <div style="margin-bottom: 15px;">
-                    <label style="color:var(--text-gray); font-size:12px;">أدخل رمز التحقق (4 أرقام):</label>
-                    <input type="text" id="login-user-otp" placeholder="----" style="width:100%; padding:9px; margin-top:4px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:16px; text-align:center; letter-spacing: 5px;" maxlength="4">
-                </div>
-
-                <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyCustomerOTP()" style="background:#25d366; color:#fff; flex:1;">تأكيد الكود ودخول</button>
-                    <button class="btn-modal-cancel" onclick="resetLoginModal()" style="flex:1;">رجوع</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة إدخال باسورد الأدمن عند الضغط 5 مرات على الشعار -->
-    <div class="custom-modal-overlay" id="adminPasswordModal">
-        <div class="custom-modal-box" style="text-align:right;">
-            <div style="text-align:center; margin-bottom:12px;">
-                <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--primary-gold); margin-bottom: 6px;"></i>
-                <h3>دخول الأدمن السريع</h3>
-                <p style="font-size:12px; color:var(--text-gray);">أدخل كلمة مرور الأدمنستريتور (`admin`):</p>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <input type="password" id="secret-admin-pass-input" placeholder="أدخل باسورد الأدمن" style="width:100%; padding:10px; background:#222; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; font-size:15px; text-align:center;">
-            </div>
-
-            <div class="custom-modal-btns">
-                <button class="btn-modal-confirm" onclick="verifyAdminShortcut()" style="background:var(--primary-gold); color:#000; flex:1;">دخول لوحة التحكم</button>
-                <button class="btn-modal-cancel" onclick="closeAdminPassModal()" style="flex:1;">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة معاينة المنتج المخصصة -->
-    <div class="custom-modal-overlay" id="productPreviewModal">
-        <div class="custom-modal-box" style="max-width: 480px; text-align: right;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                <h3 id="previewModalTitle" style="color:var(--primary-gold); font-size:18px;">معاينة المنتج</h3>
-                <button onclick="closeProductPreview()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <img id="previewModalImg" src="" alt="" style="width:100%; height:220px; object-fit:cover; border-radius:8px; margin-bottom: 12px; border:1px solid var(--border-color);">
-            <p id="previewModalDesc" style="color:var(--text-gray); font-size:13px; line-height:1.5; margin-bottom: 15px;"></p>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                <span id="previewModalPrice" style="color:var(--primary-gold); font-size:20px; font-weight:900;">0 جنيه</span>
-            </div>
-            <button class="btn-gold" style="width:100%; justify-content:center; padding:10px;" id="previewAddCartBtn">
-                <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة فوراً
-            </button>
-        </div>
-    </div>
-
-    <!-- نافذة تتبع طلبات العميل -->
-    <div class="tracking-modal" id="trackingModal">
-        <div class="tracking-content" data-aos="zoom-in" data-aos-duration="400">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                <h3 style="color: var(--primary-gold); font-size:18px;"><i class="fa-solid fa-box-open"></i> تتبع طلباتي الشخصية</h3>
-                <button onclick="closeTrackingModal()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="user-orders-container"></div>
-        </div>
-    </div>
-
-    <!-- نافذة رسائل التنبيه والنجاح -->
-    <div class="custom-modal-overlay" id="customMessageModal">
-        <div class="custom-modal-box">
-            <i class="fa-solid fa-circle-check" style="font-size: 42px; color: #25d366; margin-bottom: 10px;"></i>
-            <h3 id="msgModalTitle" style="color: #25d366; font-size:18px;">تنبيه</h3>
-            <p id="msgModalText" style="font-size:13px; margin-bottom:15px;">محتوى الرسالة هنا</p>
-            <button class="btn-gold" style="width:100%; justify-content:center;" onclick="closeMessageModal()">حسناً</button>
-        </div>
-    </div>
-
-    <!-- نافذة تعديل الأسعار للأدمن -->
-    <div class="custom-modal-overlay" id="customEditModal">
-        <div class="custom-modal-box" style="text-align: right;">
-            <h3 style="text-align: center; color: var(--primary-gold); margin-bottom: 12px; font-size:18px;"><i class="fa-solid fa-tags"></i> تعديل السعر والعرض</h3>
-            
-            <div style="margin-bottom: 10px;">
-                <label style="color: var(--text-gray); font-size: 12px;">السعر الحالي (بالجنيه):</label>
-                <input type="number" id="editModalPrice" style="width:100%; padding:9px; margin-top:4px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:14px;">
-            </div>
-
-            <div style="margin-bottom: 15px;">
-                <label style="color: var(--text-gray); font-size: 12px;">السعر القديم قبل الخصم (اختياري):</label>
-                <input type="number" id="editModalOldPrice" style="width:100%; padding:9px; margin-top:4px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; font-size:14px;" placeholder="اتركه فارغاً لو بدون خصم">
-            </div>
-
-            <div class="custom-modal-btns">
-                <button class="btn-modal-confirm" id="editModalSaveBtn" style="background:var(--primary-gold); color:#000; flex:1;">حفظ التعديلات</button>
-                <button class="btn-modal-cancel" onclick="closeEditModal()" style="flex:1;">تراجع</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- لوحة التحكم للأدمن -->
-    <div class="admin-modal" id="adminModal">
-        <div class="admin-content" data-aos="zoom-in" data-aos-duration="400">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                <h3 style="color: var(--primary-gold); font-size:18px;"><i class="fa-solid fa-shield-halved"></i> لوحة تحكم وإدارة المتجر الملكي (الأدمن)</h3>
-                <button onclick="closeAdminModal()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button class="btn-gold" id="adminTabOrdersBtn" onclick="switchAdminTab('orders')" style="flex:1; justify-content:center;">طلبات العملاء</button>
-                <button class="btn-preview" id="adminTabUsersBtn" onclick="switchAdminTab('users')" style="flex:1; justify-content:center;">الحسابات المسجلة (<span id="reg-users-count">0</span>)</button>
-            </div>
-
-            <div id="admin-orders-section">
-                <div id="admin-orders-list"></div>
-            </div>
-
-            <div id="admin-users-section" style="display:none;">
-                <div id="admin-users-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- الهيدر العلوي مع عداد الزيارات والتوب ميني -->
-    <header data-aos="fade-down" data-aos-duration="800">
-        <a href="#" class="logo" id="store-logo-btn" title="متجر سَـنَدْ الملكي (انقر 5 مرات لدخول الأدمن)"><i class="fa-solid fa-crown"></i> سَـنَدْ</a>
-        
+    <!-- الهيدر -->
+    <header>
+        <a href="#" class="logo" id="store-logo-btn" title="انقر 5 مرات لتسجيل دخول الأدمن"><i class="fa-solid fa-crown"></i> سَـنَدْ</a>
         <div class="header-left-group">
-            <div class="visitor-counter-badge" title="عدد زيارات المتجر الكلية">
-                <i class="fa-solid fa-users"></i> الزيارات: <span id="visitor-count-val">1240</span>
+            <div class="visitor-counter-badge">
+                <i class="fa-solid fa-users"></i> الزيارات: <span id="visitor-count-val">1250</span>
             </div>
             <div class="nav-btns" id="header-nav-buttons"></div>
         </div>
@@ -641,34 +168,26 @@
 
     <!-- المحتوى الرئيسي -->
     <div class="container" id="main-shop-container">
-        <div class="hero-section" data-aos="zoom-in" data-aos-duration="1000">
+        <div class="hero-section">
             <div class="hero-text">
                 <h1>تشكيلة الأزياء الملكية الفاخرة</h1>
                 <p>أرقى التصميمات العصرية المصممة خصيصاً لتناسب ذوقك الرفيع بكل فخامة.</p>
             </div>
-            <div>
-                <span style="background: rgba(212,175,55,0.15); border: 1px solid var(--primary-gold); color: var(--primary-gold); padding: 7px 14px; border-radius: 8px; font-weight: bold; font-size: 13px;">
-                    <i class="fa-solid fa-shield-halved"></i> متجر آمن ومعتمد
-                </span>
-            </div>
         </div>
-
         <div class="products-grid" id="products-container"></div>
     </div>
 
-    <!-- صفحة نجاح الأوردر -->
+    <!-- نافذة نجاح الطلب -->
     <div class="container">
-        <div id="order-success-view" class="order-success-section" data-aos="flip-up">
+        <div id="order-success-view" class="custom-modal-box" style="display:none; max-width:700px; margin:40px auto; text-align:center;">
             <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #25d366; margin-bottom: 12px;"></i>
-            <h2>تم إرسال الأوردر وحفظه في السيستم بنجاح! 🎉</h2>
-            <p style="color: var(--text-gray);">شكراً لتسوقك في متجر سَـنَدْ. تم تسجيل طلبك بنجاح وهذه هي تفاصيل طلبك الحالي:</p>
-            
-            <div class="order-details-box" id="latest-order-details"></div>
-            <button class="btn-gold" style="margin: 18px auto 0;" onclick="resetToStore()">العودة للمتجر</button>
+            <h2 style="color: #25d366; margin-bottom:10px;">تم إرسال الطلب بنجاح!</h2>
+            <div id="latest-order-details" style="text-align:right; background:#1a1a1a; padding:15px; border-radius:8px; margin:15px 0;"></div>
+            <button class="btn-gold" onclick="resetToStore()">العودة للمتجر</button>
         </div>
     </div>
 
-    <!-- سلة المشتريات وفورم الشراء -->
+    <!-- سلة المشتريات -->
     <div class="cart-modal" id="cartModal">
         <div class="cart-header">
             <h3>سلة المشتريات</h3>
@@ -676,206 +195,172 @@
         </div>
         <div class="cart-items" id="cart-items-container"></div>
         <div class="cart-footer">
-            <p style="margin-bottom: 6px; font-size:13px;">تكلفة الشحن الثابتة: <strong>50 جنيه</strong></p>
-            <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">الإجمالي الكلي: <span id="cart-total" style="color: var(--primary-gold);">0</span> جنيه</p>
+            <p style="margin-bottom: 6px; font-size:13px;">الشحن: <strong>50 جنيه</strong></p>
+            <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">الإجمالي: <span id="cart-total" style="color: var(--primary-gold);">0</span> جنيه</p>
             
             <div class="checkout-form">
                 <input type="text" id="cust-name" placeholder="الاسم الكامل">
                 <input type="tel" id="cust-phone" placeholder="رقم الهاتف">
-                
                 <select id="cust-gov" onchange="updateCitiesList()">
                     <option value="" disabled selected>اختر المحافظة</option>
                     <option value="القاهرة">القاهرة</option>
                     <option value="الجيزة">الجيزة</option>
                     <option value="الإسكندرية">الإسكندرية</option>
-                    <option value="الدقهلية">الدقهلية</option>
-                    <option value="الشرقية">الشرقية</option>
-                    <option value="الغربية">الغربية</option>
-                    <option value="القليوبية">القليوبية</option>
-                    <option value="المنوفية">المنوفية</option>
-                    <option value="البحيرة">البحيرة</option>
-                    <option value="كفر الشيخ">كفر الشيخ</option>
-                    <option value="دمياط">دمياط</option>
-                    <option value="بورسعيد">بورسعيد</option>
-                    <option value="الإسماعيلية">الإسماعيلية</option>
-                    <option value="السويس">السويس</option>
-                    <option value="الفيوم">الفيوم</option>
-                    <option value="بني سويف">بني سويف</option>
-                    <option value="المنيا">المنيا</option>
-                    <option value="أسيوط">أسيوط</option>
-                    <option value="سوهاج">سوهاج</option>
-                    <option value="قنا">قنا</option>
-                    <option value="أسوان">أسوان</option>
-                    <option value="الأقصر">الأقصر</option>
-                    <option value="البحر الأحمر">البحر الأحمر</option>
-                    <option value="مطروح">مطروح</option>
                 </select>
-
                 <select id="cust-city">
-                    <option value="" disabled selected>اختر المحافظة أولاً لعرض الإدارات والمدن</option>
+                    <option value="" disabled selected>اختر المدينة أولاً</option>
                 </select>
-
-                <input type="text" id="cust-address" placeholder="العنوان بالتفصيل (الشارع، رقم العمارة)">
-                <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)..." rows="2" style="resize:none;"></textarea>
-
-                <button class="btn-checkout" onclick="checkoutOrder()"><i class="fa-solid fa-check-circle"></i> تأكيد وإرسال الطلب للسيستم</button>
+                <input type="text" id="cust-address" placeholder="العنوان بالتفصيل">
+                <textarea id="cust-notes" placeholder="ملاحظات..." rows="2" style="resize:none;"></textarea>
+                <button class="btn-checkout" onclick="checkoutOrder()">تأكيد وإرسال الطلب</button>
             </div>
         </div>
     </div>
 
-    <!-- المساعد الذكي الآمن (AI Agent الشامل) -->
-    <div class="ai-chat-btn" onclick="toggleAIChat()" title="تحدث مع مساعد المتجر الذكي">
-        <i class="fa-solid fa-robot"></i>
+    <!-- نافذة تسجيل الدخول مع OTP -->
+    <div class="custom-modal-overlay" id="loginModal">
+        <div class="custom-modal-box">
+            <h3>تسجيل الدخول</h3>
+            <div id="login-step-1" style="margin-top:10px;">
+                <input type="text" id="login-user-name" placeholder="الاسم الكامل" style="width:100%; padding:9px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                <input type="email" id="login-user-email" placeholder="البريد الإلكتروني (Gmail)" style="width:100%; padding:9px; margin-bottom:8px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+                
+                <div id="admin-password-box" style="display:none; margin-bottom:10px;">
+                    <input type="password" id="admin-secret-pass" placeholder="كلمة مرور الأدمن" style="width:100%; padding:9px; background:#111; border:1px solid var(--primary-gold); color:#fff; border-radius:6px;">
+                </div>
+                <div class="custom-modal-btns">
+                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()">إرسال كود التحقق</button>
+                    <button class="btn-modal-cancel" onclick="closeLoginModal()">إلغاء</button>
+                </div>
+            </div>
+            <div id="login-step-2" style="display:none; margin-top:10px; text-align:center;">
+                <p id="otp-info-text" style="font-size:12px; color:#25d366; margin-bottom:8px;"></p>
+                <input type="text" id="login-user-otp" placeholder="----" style="width:100%; padding:9px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; text-align:center; letter-spacing:5px;" maxlength="4">
+                <div class="custom-modal-btns">
+                    <button class="btn-modal-confirm" onclick="verifyCustomerOTP()" style="background:#25d366;">تأكيد ودخول</button>
+                    <button class="btn-modal-cancel" onclick="resetLoginModal()">رجوع</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- نافذة دخول الأدمن السريع -->
+    <div class="custom-modal-overlay" id="adminPasswordModal">
+        <div class="custom-modal-box" style="text-align:center;">
+            <h3>دخول الأدمن السريع</h3>
+            <input type="password" id="secret-admin-pass-input" placeholder="أدخل باسورد الأدمن (admin)" style="width:100%; padding:10px; margin:12px 0; background:#222; border:1px solid var(--primary-gold); color:#fff; border-radius:6px; text-align:center;">
+            <div class="custom-modal-btns">
+                <button class="btn-modal-confirm" onclick="verifyAdminShortcut()">دخول</button>
+                <button class="btn-modal-cancel" onclick="closeAdminPassModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:8px;">
+                <h3 style="color:var(--primary-gold);">لوحة تحكم الأدمن</h3>
+                <button onclick="closeAdminModal()" style="background:none; border:none; color:#ff4d4d; font-size:20px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <button class="btn-gold" onclick="switchAdminTab('orders')" style="flex:1;">طلبات العملاء</button>
+                <button class="btn-preview" onclick="switchAdminTab('users')" style="flex:1;">الحسابات المسجلة (<span id="reg-users-count">0</span>)</button>
+            </div>
+            <div id="admin-orders-section"><div id="admin-orders-list"></div></div>
+            <div id="admin-users-section" style="display:none;"><div id="admin-users-list"></div></div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل المنتج -->
+    <div class="custom-modal-overlay" id="customEditModal">
+        <div class="custom-modal-box">
+            <h3 style="text-align:center; color:var(--primary-gold); margin-bottom:12px;">تعديل السعر</h3>
+            <input type="number" id="editModalPrice" placeholder="السعر الجديد" style="width:100%; padding:9px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+            <input type="number" id="editModalOldPrice" placeholder="السعر القديم (اختياري)" style="width:100%; padding:9px; margin-bottom:12px; background:#222; border:1px solid #333; color:#fff; border-radius:6px;">
+            <div class="custom-modal-btns">
+                <button class="btn-modal-confirm" id="editModalSaveBtn">حفظ</button>
+                <button class="btn-modal-cancel" onclick="closeEditModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- المساعد الذكي الآمن (AI Chat) -->
+    <div class="ai-chat-btn" onclick="toggleAIChat()"><i class="fa-solid fa-robot"></i></div>
     <div class="ai-chat-container" id="aiChatContainer">
         <div class="ai-chat-header">
-            <span style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-robot"></i> مساعد سَـنَدْ الذكي (AI)</span>
+            <span style="color:var(--primary-gold); font-weight:bold;"><i class="fa-solid fa-robot"></i> مساعد سَـنَدْ الذكي</span>
             <button onclick="toggleAIChat()" style="background:none; border:none; color:#ff4d4d; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-msg bot">أهلاً يا غالي! أنا مساعدك الذكي 🌟 اسألني في أي مجال في الدنيا (منتجات المتجر، رياضة، تاريخ، برمجة، إلخ)، ولو عاوز تكلم شخص بشري من الإدارة هظبطهالك فوراً بكل أمان!</div>
+            <div class="ai-msg bot">أهلاً يا غالي! اسألني في أي مجال، ولو عاوز تكلم شخص بشري هطلب بياناتك وأبعتها للإدارة في سرية تامة دون إظهار أي إيميلات!</div>
         </div>
         <div class="ai-chat-input-box">
-            <input type="text" id="aiChatInput" placeholder="اكتب سؤالك في أي مجال..." onkeypress="handleAIKeyPress(event)">
-            <button class="btn-gold" onclick="sendAIMessage()" style="padding: 6px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
+            <input type="text" id="aiChatInput" placeholder="اكتب رسالتك..." onkeypress="handleAIKeyPress(event)">
+            <button class="btn-gold" onclick="sendAIMessage()" style="padding:6px 12px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <!-- مكتبة AOS وسكربتات المتجر -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- جافاسكريبت المتجر -->
     <script>
-        AOS.init();
-
-        // 1. صوت الضغطات
-        function playClickSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(650, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.04);
-            } catch(e) {}
-        }
-
-        document.addEventListener('click', function(e) {
-            if(e.target.closest('button') || e.target.closest('a') || e.target.closest('.product-card')) {
-                playClickSound();
-            }
-        });
-
-        // 2. عداد الزيارات
-        let visits = localStorage.getItem('sanad_visitor_count');
-        if(!visits) { visits = 1245; } else { visits = parseInt(visits) + 1; }
-        localStorage.setItem('sanad_visitor_count', visits);
-        document.getElementById('visitor-count-val').innerText = visits;
-
-        // بيانات المنتجات
         let products = [
-            { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', desc: 'بدلة رجالي كلاسيكية مصنوعة من أجود خامات الصوف الإيطالي الفاخر، مصممة بعناية لتمنحك إطلالة ملكية راقية في المناسبات الرسمية واجتماعات العمل الهامة.' },
-            { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', desc: 'جاكيت جلد طبيعي 100% بتصميم عصري جريء، بطانة داخلية ناعمة ومقاومة للبرودة، يجمع بين متانة الاستخدام وأناقة المظهر الكاجوال الفاخر.' },
-            { id: 3, title: 'قميص أكسفورد أبيض ملكي', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600', desc: 'قميص أكسفورد أبيض مصمم خصيصاً لراحتك اليومية، قماش قطني ناعم لا يتسخ بسهولة ومقاوم للتجعد، مثالي للإطلالات الرسمية والكاجوال.' },
-            { id: 4, title: 'بنطلون قماش تشينو أنيق', price: 750, oldPrice: 950, img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600', desc: 'بنطلون تشينو عصري بقصة مرنة ومريحة، مصنوع من قطن عالي الجودة يناسب مختلف الأوقات ويمنحك حرية حركة كاملة مع مظهر راقي.' },
-            { id: 5, title: 'بالطو شتوي صوف فاخر', price: 2400, oldPrice: 2900, img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600', desc: 'بالطو شتوي طويل مصنوع من أجود أنواع الصوف الثقيل، يوفر لك دفئاً مثالياً في أقسى أوقات الشتاء مع تصميم كلاسيكي يعكس الفخامة المطلقة.' },
-            { id: 6, title: 'تيشيرت قطن فاخر بتصميم عصري', price: 450, oldPrice: 600, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600', desc: 'تيشيرت قطني مريح وفائق النعومة، مصمم خصيصاً ليتحمل الغسيل المتكرر مع الاحتفاظ بلونه الزاهي وتصميمه العصري الجذاب.' }
+            { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', desc: 'بدلة رجالي صوف إيطالي فاخر للمناسبات الرسمية.' },
+            { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', desc: 'جاكيت جلد طبيعي 100% بتصميم عصري جريء.' },
+            { id: 3, title: 'قميص أكسفورد أبيض ملكي', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600', desc: 'قميص أكسفورد أبيض مصمم خصيصاً لراحتك اليومية.' },
+            { id: 4, title: 'بنطلون قماش تشينو أنيق', price: 750, oldPrice: 950, img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600', desc: 'بنطلون تشينو عصري بقصة مرنة ومريحة.' },
+            { id: 5, title: 'بالطو شتوي صوف فاخر', price: 2400, oldPrice: 2900, img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600', desc: 'بالطو شتوي طويل مصنوع من أجود أنواع الصوف.' },
+            { id: 6, title: 'تيشيرت قطن فاخر بتصميم عصري', price: 450, oldPrice: 600, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600', desc: 'تيشيرت قطني مريح وفائق النعومة.' }
         ];
 
         let cart = [];
         let currentUser = JSON.parse(localStorage.getItem('sanad_logged_user')) || null;
-        let generatedOTP = "";
-        let pendingUserEmail = "";
-        let pendingUserName = "";
-        
+        let generatedOTP = "", pendingUserEmail = "", pendingUserName = "";
         const ADMIN_EMAIL = "medoatlm83@gmail.com";
         const ADMIN_PASSWORD = "admin";
 
         function registerUserAccount(name, email) {
             let regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
             if(!regUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                regUsers.push({
-                    name: name,
-                    email: email,
-                    date: new Date().toLocaleString('ar-EG')
-                });
+                regUsers.push({ name: name, email: email, date: new Date().toLocaleString('ar-EG') });
                 localStorage.setItem('sanad_registered_users', JSON.stringify(regUsers));
             }
         }
 
         const egyptGovs = {
-            "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "مصر الجديدة", "المقطم", "الزمالك", "عين شمس"],
-            "الجيزة": ["الدكي", "المهندسين", "الهرم", "الفيصل", "6 أكتوبر", "الشيخ زايد"],
-            "الإسكندرية": ["سموحة", "ميامي", "العصافرة", "لوران", "المنتزه", "البحوث"],
-            "الدقهلية": ["المنصورة", "سنبلاوين", "ميت غمر", "دكرنس", "بلقاس"],
-            "الشرقية": ["زقازيق", "بلبيس", "العاشر من رمضان", "ههيا", "منيا القمح"],
-            "الغربية": ["طنطا", "محلة الكبرى", "زفتى", "كفر الزيات"],
-            "القليوبية": ["بنها", "شبرا الخيمة", "قليوب", "القناطر الخيرية"],
-            "المنوفية": ["شبين الكوم", "منوف", "السادات", "قويسنا"],
-            "البحيرة": ["دمنهور", "كفر الدوار", "رشيد", "إيتاي البارود"],
-            "كفر الشيخ": ["كفر الشيخ", "دسوق", "بيلا", "فوة"],
-            "دمياط": ["دمياط", "رأس البر", "فارسكور", "دمياط الجديدة"],
-            "بورسعيد": ["الشرق", "المناخ", "البورفؤاد", "العرب"],
-            "الإسماعيلية": ["الإسماعيلية", "فايد", "التل الكبير"],
-            "السويس": ["السويس", "الأربعين", "فيصل"],
-            "الفيوم": ["الفيوم", "سنورس", "إطسا"],
-            "بني سويف": ["بني سويف", "الواسطى", "إهناسيا"],
-            "المنيا": ["المنيا", "ملوي", "صاغة", "سمالوط"],
-            "أسيوط": ["أسيوط", "ديروط", "أبو تيج"],
-            "سوهاج": ["سوهاج", "جرجا", "إخميم", "طهطا"],
-            "قنا": ["قنا", "نجع حمادي", "قوص"],
-            "أسوان": ["أسوان", "كوم أمبو", "إدفو"],
-            "الأقصر": ["الأقصر", "إسنا", "القرنة"],
-            "البحر الأحمر": ["الغردقة", "سفاجا", "مرسى علم"],
-            "مطروح": ["مرسى مطروح", "الحمام", "السلوم"]
+            "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "مصر الجديدة"],
+            "الجيزة": ["الدكي", "المهندسين", "الهرم", "6 أكتوبر"],
+            "الإسكندرية": ["سموحة", "ميامي", "العصافرة", "منتزه"]
         };
 
         function updateCitiesList() {
-            const govSelect = document.getElementById('cust-gov').value;
-            const citySelect = document.getElementById('cust-city');
-            citySelect.innerHTML = '<option value="" disabled selected>اختر الإدارة أو المدينة</option>';
-            if(egyptGovs[govSelect]) {
-                egyptGovs[govSelect].forEach(city => {
-                    citySelect.innerHTML += `<option value="${city}">${city}</option>`;
-                });
+            let gov = document.getElementById('cust-gov').value;
+            let citySel = document.getElementById('cust-city');
+            citySel.innerHTML = '<option value="" disabled selected>اختر المدينة</option>';
+            if(egyptGovs[gov]) {
+                egyptGovs[gov].forEach(c => citySel.innerHTML += `<option value="${c}">${c}</option>`);
             }
         }
 
         document.getElementById('login-user-email').addEventListener('input', function(e) {
-            const emailVal = e.target.value.trim().toLowerCase();
-            const passBox = document.getElementById('admin-password-box');
-            if(emailVal === ADMIN_EMAIL.toLowerCase()) {
-                passBox.style.display = 'block';
-            } else {
-                passBox.style.display = 'none';
-            }
+            let val = e.target.value.trim().toLowerCase();
+            document.getElementById('admin-password-box').style.display = (val === ADMIN_EMAIL.toLowerCase()) ? 'block' : 'none';
         });
 
-        let logoClickCount = 0;
-        let logoClickTimer = null;
-        document.getElementById('store-logo-btn').addEventListener('click', function(e) {
+        let logoClicks = 0, logoTimer = null;
+        document.getElementById('store-logo-btn').addEventListener('click', (e) => {
             e.preventDefault();
-            logoClickCount++;
-            clearTimeout(logoClickTimer);
-            logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1200);
-
-            if (logoClickCount >= 5) {
-                logoClickCount = 0;
+            logoClicks++;
+            clearTimeout(logoTimer);
+            logoTimer = setTimeout(() => logoClicks = 0, 1000);
+            if(logoClicks >= 5) {
+                logoClicks = 0;
                 document.getElementById('adminPasswordModal').style.display = 'flex';
-                document.getElementById('secret-admin-pass-input').value = '';
             }
         });
 
-        function closeAdminPassModal() {
-            document.getElementById('adminPasswordModal').style.display = 'none';
-        }
-
+        function closeAdminPassModal() { document.getElementById('adminPasswordModal').style.display = 'none'; }
         function verifyAdminShortcut() {
-            const pass = document.getElementById('secret-admin-pass-input').value.trim();
+            let pass = document.getElementById('secret-admin-pass-input').value.trim();
             if(pass === ADMIN_PASSWORD) {
                 currentUser = { name: "محمد جمال سند", email: ADMIN_EMAIL };
                 localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
@@ -883,35 +368,30 @@
                 closeAdminPassModal();
                 renderHeaderNav();
                 renderProducts();
-                showMessageModal("دخول الأدمن الملكي", "أهلاً بك يا باشمهندس محمد! تم تفعيل صلاحيات لوحة التحكم بنجاح.");
-            } else {
-                showMessageModal("خطأ", "كلمة المرور غير صحيحة.");
-            }
+                alert("أهلاً بك يا باشمهندس محمد! تم الدخول للأدمن بنجاح.");
+            } else { alert("الباسورد غير صحيح!"); }
         }
 
         function renderProducts() {
-            const container = document.getElementById('products-container');
+            let container = document.getElementById('products-container');
             container.innerHTML = '';
-            products.forEach((prod) => {
-                let badgeHTML = prod.oldPrice ? `<span class="offer-badge">خصم ${Math.round((1 - prod.price/prod.oldPrice)*100)}%</span>` : '';
-                let oldPriceHTML = prod.oldPrice ? `<span class="product-old-price">${prod.oldPrice} ج.م</span>` : '';
-                
+            products.forEach(p => {
+                let badge = p.oldPrice ? `<span style="background:#ff4d4d; color:#fff; font-size:10px; padding:2px 5px; border-radius:4px;">خصم</span>` : '';
+                let old = p.oldPrice ? `<span class="product-old-price">${p.oldPrice} ج.م</span>` : '';
+                let editBtn = (currentUser && currentUser.email === ADMIN_EMAIL) ? `<button onclick="openEditModal(${p.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer;"><i class="fa-solid fa-pen"></i></button>` : '';
+
                 container.innerHTML += `
                     <div class="product-card">
-                        <img src="${prod.img}" alt="${prod.title}" class="product-img" onclick="openProductPreview(${prod.id})" title="انقر للمعاينة">
+                        <img src="${p.img}" class="product-img" onclick="addToCart(${p.id})">
                         <div class="product-info">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h3 class="product-title">${prod.title}</h3>
-                                ${currentUser && currentUser.email === ADMIN_EMAIL ? `<button onclick="openEditModal(${prod.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer; font-size:15px;" title="تعديل السعر والعرض"><i class="fa-solid fa-pen-to-square"></i></button>` : ''}
+                                <h3 class="product-title">${p.title}</h3>
+                                ${editBtn}
                             </div>
-                            <div class="product-price-box">
-                                <span class="product-price">${prod.price} جنيه</span>
-                                ${oldPriceHTML}
-                                ${badgeHTML}
-                            </div>
+                            <div style="margin:8px 0;"><span class="product-price">${p.price} جنيه</span> ${old} ${badge}</div>
                             <div class="product-actions">
-                                <button class="btn-preview" onclick="openProductPreview(${prod.id})"><i class="fa-solid fa-eye"></i> معاينة</button>
-                                <button class="btn-add-cart" onclick="addToCart(${prod.id})"><i class="fa-solid fa-cart-shopping"></i> إضافة</button>
+                                <button class="btn-preview" onclick="addToCart(${p.id})">شراء</button>
+                                <button class="btn-add-cart" onclick="addToCart(${p.id})">أضف للسلة</button>
                             </div>
                         </div>
                     </div>
@@ -919,202 +399,87 @@
             });
         }
 
-        function openProductPreview(id) {
-            const prod = products.find(p => p.id === id);
-            if(!prod) return;
-            document.getElementById('previewModalTitle').innerText = prod.title;
-            document.getElementById('previewModalImg').src = prod.img;
-            document.getElementById('previewModalDesc').innerText = prod.desc;
-            document.getElementById('previewModalPrice').innerText = prod.price + ' جنيه';
-            document.getElementById('previewAddCartBtn').onclick = function() {
-                closeProductPreview();
-                addToCart(prod.id);
-            };
-            document.getElementById('productPreviewModal').style.display = 'flex';
-        }
-
-        function closeProductPreview() {
-            document.getElementById('productPreviewModal').style.display = 'none';
-        }
-
         function renderHeaderNav() {
-            const nav = document.getElementById('header-nav-buttons');
-            let cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            let nav = document.getElementById('header-nav-buttons');
+            let count = cart.reduce((s, i) => s + i.qty, 0);
+            let auth = currentUser ? `
+                <button class="btn-gold" style="background:#222; color:var(--primary-gold); border:1px solid var(--primary-gold);" onclick="alert('أنت تسجل باسم: ' + currentUser.name)">${currentUser.name}</button>
+                <button class="btn-gold" style="background:#333; color:#ff4d4d;" onclick="logoutUser()">خروج</button>
+            ` : `<button class="btn-login" onclick="openLoginModal()">دخول</button>`;
+            
+            let adminBtn = (currentUser && currentUser.email === ADMIN_EMAIL) ? `<button class="btn-gold" style="background:#ffcc00; color:#000;" onclick="openAdminModal()">لوحة التحكم</button>` : '';
 
-            let authButtons = '';
-            let adminDashboardBtn = '';
-
-            if (currentUser) {
-                authButtons = `
-                    <button class="btn-gold" style="background:#222; color:var(--primary-gold); border:1px solid var(--primary-gold);" onclick="openTrackingModal()">
-                        <i class="fa-solid fa-box-open"></i> طلباتي (${currentUser.name})
-                    </button>
-                    <button class="btn-gold" style="background:#333; color:#ff4d4d;" onclick="logoutUser()">
-                        <i class="fa-solid fa-right-from-bracket"></i> خروج
-                    </button>
-                `;
-
-                if (currentUser.email === ADMIN_EMAIL) {
-                    adminDashboardBtn = `
-                        <button class="btn-gold" style="background:#ffcc00; color:#000;" onclick="openAdminModal()">
-                            <i class="fa-solid fa-shield-halved"></i> لوحة التحكم
-                        </button>
-                    `;
-                }
-            } else {
-                authButtons = `
-                    <button class="btn-login" onclick="openLoginModal()">
-                        <i class="fa-solid fa-user-check"></i> تسجيل الدخول
-                    </button>
-                `;
-            }
-
-            nav.innerHTML = `
-                ${adminDashboardBtn}
-                ${authButtons}
-                <button class="btn-gold" onclick="toggleCart()">
-                    <i class="fa-solid fa-cart-shopping"></i> السلة (<span id="cart-badge">${cartCount}</span>)
-                </button>
-            `;
+            nav.innerHTML = `${adminBtn} ${auth} <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> (${count})</button>`;
         }
 
         function toggleCart() {
-            document.getElementById('cartModal').classList.toggle('active');
+            let modal = document.getElementById('cartModal');
+            modal.classList.toggle('active');
             renderCartItems();
         }
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existing = cart.find(item => item.id === productId);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({ ...product, qty: 1 });
-            }
+        function addToCart(id) {
+            let prod = products.find(p => p.id === id);
+            let item = cart.find(i => i.id === id);
+            if(item) item.qty++; else cart.push({ ...prod, qty: 1 });
             renderHeaderNav();
             renderCartItems();
-            showMessageModal("تمت الإضافة", `تم إضافة "${product.title}" إلى سلة المشتريات بنجاح.`);
         }
 
         function renderCartItems() {
-            const container = document.getElementById('cart-items-container');
+            let container = document.getElementById('cart-items-container');
             container.innerHTML = '';
             let total = 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--text-gray); margin-top:25px;">سلة المشتريات فارغة حالياً.</p>';
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">السلة فارغة</p>';
                 document.getElementById('cart-total').innerText = '0';
                 return;
             }
-
             cart.forEach(item => {
                 total += item.price * item.qty;
                 container.innerHTML += `
                     <div class="cart-item">
-                        <div>
-                            <h4 style="font-size:13px; margin-bottom:3px;">${item.title}</h4>
-                            <span style="color:var(--primary-gold); font-size:12px;">${item.price} ج.م × ${item.qty}</span>
-                        </div>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <button onclick="changeQty(${item.id}, 1)" style="background:#333; color:#fff; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer;">+</button>
-                            <span style="font-weight:bold; font-size:13px;">${item.qty}</span>
-                            <button onclick="changeQty(${item.id}, -1)" style="background:#333; color:#fff; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer;">-</button>
-                            <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:#ff4d4d; cursor:pointer; margin-right:4px;"><i class="fa-solid fa-trash"></i></button>
-                        </div>
+                        <div><h4 style="font-size:12px;">${item.title}</h4><span style="color:var(--primary-gold); font-size:11px;">${item.price} × ${item.qty}</span></div>
+                        <button onclick="cart = cart.filter(i=>i.id !== ${item.id}); renderCartItems(); renderHeaderNav();" style="background:none; border:none; color:#ff4d4d; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
             });
-
-            let finalTotal = total + 50;
-            document.getElementById('cart-total').innerText = finalTotal;
-        }
-
-        function changeQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if(item) {
-                item.qty += delta;
-                if(item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-            }
-            renderHeaderNav();
-            renderCartItems();
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(i => i.id !== id);
-            renderHeaderNav();
-            renderCartItems();
+            document.getElementById('cart-total').innerText = total + 50;
         }
 
         function checkoutOrder() {
-            if (cart.length === 0) {
-                showMessageModal("تنبيه", "سلة المشتريات فارغة!");
-                return;
-            }
+            if(cart.length === 0) { alert("السلة فارغة!"); return; }
+            let name = document.getElementById('cust-name').value.trim();
+            let phone = document.getElementById('cust-phone').value.trim();
+            let gov = document.getElementById('cust-gov').value;
+            let city = document.getElementById('cust-city').value;
+            let address = document.getElementById('cust-address').value.trim();
 
-            const name = document.getElementById('cust-name').value.trim();
-            const phone = document.getElementById('cust-phone').value.trim();
-            const gov = document.getElementById('cust-gov').value;
-            const city = document.getElementById('cust-city').value;
-            const address = document.getElementById('cust-address').value.trim();
-            const notes = document.getElementById('cust-notes').value.trim();
+            if(!name || !phone || !gov || !city || !address) { alert("املأ جميع الحقول!"); return; }
 
-            let isValid = true;
-            [
-                { el: document.getElementById('cust-name'), val: name },
-                { el: document.getElementById('cust-phone'), val: phone },
-                { el: document.getElementById('cust-gov'), val: gov },
-                { el: document.getElementById('cust-city'), val: city },
-                { el: document.getElementById('cust-address'), val: address }
-            ].forEach(field => {
-                if(!field.val) {
-                    field.el.classList.add('shake');
-                    setTimeout(() => field.el.classList.remove('shake'), 400);
-                    isValid = false;
-                }
-            });
-
-            if (!isValid) {
-                showMessageModal("خطأ في البيانات", "يرجى ملء جميع الحقول المطلوبة بالشكل الصحيح.");
-                return;
-            }
-
-            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            let total = subtotal + 50;
-            const orderId = 'SANAD-' + Math.floor(100000 + Math.random() * 900000);
-
-            const newOrder = {
-                orderId: orderId,
+            let subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let order = {
+                orderId: 'SANAD-' + Math.floor(100000 + Math.random()*900000),
                 date: new Date().toLocaleString('ar-EG'),
-                customer: { name, phone, gov, city, address, notes },
-                items: [...cart],
-                subtotal: subtotal,
-                shipping: 50,
-                total: total,
-                status: 'قيد المعالجة'
+                customer: { name, phone, gov, city, address },
+                items: [...cart], total: subtotal + 50, status: 'قيد المعالجة'
             };
 
-            let allOrders = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            allOrders.unshift(newOrder);
-            localStorage.setItem('sanad_all_orders', JSON.stringify(allOrders));
+            let all = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
+            all.unshift(order);
+            localStorage.setItem('sanad_all_orders', JSON.stringify(all));
 
             cart = [];
             renderHeaderNav();
             toggleCart();
 
             document.getElementById('main-shop-container').style.display = 'none';
-            const successView = document.getElementById('order-success-view');
-            successView.style.display = 'block';
-
+            let succ = document.getElementById('order-success-view');
+            succ.style.display = 'block';
             document.getElementById('latest-order-details').innerHTML = `
-                <p><strong>رقم الطلب:</strong> <span style="color:var(--primary-gold);">${newOrder.orderId}</span></p>
-                <p><strong>اسم العميل:</strong> ${name}</p>
-                <p><strong>رقم الهاتف:</strong> ${phone}</p>
-                <p><strong>العنوان:</strong> ${gov} - ${city} - ${address}</p>
-                <p><strong>إجمالي المنتجات:</strong> ${subtotal} جنيه</p>
-                <p><strong>الشحن:</strong> 50 جنيه</p>
-                <p><strong>الإجمالي النهائي:</strong> <span style="color:var(--primary-gold); font-weight:bold;">${total} جنيه</span></p>
+                <p><strong>رقم الطلب:</strong> <span style="color:var(--primary-gold);">${order.orderId}</span></p>
+                <p><strong>العميل:</strong> ${name} (${phone})</p>
+                <p><strong>الإجمالي:</strong> ${order.total} جنيه</p>
             `;
         }
 
@@ -1123,276 +488,22 @@
             document.getElementById('main-shop-container').style.display = 'block';
         }
 
-        function openTrackingModal() {
-            if(!currentUser) {
-                openLoginModal();
-                return;
-            }
-            const modal = document.getElementById('trackingModal');
-            const container = document.getElementById('user-orders-container');
-            const allOrders = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            const userOrders = allOrders.filter(o => o.customer.name === currentUser.name);
-
-            container.innerHTML = '';
-            if(userOrders.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--text-gray); padding:15px;">ليس لديك أي طلبات مسجلة حتى الآن.</p>';
-            } else {
-                userOrders.forEach(ord => {
-                    let itemsStr = ord.items.map(i => `${i.title} (${i.qty})`).join(', ');
-                    container.innerHTML += `
-                        <div class="user-order-card">
-                            <p style="color:var(--primary-gold); font-weight:bold; font-size:14px;">رقم الطلب: ${ord.orderId}</p>
-                            <p style="font-size:12px; color:var(--text-gray);">التاريخ: ${ord.date}</p>
-                            <p style="margin: 5px 0; font-size:13px;"><strong>المنتجات:</strong> ${itemsStr}</p>
-                            <p style="font-size:13px;"><strong>الإجمالي:</strong> ${ord.total} جنيه</p>
-                            <p style="margin-top:5px;"><span style="background:rgba(37,211,102,0.15); color:#25d366; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">الحالة: ${ord.status}</span></p>
-                        </div>
-                    `;
-                });
-            }
-            modal.style.display = 'flex';
-        }
-
-        function closeTrackingModal() {
-            document.getElementById('trackingModal').style.display = 'none';
-        }
-
-        function openLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('login-step-1').style.display = 'block';
-            document.getElementById('login-step-2').style.display = 'none';
-            document.getElementById('admin-password-box').style.display = 'none';
-            document.getElementById('login-user-email').value = '';
-            document.getElementById('login-user-name').value = '';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
+        function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
         function resetLoginModal() {
             document.getElementById('login-step-1').style.display = 'block';
             document.getElementById('login-step-2').style.display = 'none';
         }
 
         function processLogin() {
-            const name = document.getElementById('login-user-name').value.trim();
-            const email = document.getElementById('login-user-email').value.trim();
+            let name = document.getElementById('login-user-name').value.trim();
+            let email = document.getElementById('login-user-email').value.trim();
+            if(!name || !email) { alert("أدخل البيانات!"); return; }
 
-            if(!name || !email || !email.includes('@')) {
-                showMessageModal("خطأ", "يرجى إدخال الاسم وبريد إلكتروني صحيح.");
-                return;
-            }
-
-            if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                const passInput = document.getElementById('admin-secret-pass').value.trim();
-                if(passInput === ADMIN_PASSWORD) {
-                    currentUser = { name: name, email: ADMIN_EMAIL };
+            if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                let pass = document.getElementById('admin-secret-pass').value.trim();
+                if(pass === ADMIN_PASSWORD) {
+                    currentUser = { name, email: ADMIN_EMAIL };
                     localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                    registerUserAccount(currentUser.name, currentUser.email);
+                    registerUserAccount(name, email);
                     closeLoginModal();
-                    renderHeaderNav();
-                    renderProducts();
-                    showMessageModal("مرحباً بك يا باشمهندس", "تم تسجيل الدخول كأدمنستريتور بنجاح بكامل الصلاحيات.");
-                } else {
-                    showMessageModal("خطأ في كلمة المرور", "كلمة مرور الأدمنستريتور غير صحيحة.");
-                }
-                return;
-            }
-
-            pendingUserName = name;
-            pendingUserEmail = email;
-            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-
-            const btn = document.getElementById('login-action-btn');
-            btn.innerText = "جاري إرسال الإيميل...";
-            btn.disabled = true;
-
-            emailjs.send("service_default", "template_default", {
-                to_email: email,
-                to_name: name,
-                pass_code: generatedOTP,
-                message: `مرحباً ${name}، رمز التحقق الخاص بك لتسجيل الدخول في متجر سَـنَدْ هو: ${generatedOTP}`
-            }).then(() => {
-                btn.innerText = "إرسال كود التحقق ومتابعة";
-                btn.disabled = false;
-                document.getElementById('login-step-1').style.display = 'none';
-                document.getElementById('login-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerText = `تم إرسال كود التحقق بنجاح إلى بريدك (${email}) عبر EmailJS. تفقد صندوق الوارد في Gmail!`;
-            }).catch(err => {
-                btn.innerText = "إرسال كود التحقق ومتابعة";
-                btn.disabled = false;
-                document.getElementById('login-step-1').style.display = 'none';
-                document.getElementById('login-step-2').style.display = 'block';
-                document.getElementById('otp-info-text').innerHTML = `رمز التحقق الخاص بك على الإيميل: <b style="color:#d4af37; font-size:16px;">${generatedOTP}</b>`;
-            });
-        }
-
-        function verifyCustomerOTP() {
-            const enteredOTP = document.getElementById('login-user-otp').value.trim();
-            if(enteredOTP === generatedOTP) {
-                currentUser = { name: pendingUserName, email: pendingUserEmail };
-                localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                registerUserAccount(currentUser.name, currentUser.email);
-                closeLoginModal();
-                renderHeaderNav();
-                renderProducts();
-                showMessageModal("أهلاً بك", `مرحباً بك ${currentUser.name} في متجر سَـنَدْ الملكي. استمتع بالتسوق!`);
-            } else {
-                showMessageModal("خطأ", "رمز التحقق غير صحيح. تأكد من الأرقام المرسلة لبريدك.");
-            }
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('sanad_logged_user');
-            renderHeaderNav();
-            renderProducts();
-            showMessageModal("تسجيل الخروج", "تم تسجيل خروجك بنجاح.");
-        }
-
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-            switchAdminTab('orders');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-        }
-
-        function switchAdminTab(tab) {
-            const ordersSec = document.getElementById('admin-orders-section');
-            const usersSec = document.getElementById('admin-users-section');
-            const btnOrders = document.getElementById('adminTabOrdersBtn');
-            const btnUsers = document.getElementById('adminTabUsersBtn');
-
-            if(tab === 'orders') {
-                ordersSec.style.display = 'block';
-                usersSec.style.display = 'none';
-                btnOrders.className = 'btn-gold';
-                btnUsers.className = 'btn-preview';
-                renderAdminOrders();
-            } else {
-                ordersSec.style.display = 'none';
-                usersSec.style.display = 'block';
-                btnOrders.className = 'btn-preview';
-                btnUsers.className = 'btn-gold';
-                renderAdminUsers();
-            }
-        }
-
-        function renderAdminUsers() {
-            const list = document.getElementById('admin-users-list');
-            const regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
-            document.getElementById('reg-users-count').innerText = regUsers.length;
-            list.innerHTML = '';
-
-            if(regUsers.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-gray); text-align:center; padding:15px;">لا توجد حسابات مسجلة حتى الآن.</p>';
-                return;
-            }
-
-            regUsers.forEach((usr, idx) => {
-                list.innerHTML += `
-                    <div class="admin-order-card">
-                        <p style="color:var(--primary-gold); font-weight:bold; font-size:14px;"><i class="fa-solid fa-user"></i> ${usr.name}</p>
-                        <p style="font-size:13px; margin: 4px 0;"><strong>البريد الإلكتروني:</strong> ${usr.email}</p>
-                        <p style="font-size:12px; color:var(--text-gray);"><i class="fa-regular fa-clock"></i> تاريخ إنشاء الحساب: ${usr.date}</p>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminOrders() {
-            const list = document.getElementById('admin-orders-list');
-            const allOrders = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            list.innerHTML = '';
-
-            if(allOrders.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-gray); text-align:center; padding:15px;">لا توجد أي طلبات واردة حتى الآن.</p>';
-                return;
-            }
-
-            allOrders.forEach((ord, idx) => {
-                let itemsList = ord.items.map(i => `${i.title} (${i.qty})`).join('، ');
-                list.innerHTML += `
-                    <div class="admin-order-card">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                            <span style="color:var(--primary-gold); font-weight:bold; font-size:13px;">${ord.orderId}</span>
-                            <span style="font-size:11px; color:var(--text-gray);">${ord.date}</span>
-                        </div>
-                        <p style="font-size:13px;"><strong>العميل:</strong> ${ord.customer.name} | <strong>الهاتف:</strong> ${ord.customer.phone}</p>
-                        <p style="font-size:13px;"><strong>العنوان:</strong> ${ord.customer.gov} - ${ord.customer.city} - ${ord.customer.address}</p>
-                        <p style="font-size:13px;"><strong>المنتجات:</strong> ${itemsList}</p>
-                        <p style="font-size:13px;"><strong>الإجمالي:</strong> ${ord.total} جنيه</p>
-                        <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                            <select onchange="updateOrderStatus(${idx}, this.value)" style="background:#222; color:#fff; border:1px solid #444; padding:3px 6px; border-radius:4px; font-size:12px;">
-                                <option value="قيد المعالجة" ${ord.status==='قيد المعالجة'?'selected':''}>قيد المعالجة</option>
-                                <option value="تم الشحن" ${ord.status==='تم الشحن'?'selected':''}>تم الشحن</option>
-                                <option value="تم التوصيل" ${ord.status==='تم التوصيل'?'selected':''}>تم التوصيل</option>
-                            </select>
-                            <button onclick="deleteOrder(${idx})" style="background:#ff4d4d; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:12px;"><i class="fa-solid fa-trash"></i> حذف</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateOrderStatus(index, newStatus) {
-            let allOrders = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            if(allOrders[index]) {
-                allOrders[index].status = newStatus;
-                localStorage.setItem('sanad_all_orders', JSON.stringify(allOrders));
-            }
-        }
-
-        function deleteOrder(index) {
-            let allOrders = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            allOrders.splice(index, 1);
-            localStorage.setItem('sanad_all_orders', JSON.stringify(allOrders));
-            renderAdminOrders();
-        }
-
-        let editingProductId = null;
-        function openEditModal(prodId) {
-            editingProductId = prodId;
-            const prod = products.find(p => p.id === prodId);
-            document.getElementById('editModalPrice').value = prod.price;
-            document.getElementById('editModalOldPrice').value = prod.oldPrice || '';
-            document.getElementById('customEditModal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('customEditModal').style.display = 'none';
-        }
-
-        document.getElementById('editModalSaveBtn').onclick = function() {
-            const newPrice = parseFloat(document.getElementById('editModalPrice').value);
-            const newOldPrice = document.getElementById('editModalOldPrice').value ? parseFloat(document.getElementById('editModalOldPrice').value) : null;
-            
-            if(!newPrice) {
-                alert("يرجى إدخال السعر الجديد.");
-                return;
-            }
-
-            const prod = products.find(p => p.id === editingProductId);
-            if(prod) {
-                prod.price = newPrice;
-                prod.oldPrice = newOldPrice;
-                renderProducts();
-                closeEditModal();
-                showMessageModal("تم التعديل", "تم تحديث سعر المنتج بنجاح.");
-            }
-        }
-
-        function showMessageModal(title, text) {
-            document.getElementById('msgModalTitle').innerText = title;
-            document.getElementById('msgModalText').innerText = text;
-            document.getElementById('customMessageModal').style.display = 'flex';
-        }
-
-        function closeMessageModal() {
-            document.getElementById('customMessageModal').style.display = 'none';
-        }
-
-        // 5. AI Agent شامل، فريندلي، يجيب على أي سؤال، ولا
