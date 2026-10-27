@@ -2,162 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر سَـنَدْ | Sanad Store</title>
-    <!-- أيقونة التبويب -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0a' rx='25'/><circle cx='50' cy='50' r='42' fill='none' stroke='%23d4af37' stroke-width='3'/><text x='50' y='72' font-family='Georgia, serif' font-weight='bold' font-size='60' fill='%23d4af37' text-anchor='middle'>S</text></svg>">
-    
-    <!-- الخطوط والأيقونات -->
+    <!-- الأيقونات والخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-       (function(){
-          emailjs.init("v0DvD6_nalGt48e9u");
-       })();
-    </script>
-
-    <style>
-        :root {
-            --primary-gold: #d4af37;
-            --dark-gold: #aa7c11;
-            --card-black: rgba(20, 20, 20, 0.95);
-            --border-color: #333333;
-            --text-light: #f3f3f3;
-            --text-gray: #aaaaaa;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-
-        body {
-            background: linear-gradient(135deg, rgba(10, 14, 26, 0.94), rgba(30, 10, 20, 0.94)), 
-                        url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--text-light);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        header {
-            background: rgba(10, 14, 26, 0.96);
-            border-bottom: 2px solid var(--primary-gold);
-            position: fixed; top: 0; left: 0; width: 100%;
-            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 30px; backdrop-filter: blur(12px); gap: 15px; flex-wrap: wrap;
-        }
-
-        .logo {
-            font-size: 24px; font-weight: 900; color: var(--primary-gold);
-            text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
-        }
-
-        .header-left-group { display: flex; align-items: center; gap: 15px; }
-
-        .visitor-counter-badge {
-            background: rgba(212, 175, 55, 0.12); border: 1px solid var(--primary-gold);
-            color: var(--primary-gold); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
-        }
-
-        .nav-btns { display: flex; gap: 10px; align-items: center; }
-
-        .btn-gold {
-            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold));
-            color: #000; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px;
-        }
-        .btn-login { background: #fff; color: #222; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
-
-        .container { max-width: 1450px; margin: 110px auto 30px; padding: 0 20px; }
-
-        .hero-section {
-            background: rgba(18, 22, 34, 0.9); border: 1px solid var(--border-color);
-            border-radius: 14px; padding: 25px 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
-        }
-        .hero-text h1 { color: var(--primary-gold); font-size: 26px; margin-bottom: 6px; }
-        .hero-text p { color: var(--text-gray); font-size: 14px; }
-
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-
-        .product-card {
-            background: var(--card-black); border: 1px solid var(--border-color);
-            border-radius: 12px; overflow: hidden; transition: 0.3s;
-        }
-        .product-card:hover { border-color: var(--primary-gold); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15); }
-        .product-img { width: 100%; height: 210px; object-fit: cover; border-bottom: 1px solid var(--border-color); cursor: pointer; }
-        .product-info { padding: 15px; }
-        .product-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-        .product-price { color: var(--primary-gold); font-size: 18px; font-weight: 900; }
-        .product-old-price { text-decoration: line-through; color: #888; font-size: 12px; margin-right: 6px; }
-        
-        .product-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .btn-preview { background: #222; border: 1px solid var(--border-color); color: #fff; padding: 8px; border-radius: 8px; font-size: 12px; cursor: pointer; text-align: center; }
-        .btn-add-cart { background: transparent; border: 2px solid var(--primary-gold); color: var(--primary-gold); padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; }
-        .btn-add-cart:hover { background: var(--primary-gold); color: #000; }
-
-        /* السلة والمودالز */
-        .cart-modal {
-            position: fixed; top: 0; right: -100%; width: 100%; max-width: 380px; height: 100%;
-            background: rgba(15, 15, 15, 0.98); border-left: 2px solid var(--primary-gold); z-index: 2000;
-            transition: 0.4s; display: flex; flex-direction: column; padding: 20px;
-        }
-        .cart-modal.active { right: 0; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 12px; }
-        .close-cart { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-        .cart-items { flex-grow: 1; overflow-y: auto; margin-bottom: 12px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; background: rgba(30,30,30,0.6); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
-
-        .checkout-form input, .checkout-form select, .checkout-form textarea {
-            width: 100%; padding: 9px; margin-bottom: 9px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px;
-        }
-        .btn-checkout { width: 100%; background: #25d366; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 15px; }
-
-        .custom-modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 15px;
-        }
-        .custom-modal-box {
-            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 450px; text-align: right;
-        }
-        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
-        .btn-modal-confirm, .btn-modal-cancel { padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 13px; flex: 1; }
-        .btn-modal-confirm { background: var(--primary-gold); color: #000; }
-        .btn-modal-cancel { background: #333; color: #fff; }
-
-        /* الأضمن واللوحة */
-        .admin-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88); z-index: 3000; justify-content: center; align-items: center; padding: 15px;
-        }
-        .admin-content {
-            background: var(--card-black); border: 2px solid var(--primary-gold); padding: 20px; border-radius: 12px; width: 100%; max-width: 700px; max-height: 85vh; overflow-y: auto; text-align: right;
-        }
-        .admin-order-card { background: #1a1a1a; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-
-        /* AI Chatbot */
-        .ai-chat-btn {
-            position: fixed; bottom: 25px; left: 25px; width: 55px; height: 55px;
-            background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold)); color: #000;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; z-index: 4000; box-shadow: 0 5px 20px rgba(212,175,55,0.4);
-        }
-        .ai-chat-container {
-            position: fixed; bottom: 95px; left: 25px; width: 360px; max-width: 90vw; height: 500px;
-            background: rgba(15, 15, 20, 0.98); border: 2px solid var(--primary-gold); border-radius: 14px;
-            z-index: 4000; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .ai-chat-header { background: #181b24; padding: 12px 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .ai-chat-messages { flex-grow: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
-        .ai-msg { background: #222; padding: 8px 12px; border-radius: 8px; max-width: 85%; line-height: 1.5; color: #f3f3f3; }
-        .ai-msg.bot { align-self: flex-start; border-right: 3px solid var(--primary-gold); }
-        .ai-msg.user { align-self: flex-end; background: #2a3b2e; border-left: 3px solid #25d366; }
-        .ai-chat-input-box { padding: 10px; background: #12151c; border-top: 1px solid var(--border-color); display: flex; gap: 8px; }
-        .ai-chat-input-box input { flex-grow: 1; padding: 8px; background: #222; border: 1px solid var(--border-color); color: #fff; border-radius: 6px; font-size: 13px; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- الهيدر -->
+    <!-- الهيدر العلوي -->
     <header>
-        <a href="#" class="logo" id="store-logo-btn" title="انقر 5 مرات لتسجيل دخول الأدمن"><i class="fa-solid fa-crown"></i> سَـنَدْ</a>
+        <a href="#" class="logo" id="store-logo-btn" title="انقر 5 مرات لدخول الأدمن"><i class="fa-solid fa-crown"></i> سَـنَدْ</a>
         <div class="header-left-group">
             <div class="visitor-counter-badge">
                 <i class="fa-solid fa-users"></i> الزيارات: <span id="visitor-count-val">1250</span>
@@ -177,7 +33,7 @@
         <div class="products-grid" id="products-container"></div>
     </div>
 
-    <!-- نافذة نجاح الطلب -->
+    <!-- نجاح الطلب -->
     <div class="container">
         <div id="order-success-view" class="custom-modal-box" style="display:none; max-width:700px; margin:40px auto; text-align:center;">
             <i class="fa-solid fa-circle-check" style="font-size: 50px; color: #25d366; margin-bottom: 12px;"></i>
@@ -217,7 +73,7 @@
         </div>
     </div>
 
-    <!-- نافذة تسجيل الدخول مع OTP -->
+    <!-- نافذة تسجيل الدخول العادي -->
     <div class="custom-modal-overlay" id="loginModal">
         <div class="custom-modal-box">
             <h3>تسجيل الدخول</h3>
@@ -229,22 +85,14 @@
                     <input type="password" id="admin-secret-pass" placeholder="كلمة مرور الأدمن" style="width:100%; padding:9px; background:#111; border:1px solid var(--primary-gold); color:#fff; border-radius:6px;">
                 </div>
                 <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" id="login-action-btn" onclick="processLogin()">إرسال كود التحقق</button>
+                    <button class="btn-modal-confirm" onclick="processLogin()">دخول سريع</button>
                     <button class="btn-modal-cancel" onclick="closeLoginModal()">إلغاء</button>
-                </div>
-            </div>
-            <div id="login-step-2" style="display:none; margin-top:10px; text-align:center;">
-                <p id="otp-info-text" style="font-size:12px; color:#25d366; margin-bottom:8px;"></p>
-                <input type="text" id="login-user-otp" placeholder="----" style="width:100%; padding:9px; margin-bottom:10px; background:#222; border:1px solid #333; color:#fff; border-radius:6px; text-align:center; letter-spacing:5px;" maxlength="4">
-                <div class="custom-modal-btns">
-                    <button class="btn-modal-confirm" onclick="verifyCustomerOTP()" style="background:#25d366;">تأكيد ودخول</button>
-                    <button class="btn-modal-cancel" onclick="resetLoginModal()">رجوع</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- نافذة دخول الأدمن السريع -->
+    <!-- نافذة دخول الأدمن السريع (5 ضغطات على الشعار) -->
     <div class="custom-modal-overlay" id="adminPasswordModal">
         <div class="custom-modal-box" style="text-align:center;">
             <h3>دخول الأدمن السريع</h3>
@@ -272,7 +120,7 @@
         </div>
     </div>
 
-    <!-- نافذة تعديل المنتج -->
+    <!-- تعديل المنتج -->
     <div class="custom-modal-overlay" id="customEditModal">
         <div class="custom-modal-box">
             <h3 style="text-align:center; color:var(--primary-gold); margin-bottom:12px;">تعديل السعر</h3>
@@ -285,7 +133,7 @@
         </div>
     </div>
 
-    <!-- المساعد الذكي الآمن (AI Chat) -->
+    <!-- المساعد الذكي AI -->
     <div class="ai-chat-btn" onclick="toggleAIChat()"><i class="fa-solid fa-robot"></i></div>
     <div class="ai-chat-container" id="aiChatContainer">
         <div class="ai-chat-header">
@@ -293,7 +141,7 @@
             <button onclick="toggleAIChat()" style="background:none; border:none; color:#ff4d4d; font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
-            <div class="ai-msg bot">أهلاً يا غالي! اسألني في أي مجال، ولو عاوز تكلم شخص بشري هطلب بياناتك وأبعتها للإدارة في سرية تامة دون إظهار أي إيميلات!</div>
+            <div class="ai-msg bot">أهلاً يا غالي! اسألني في أي مجال تحبه، ولو عاوز تكلم شخص بشري هطلب بياناتك وأسجلها لك في السيستم فوراً!</div>
         </div>
         <div class="ai-chat-input-box">
             <input type="text" id="aiChatInput" placeholder="اكتب رسالتك..." onkeypress="handleAIKeyPress(event)">
@@ -301,209 +149,6 @@
         </div>
     </div>
 
-    <!-- جافاسكريبت المتجر -->
-    <script>
-        let products = [
-            { id: 1, title: 'بدلة رجالي كلاسيكية فاخرة', price: 1850, oldPrice: 2200, img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600', desc: 'بدلة رجالي صوف إيطالي فاخر للمناسبات الرسمية.' },
-            { id: 2, title: 'جاكيت جلد طبيعي راقي', price: 1450, oldPrice: 1800, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', desc: 'جاكيت جلد طبيعي 100% بتصميم عصري جريء.' },
-            { id: 3, title: 'قميص أكسفورد أبيض ملكي', price: 650, oldPrice: 850, img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600', desc: 'قميص أكسفورد أبيض مصمم خصيصاً لراحتك اليومية.' },
-            { id: 4, title: 'بنطلون قماش تشينو أنيق', price: 750, oldPrice: 950, img: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600', desc: 'بنطلون تشينو عصري بقصة مرنة ومريحة.' },
-            { id: 5, title: 'بالطو شتوي صوف فاخر', price: 2400, oldPrice: 2900, img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600', desc: 'بالطو شتوي طويل مصنوع من أجود أنواع الصوف.' },
-            { id: 6, title: 'تيشيرت قطن فاخر بتصميم عصري', price: 450, oldPrice: 600, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600', desc: 'تيشيرت قطني مريح وفائق النعومة.' }
-        ];
-
-        let cart = [];
-        let currentUser = JSON.parse(localStorage.getItem('sanad_logged_user')) || null;
-        let generatedOTP = "", pendingUserEmail = "", pendingUserName = "";
-        const ADMIN_EMAIL = "medoatlm83@gmail.com";
-        const ADMIN_PASSWORD = "admin";
-
-        function registerUserAccount(name, email) {
-            let regUsers = JSON.parse(localStorage.getItem('sanad_registered_users')) || [];
-            if(!regUsers.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                regUsers.push({ name: name, email: email, date: new Date().toLocaleString('ar-EG') });
-                localStorage.setItem('sanad_registered_users', JSON.stringify(regUsers));
-            }
-        }
-
-        const egyptGovs = {
-            "القاهرة": ["وسط البلد", "مدينة نصر", "المعادي", "مصر الجديدة"],
-            "الجيزة": ["الدكي", "المهندسين", "الهرم", "6 أكتوبر"],
-            "الإسكندرية": ["سموحة", "ميامي", "العصافرة", "منتزه"]
-        };
-
-        function updateCitiesList() {
-            let gov = document.getElementById('cust-gov').value;
-            let citySel = document.getElementById('cust-city');
-            citySel.innerHTML = '<option value="" disabled selected>اختر المدينة</option>';
-            if(egyptGovs[gov]) {
-                egyptGovs[gov].forEach(c => citySel.innerHTML += `<option value="${c}">${c}</option>`);
-            }
-        }
-
-        document.getElementById('login-user-email').addEventListener('input', function(e) {
-            let val = e.target.value.trim().toLowerCase();
-            document.getElementById('admin-password-box').style.display = (val === ADMIN_EMAIL.toLowerCase()) ? 'block' : 'none';
-        });
-
-        let logoClicks = 0, logoTimer = null;
-        document.getElementById('store-logo-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            logoClicks++;
-            clearTimeout(logoTimer);
-            logoTimer = setTimeout(() => logoClicks = 0, 1000);
-            if(logoClicks >= 5) {
-                logoClicks = 0;
-                document.getElementById('adminPasswordModal').style.display = 'flex';
-            }
-        });
-
-        function closeAdminPassModal() { document.getElementById('adminPasswordModal').style.display = 'none'; }
-        function verifyAdminShortcut() {
-            let pass = document.getElementById('secret-admin-pass-input').value.trim();
-            if(pass === ADMIN_PASSWORD) {
-                currentUser = { name: "محمد جمال سند", email: ADMIN_EMAIL };
-                localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                registerUserAccount(currentUser.name, currentUser.email);
-                closeAdminPassModal();
-                renderHeaderNav();
-                renderProducts();
-                alert("أهلاً بك يا باشمهندس محمد! تم الدخول للأدمن بنجاح.");
-            } else { alert("الباسورد غير صحيح!"); }
-        }
-
-        function renderProducts() {
-            let container = document.getElementById('products-container');
-            container.innerHTML = '';
-            products.forEach(p => {
-                let badge = p.oldPrice ? `<span style="background:#ff4d4d; color:#fff; font-size:10px; padding:2px 5px; border-radius:4px;">خصم</span>` : '';
-                let old = p.oldPrice ? `<span class="product-old-price">${p.oldPrice} ج.م</span>` : '';
-                let editBtn = (currentUser && currentUser.email === ADMIN_EMAIL) ? `<button onclick="openEditModal(${p.id})" style="background:none; border:none; color:var(--primary-gold); cursor:pointer;"><i class="fa-solid fa-pen"></i></button>` : '';
-
-                container.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.img}" class="product-img" onclick="addToCart(${p.id})">
-                        <div class="product-info">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <h3 class="product-title">${p.title}</h3>
-                                ${editBtn}
-                            </div>
-                            <div style="margin:8px 0;"><span class="product-price">${p.price} جنيه</span> ${old} ${badge}</div>
-                            <div class="product-actions">
-                                <button class="btn-preview" onclick="addToCart(${p.id})">شراء</button>
-                                <button class="btn-add-cart" onclick="addToCart(${p.id})">أضف للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderHeaderNav() {
-            let nav = document.getElementById('header-nav-buttons');
-            let count = cart.reduce((s, i) => s + i.qty, 0);
-            let auth = currentUser ? `
-                <button class="btn-gold" style="background:#222; color:var(--primary-gold); border:1px solid var(--primary-gold);" onclick="alert('أنت تسجل باسم: ' + currentUser.name)">${currentUser.name}</button>
-                <button class="btn-gold" style="background:#333; color:#ff4d4d;" onclick="logoutUser()">خروج</button>
-            ` : `<button class="btn-login" onclick="openLoginModal()">دخول</button>`;
-            
-            let adminBtn = (currentUser && currentUser.email === ADMIN_EMAIL) ? `<button class="btn-gold" style="background:#ffcc00; color:#000;" onclick="openAdminModal()">لوحة التحكم</button>` : '';
-
-            nav.innerHTML = `${adminBtn} ${auth} <button class="btn-gold" onclick="toggleCart()"><i class="fa-solid fa-cart-shopping"></i> (${count})</button>`;
-        }
-
-        function toggleCart() {
-            let modal = document.getElementById('cartModal');
-            modal.classList.toggle('active');
-            renderCartItems();
-        }
-
-        function addToCart(id) {
-            let prod = products.find(p => p.id === id);
-            let item = cart.find(i => i.id === id);
-            if(item) item.qty++; else cart.push({ ...prod, qty: 1 });
-            renderHeaderNav();
-            renderCartItems();
-        }
-
-        function renderCartItems() {
-            let container = document.getElementById('cart-items-container');
-            container.innerHTML = '';
-            let total = 0;
-            if(cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">السلة فارغة</p>';
-                document.getElementById('cart-total').innerText = '0';
-                return;
-            }
-            cart.forEach(item => {
-                total += item.price * item.qty;
-                container.innerHTML += `
-                    <div class="cart-item">
-                        <div><h4 style="font-size:12px;">${item.title}</h4><span style="color:var(--primary-gold); font-size:11px;">${item.price} × ${item.qty}</span></div>
-                        <button onclick="cart = cart.filter(i=>i.id !== ${item.id}); renderCartItems(); renderHeaderNav();" style="background:none; border:none; color:#ff4d4d; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-            });
-            document.getElementById('cart-total').innerText = total + 50;
-        }
-
-        function checkoutOrder() {
-            if(cart.length === 0) { alert("السلة فارغة!"); return; }
-            let name = document.getElementById('cust-name').value.trim();
-            let phone = document.getElementById('cust-phone').value.trim();
-            let gov = document.getElementById('cust-gov').value;
-            let city = document.getElementById('cust-city').value;
-            let address = document.getElementById('cust-address').value.trim();
-
-            if(!name || !phone || !gov || !city || !address) { alert("املأ جميع الحقول!"); return; }
-
-            let subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            let order = {
-                orderId: 'SANAD-' + Math.floor(100000 + Math.random()*900000),
-                date: new Date().toLocaleString('ar-EG'),
-                customer: { name, phone, gov, city, address },
-                items: [...cart], total: subtotal + 50, status: 'قيد المعالجة'
-            };
-
-            let all = JSON.parse(localStorage.getItem('sanad_all_orders')) || [];
-            all.unshift(order);
-            localStorage.setItem('sanad_all_orders', JSON.stringify(all));
-
-            cart = [];
-            renderHeaderNav();
-            toggleCart();
-
-            document.getElementById('main-shop-container').style.display = 'none';
-            let succ = document.getElementById('order-success-view');
-            succ.style.display = 'block';
-            document.getElementById('latest-order-details').innerHTML = `
-                <p><strong>رقم الطلب:</strong> <span style="color:var(--primary-gold);">${order.orderId}</span></p>
-                <p><strong>العميل:</strong> ${name} (${phone})</p>
-                <p><strong>الإجمالي:</strong> ${order.total} جنيه</p>
-            `;
-        }
-
-        function resetToStore() {
-            document.getElementById('order-success-view').style.display = 'none';
-            document.getElementById('main-shop-container').style.display = 'block';
-        }
-
-        function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-        function resetLoginModal() {
-            document.getElementById('login-step-1').style.display = 'block';
-            document.getElementById('login-step-2').style.display = 'none';
-        }
-
-        function processLogin() {
-            let name = document.getElementById('login-user-name').value.trim();
-            let email = document.getElementById('login-user-email').value.trim();
-            if(!name || !email) { alert("أدخل البيانات!"); return; }
-
-            if(email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                let pass = document.getElementById('admin-secret-pass').value.trim();
-                if(pass === ADMIN_PASSWORD) {
-                    currentUser = { name, email: ADMIN_EMAIL };
-                    localStorage.setItem('sanad_logged_user', JSON.stringify(currentUser));
-                    registerUserAccount(name, email);
-                    closeLoginModal();
+    <script src="script.js"></script>
+</body>
+</html>
