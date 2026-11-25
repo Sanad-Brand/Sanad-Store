@@ -90,11 +90,26 @@
     .drawer-enter {
       animation: slideInLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    @keyframes pulseRing {
+      0% { transform: scale(0.85); opacity: 0.9; }
+      70% { transform: scale(1.8); opacity: 0; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    .gps-pulse {
+      animation: pulseRing 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
     .hero-pattern {
       background-color: #ff5a00;
       background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px), radial-gradient(rgba(255, 255, 255, 0.1) 1.5px, #ff5a00 1.5px);
       background-size: 36px 36px;
       background-position: 0 0, 18px 18px;
+    }
+    .october-map-grid {
+      background-color: #eef2f6;
+      background-image:
+        linear-gradient(to right, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.22) 1px, transparent 1px);
+      background-size: 28px 28px;
     }
   </style>
 </head>
@@ -105,17 +120,22 @@
 
   <!-- Top Sticky Navigation Bar -->
   <header class="sticky top-0 z-40 bg-white shadow-nav border-b border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
       
       <!-- Brand Logo & Area Selector -->
-      <div class="flex items-center gap-3 sm:gap-5">
+      <div class="flex items-center gap-2.5 sm:gap-5">
         <!-- Tayaran Logo -->
         <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group focus:outline-none">
           <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-brand-500 to-orange-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
             <i class="fa-solid fa-paper-plane text-lg sm:text-xl -rotate-12"></i>
           </div>
           <div class="text-right">
-            <span class="text-2xl sm:text-3xl font-black tracking-tight text-brand-500 leading-none block">طيران</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-2xl sm:text-3xl font-black tracking-tight text-brand-500 leading-none block">طيران</span>
+              <span id="server-status-badge" title="خادم طيران عالي السرعة يعمل بكفاءة 99.99%" class="hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-600 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE
+              </span>
+            </div>
             <span class="text-[10px] sm:text-[11px] font-bold text-gray-400 tracking-wide block">أكتوبر في ثواني</span>
           </div>
         </button>
@@ -124,42 +144,44 @@
         <div class="hidden md:block h-8 w-[1px] bg-gray-200"></div>
 
         <!-- Active October Area Pill -->
-        <button onclick="openAddressModal()" class="flex items-center gap-2 bg-brand-50 hover:bg-brand-100/80 border border-brand-200/70 px-3 py-2 rounded-2xl transition-all text-right max-w-[200px] sm:max-w-[280px]">
+        <button onclick="openAddressModal()" class="flex items-center gap-2 bg-brand-50 hover:bg-brand-100/80 border border-brand-200/70 px-2.5 sm:px-3 py-2 rounded-2xl transition-all text-right max-w-[155px] sm:max-w-[260px]">
           <div class="w-7 h-7 rounded-xl bg-brand-500 text-white flex items-center justify-center shrink-0">
             <i class="fa-solid fa-location-dot text-xs"></i>
           </div>
           <div class="overflow-hidden">
             <div class="text-[10px] text-gray-500 font-semibold leading-tight">التوصيل إلى 6 أكتوبر</div>
-            <div id="header-selected-area" class="text-xs sm:text-sm font-extrabold text-gray-800 truncate">الحصري - المحور المركزي</div>
+            <div id="header-selected-area" class="text-xs sm:text-sm font-extrabold text-gray-800 truncate">ميدان الحصري والمحور</div>
           </div>
           <i class="fa-solid fa-chevron-down text-brand-500 text-xs mr-1 shrink-0"></i>
         </button>
       </div>
 
       <!-- Right Action Buttons -->
-      <div class="flex items-center gap-2 sm:gap-3">
+      <div class="flex items-center gap-1.5 sm:gap-2.5">
         <!-- Restaurant Folders / Directory Explorer Button -->
-        <button onclick="openFoldersModal()" class="hidden lg:flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200/80 text-gray-700 font-bold text-xs sm:text-sm transition-colors">
+        <button onclick="openFoldersModal()" class="hidden xl:flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200/80 text-gray-700 font-bold text-xs transition-colors">
           <i class="fa-solid fa-folder-tree text-brand-500"></i>
-          <span>فولدرات ومنيوهات أكتوبر</span>
+          <span>فولدرات المنيو</span>
         </button>
 
-        <!-- Mobile Folder Button -->
-        <button onclick="openFoldersModal()" title="فولدرات المطاعم" class="lg:hidden p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors">
-          <i class="fa-solid fa-folder-open text-brand-500"></i>
+        <!-- Staff / Admin / Rider Portal Button -->
+        <button id="header-staff-btn" onclick="handleStaffHeaderClick()" class="flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs">
+          <i class="fa-solid fa-shield-halved text-brand-400"></i>
+          <span id="header-staff-label" class="hidden sm:inline">دخول الإدارة / الطيارين</span>
+          <span class="sm:hidden">الدخول</span>
         </button>
 
         <!-- Active Order Tracker Pill (shown if an active order exists) -->
-        <button id="header-track-btn" onclick="navigateTo('tracking')" class="hidden items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs sm:text-sm transition-all">
+        <button id="header-track-btn" onclick="navigateTo('tracking')" class="hidden items-center gap-2 px-3 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs transition-all">
           <span class="relative flex h-2.5 w-2.5">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-          <span class="hidden sm:inline">تتبع طلبك</span>
+          <span class="hidden md:inline">تتبع طلبك</span>
         </button>
 
         <!-- Cart Trigger Button -->
-        <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2.5 bg-brand-500 hover:bg-brand-600 text-white px-4 py-2.5 rounded-2xl font-bold text-sm shadow-sm hover:shadow transition-all">
+        <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white px-3.5 sm:px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-sm hover:shadow transition-all">
           <i class="fa-solid fa-bag-shopping text-base"></i>
           <span class="hidden sm:inline">السلة</span>
           <span id="header-cart-count" class="bg-white text-brand-600 text-xs font-black px-2 py-0.5 rounded-full min-w-[22px] text-center">0</span>
@@ -186,12 +208,15 @@
             <span class="text-2xl font-black text-white">طيران</span>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">
-            منصة توصيل الطعام الأولى المتخصصة في كل أحياء ومناطق مدينة 6 أكتوبر والشيخ زايد. من الحصري لحدائق أكتوبر، ومن الحي الأول لغرب سوميد.. أكلك بيطير لعندك سخن وطازة!
+            منصة توصيل الطعام الأولى المتخصصة في كل أحياء ومناطق مدينة 6 أكتوبر والشيخ زايد. بنية تحتية فائقة السرعة ومزامنة لحظية بين العميل والمطعم وكابتن التوصيل.
           </p>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="px-3 py-1.5 rounded-xl bg-gray-800 text-xs font-bold text-brand-400 border border-gray-700">
-              <i class="fa-solid fa-bolt ml-1"></i> توصيل خلال 25 - 40 دقيقة
+              <i class="fa-solid fa-bolt ml-1"></i> توصيل 25 - 40 دقيقة
             </span>
+            <button onclick="openLoginModal()" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-bold text-emerald-400 border border-gray-700 transition">
+              <i class="fa-solid fa-motorcycle ml-1"></i> بوابة الطيارين والإدارة
+            </button>
           </div>
         </div>
 
@@ -226,7 +251,7 @@
         <div>
           <h4 class="text-white font-extrabold text-base mb-4">كود خصم طيران لأهل أكتوبر</h4>
           <div class="bg-gray-800/90 border border-dashed border-brand-500/60 rounded-2xl p-4">
-            <p class="text-xs text-gray-300 mb-2">استخدم الكود ده في السلة واحصل على خصم 20% على أول أوردر:</p>
+            <p class="text-xs text-gray-300 mb-2">استخدم الكود ده في السلة واحصل على خصم 20% على طلبك:</p>
             <div class="flex items-center justify-between bg-gray-900 px-3 py-2 rounded-xl border border-gray-700">
               <code class="text-brand-400 font-black tracking-wider text-sm">TAYARAN20</code>
               <button onclick="copyPromoCode('TAYARAN20')" class="text-xs bg-brand-500 hover:bg-brand-600 text-white px-2.5 py-1 rounded-lg font-bold transition">نسخ</button>
@@ -237,7 +262,7 @@
 
       <div class="border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-3">
         <p>© 2026 طيران (Tayaran) لتوصيل الطعام - مدينة 6 أكتوبر، الجيزة. جميع الحقوق محفوظة.</p>
-        <p>مصمم بحب لخدمة كل سكان وطلبة مدينة 6 أكتوبر 🚀</p>
+        <p>نظام تشغيل موزع فائق السرعة • تحديث لحظي GPS & Dispatch 🚀</p>
       </div>
     </div>
   </footer>
@@ -384,6 +409,78 @@
   </div>
 
   <!-- =========================================================
+       MODAL 4: UNIFIED STAFF LOGIN PORTAL (ADMIN & RIDERS)
+  ========================================================== -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-gray-100">
+      <!-- Header -->
+      <div class="bg-gradient-to-l from-gray-900 via-gray-800 to-gray-950 text-white p-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-brand-500 text-white flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-user-shield text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-lg">بوابة دخول طيران</h3>
+            <p class="text-xs text-gray-400">تسجيل دخول الإدارة (Admin) وكباتن التوصيل (Riders)</p>
+          </div>
+        </div>
+        <button onclick="closeLoginModal()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form onsubmit="handleStaffLogin(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1.5">اسم المستخدم (Username)</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="text" id="login-username" required placeholder="أدخل اليوزرنيم..." class="w-full pr-10 pl-4 py-3 rounded-2xl border border-gray-200 focus:border-brand-500 outline-none text-sm font-bold" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1.5">كلمة المرور (Password)</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="password" id="login-password" required placeholder="••••••••" class="w-full pr-10 pl-4 py-3 rounded-2xl border border-gray-200 focus:border-brand-500 outline-none text-sm font-bold" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+          <span>تسجيل الدخول الآن</span>
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <!-- Quick Demo Login Helpers -->
+        <div class="pt-3 border-t border-gray-100">
+          <div class="text-[11px] font-extrabold text-gray-400 mb-2 text-center">دخول سريع للتجربة الفورية:</div>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="quickFillLogin('admin', '123456')" class="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-[11px] font-extrabold transition">
+              👑 أدمن (admin)
+            </button>
+            <button type="button" onclick="quickFillLogin('rider1', '123456')" class="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-extrabold transition">
+              🛵 طيار 1 (rider1)
+            </button>
+            <button type="button" onclick="quickFillLogin('rider2', '123456')" class="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-extrabold transition">
+              🛵 طيار 2 (rider2)
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 5: ADMIN ORDER EDITOR MODAL
+  ========================================================== -->
+  <div id="admin-order-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="admin-order-modal-content" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- =========================================================
        DRAWER: SHOPPING CART & CHECKOUT
   ========================================================== -->
   <div id="cart-drawer-backdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs transition-opacity"></div>
@@ -420,31 +517,31 @@
   ========================================================== -->
   <script>
     // =========================================================================
-    // 1. 6TH OF OCTOBER CITY AREAS & DISTRICTS DATABASE (22 AREAS)
+    // 1. 6TH OF OCTOBER CITY AREAS & DISTRICTS DATABASE (22 AREAS + GPS COORDS)
     // =========================================================================
     const OCTOBER_AREAS = [
-      { id: 'hosary', name: 'ميدان الحصري والمحور', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
-      { id: 'd1', name: 'الحي الأول', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: true },
-      { id: 'd2', name: 'الحي الثاني', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false },
-      { id: 'd3', name: 'الحي الثالث', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
-      { id: 'd4', name: 'الحي الرابع', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
-      { id: 'd5', name: 'الحي الخامس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
-      { id: 'd6', name: 'الحي السادس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true },
-      { id: 'd7', name: 'الحي السابع', zone: 'أحياء أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
-      { id: 'd8', name: 'الحي الثامن', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false },
-      { id: 'd9', name: 'الحي التاسع', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
-      { id: 'd10', name: 'الحي العاشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
-      { id: 'd11', name: 'الحي الحادي عشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true },
-      { id: 'd12', name: 'الحي الثاني عشر', zone: 'أحياء أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false },
-      { id: 'central', name: 'المحور المركزي وميدان النجدة', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
-      { id: 'somid', name: 'غرب سوميد والمتميز', zone: 'كمبوندات وأحياء راقية', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: true },
-      { id: 'northern', name: 'التوسعات الشمالية', zone: 'شمال أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false },
-      { id: 'hadayek', name: 'حدائق أكتوبر (طريق الفيوم/الواحات)', zone: 'حدائق أكتوبر', deliveryTime: '35 - 50 دقيقة', baseFee: 28, popular: true },
-      { id: 'dreamland', name: 'دريم لاند ومول مصر', zone: 'طريق الواحات', deliveryTime: '30 - 40 دقيقة', baseFee: 25, popular: false },
-      { id: 'mall_arab', name: 'محيط مول العرب وجهينة', zone: 'ميدان جهينة', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
-      { id: 'palm_hills', name: 'بالم هيلز ونيو جيزة', zone: 'طريق إسكندرية الصحراوي', deliveryTime: '35 - 45 دقيقة', baseFee: 30, popular: false },
-      { id: 'zayed', name: 'الشيخ زايد وبيفرلي هيلز', zone: 'الشيخ زايد', deliveryTime: '30 - 45 دقيقة', baseFee: 25, popular: true },
-      { id: 'industrial', name: 'المنطقة الصناعية بأكتوبر', zone: 'جنوب أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false }
+      { id: 'hosary', name: 'ميدان الحصري والمحور', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true, coords: { x: 52, y: 48 } },
+      { id: 'd1', name: 'الحي الأول', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: true, coords: { x: 46, y: 42 } },
+      { id: 'd2', name: 'الحي الثاني', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false, coords: { x: 42, y: 38 } },
+      { id: 'd3', name: 'الحي الثالث', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false, coords: { x: 38, y: 44 } },
+      { id: 'd4', name: 'الحي الرابع', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false, coords: { x: 35, y: 50 } },
+      { id: 'd5', name: 'الحي الخامس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false, coords: { x: 30, y: 56 } },
+      { id: 'd6', name: 'الحي السادس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true, coords: { x: 25, y: 62 } },
+      { id: 'd7', name: 'الحي السابع', zone: 'أحياء أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true, coords: { x: 56, y: 54 } },
+      { id: 'd8', name: 'الحي الثامن', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false, coords: { x: 60, y: 58 } },
+      { id: 'd9', name: 'الحي التاسع', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false, coords: { x: 32, y: 34 } },
+      { id: 'd10', name: 'الحي العاشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false, coords: { x: 26, y: 40 } },
+      { id: 'd11', name: 'الحي الحادي عشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true, coords: { x: 22, y: 48 } },
+      { id: 'd12', name: 'الحي الثاني عشر', zone: 'أحياء أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false, coords: { x: 18, y: 55 } },
+      { id: 'central', name: 'المحور المركزي وميدان النجدة', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true, coords: { x: 58, y: 46 } },
+      { id: 'somid', name: 'غرب سوميد والمتميز', zone: 'كمبوندات وأحياء راقية', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: true, coords: { x: 66, y: 40 } },
+      { id: 'northern', name: 'التوسعات الشمالية', zone: 'شمال أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false, coords: { x: 48, y: 24 } },
+      { id: 'hadayek', name: 'حدائق أكتوبر (طريق الفيوم/الواحات)', zone: 'حدائق أكتوبر', deliveryTime: '35 - 50 دقيقة', baseFee: 28, popular: true, coords: { x: 74, y: 76 } },
+      { id: 'dreamland', name: 'دريم لاند ومول مصر', zone: 'طريق الواحات', deliveryTime: '30 - 40 دقيقة', baseFee: 25, popular: false, coords: { x: 78, y: 58 } },
+      { id: 'mall_arab', name: 'محيط مول العرب وجهينة', zone: 'ميدان جهينة', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false, coords: { x: 68, y: 30 } },
+      { id: 'palm_hills', name: 'بالم هيلز ونيو جيزة', zone: 'طريق إسكندرية الصحراوي', deliveryTime: '35 - 45 دقيقة', baseFee: 30, popular: false, coords: { x: 84, y: 36 } },
+      { id: 'zayed', name: 'الشيخ زايد وبيفرلي هيلز', zone: 'الشيخ زايد', deliveryTime: '30 - 45 دقيقة', baseFee: 25, popular: true, coords: { x: 72, y: 18 } },
+      { id: 'industrial', name: 'المنطقة الصناعية بأكتوبر', zone: 'جنوب أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false, coords: { x: 36, y: 74 } }
     ];
 
     // =========================================================================
@@ -844,11 +941,43 @@
       }
     };
 
+    // Restaurant map coordinates in 6th of October
+    const RESTAURANT_COORDS = {
+      abou_mazen: { x: 52, y: 47 },
+      hadramout_antar: { x: 76, y: 60 },
+      koshary_tahrir: { x: 57, y: 46 },
+      bazooka: { x: 51, y: 49 },
+      wahmy_burger: { x: 56, y: 54 },
+      papa_johns: { x: 68, y: 31 },
+      kaddoura_seafood: { x: 65, y: 41 },
+      gad_hosary: { x: 53, y: 48 },
+      blaban: { x: 46, y: 42 },
+      sharkawy_liver: { x: 25, y: 62 }
+    };
+
     // =========================================================================
-    // 4. APPLICATION STATE (WITH LOCAL STORAGE PERSISTENCE)
+    // 4. HIGH-CONCURRENCY STATE ENGINE (LOCALSTORAGE + BROADCASTCHANNEL SYNC)
     // =========================================================================
+    const DEFAULT_ADMINS = [
+      { id: 'adm_1', name: 'المدير العام - طيران أكتوبر', username: 'admin', password: '123456', role: 'Super Admin' }
+    ];
+
+    const DEFAULT_RIDERS = [
+      { id: 'rid_1', name: 'كابتن محمود السيد', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل هوجن 150', zone: 'ميدان الحصري والأحياء 1-4', isReady: true, activeOrderId: null, completedCount: 42, gps: { x: 51, y: 47 } },
+      { id: 'rid_2', name: 'كابتن كريم عادل', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل دايون 4', zone: 'الحي السابع وحدائق أكتوبر', isReady: true, activeOrderId: null, completedCount: 29, gps: { x: 58, y: 55 } },
+      { id: 'rid_3', name: 'كابتن أحمد طارق', username: 'rider3', password: '123456', phone: '01233445566', vehicle: 'موتوسيكل بوكسر هندي', zone: 'غرب سوميد ومول العرب', isReady: false, activeOrderId: null, completedCount: 18, gps: { x: 66, y: 39 } }
+    ];
+
+    const DEFAULT_PROMOS = [
+      { id: 'pr_1', code: 'TAYARAN20', type: 'percent', value: 20, minOrder: 80, active: true, title: 'خصم 20% لأهل 6 أكتوبر' },
+      { id: 'pr_2', code: 'OCTOBER50', type: 'fixed', value: 50, minOrder: 200, active: true, title: 'خصم 50 جنيه على الطلبات فوق 200 ج' },
+      { id: 'pr_3', code: 'FREEDEL', type: 'free_delivery', value: 0, minOrder: 100, active: true, title: 'توصيل مجاني لكل أحياء أكتوبر' }
+    ];
+
     let state = {
-      view: 'home', // 'home' | 'restaurant' | 'tracking'
+      view: 'home', // 'home' | 'restaurant' | 'tracking' | 'admin' | 'rider'
+      adminTab: 'orders', // 'orders' | 'promos' | 'riders' | 'admins'
+      currentUser: null, // { id, name, username, role: 'admin' | 'rider' }
       selectedAreaId: 'hosary',
       tempSelectedAreaId: 'hosary',
       addressDetails: {
@@ -861,44 +990,112 @@
       },
       selectedCategory: 'all',
       searchQuery: '',
-      quickFilter: 'all', // 'all' | 'free_delivery' | 'top_rated' | 'fast' | 'promos'
+      quickFilter: 'all',
       activeRestaurantId: null,
       menuSearchQuery: '',
-      cart: [], // [{ uid, restaurantId, itemId, name, price, sizeName, qty, notes, emoji }]
-      promoCode: null, // { code: 'TAYARAN20', discountPercent: 20 }
-      paymentMethod: 'cash', // 'cash' | 'card' | 'wallet'
-      activeOrder: null,
-      selectedFolderId: 'abou_mazen'
+      cart: [],
+      appliedPromoCode: '',
+      paymentMethod: 'cash',
+      orders: [], // Master shared orders queue
+      activeCustomerOrderId: null,
+      admins: [...DEFAULT_ADMINS],
+      riders: [...DEFAULT_RIDERS],
+      promoCodes: [...DEFAULT_PROMOS],
+      selectedFolderId: 'abou_mazen',
+      editingOrderId: null
     };
 
-    // Load persisted data if available
+    // Real-time Cross-Tab Synchronization Channel (Zero-Latency Multi-Window Sync)
+    const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tayaran_october_realtime_v2') : null;
+    if (syncChannel) {
+      syncChannel.onmessage = (event) => {
+        if (event.data && event.data.type === 'STATE_UPDATED') {
+          loadSharedDatabaseOnly();
+          renderApp();
+          if (!document.getElementById('cart-drawer').classList.contains('hidden')) {
+            renderCartDrawer();
+          }
+        }
+      };
+    }
+
+    // Listen to storage events across tabs as backup
+    window.addEventListener('storage', (e) => {
+      if (e.key && e.key.startsWith('tayaran_db_')) {
+        loadSharedDatabaseOnly();
+        renderApp();
+      }
+    });
+
+    function loadSharedDatabaseOnly() {
+      try {
+        const orders = localStorage.getItem('tayaran_db_orders');
+        const admins = localStorage.getItem('tayaran_db_admins');
+        const riders = localStorage.getItem('tayaran_db_riders');
+        const promos = localStorage.getItem('tayaran_db_promos');
+        if (orders) state.orders = JSON.parse(orders);
+        if (admins) state.admins = JSON.parse(admins);
+        if (riders) state.riders = JSON.parse(riders);
+        if (promos) state.promoCodes = JSON.parse(promos);
+      } catch (err) {
+        console.warn('Sync read error:', err);
+      }
+    }
+
     function loadSavedState() {
       try {
+        loadSharedDatabaseOnly();
         const savedArea = localStorage.getItem('tayaran_area');
         const savedAddr = localStorage.getItem('tayaran_addr');
         const savedCart = localStorage.getItem('tayaran_cart');
-        const savedOrder = localStorage.getItem('tayaran_order');
+        const savedActiveOrderId = localStorage.getItem('tayaran_active_order_id');
+        const savedUser = sessionStorage.getItem('tayaran_staff_session');
+
         if (savedArea && OCTOBER_AREAS.find(a => a.id === savedArea)) {
           state.selectedAreaId = savedArea;
           state.tempSelectedAreaId = savedArea;
         }
         if (savedAddr) state.addressDetails = { ...state.addressDetails, ...JSON.parse(savedAddr) };
         if (savedCart) state.cart = JSON.parse(savedCart);
-        if (savedOrder) state.activeOrder = JSON.parse(savedOrder);
+        if (savedActiveOrderId) state.activeCustomerOrderId = savedActiveOrderId;
+        if (savedUser) {
+          state.currentUser = JSON.parse(savedUser);
+          if (state.currentUser.role === 'admin') state.view = 'admin';
+          if (state.currentUser.role === 'rider') state.view = 'rider';
+        }
       } catch (e) {
         console.warn('Storage load skipped:', e);
       }
     }
 
-    function persistState() {
+    let saveDebounceTimer = null;
+    function persistState(broadcast = true) {
       try {
         localStorage.setItem('tayaran_area', state.selectedAreaId);
         localStorage.setItem('tayaran_addr', JSON.stringify(state.addressDetails));
         localStorage.setItem('tayaran_cart', JSON.stringify(state.cart));
-        if (state.activeOrder) {
-          localStorage.setItem('tayaran_order', JSON.stringify(state.activeOrder));
+        localStorage.setItem('tayaran_db_orders', JSON.stringify(state.orders));
+        localStorage.setItem('tayaran_db_admins', JSON.stringify(state.admins));
+        localStorage.setItem('tayaran_db_riders', JSON.stringify(state.riders));
+        localStorage.setItem('tayaran_db_promos', JSON.stringify(state.promoCodes));
+
+        if (state.activeCustomerOrderId) {
+          localStorage.setItem('tayaran_active_order_id', state.activeCustomerOrderId);
         } else {
-          localStorage.removeItem('tayaran_order');
+          localStorage.removeItem('tayaran_active_order_id');
+        }
+
+        if (state.currentUser) {
+          sessionStorage.setItem('tayaran_staff_session', JSON.stringify(state.currentUser));
+        } else {
+          sessionStorage.removeItem('tayaran_staff_session');
+        }
+
+        if (broadcast && syncChannel) {
+          clearTimeout(saveDebounceTimer);
+          saveDebounceTimer = setTimeout(() => {
+            syncChannel.postMessage({ type: 'STATE_UPDATED', ts: Date.now() });
+          }, 40);
         }
       } catch (e) {
         console.warn('Storage save skipped:', e);
@@ -915,9 +1112,58 @@
       const area = getCurrentArea();
       const coversDirectly = rest.coveredAreas.includes(area.id);
       if (!coversDirectly) {
-        return rest.deliveryFee + 12; // Extended October delivery fee
+        return rest.deliveryFee + 12;
       }
       return Math.max(rest.deliveryFee, area.baseFee);
+    }
+
+    // Helper: Get Active Customer Order
+    function getCustomerActiveOrder() {
+      if (!state.activeCustomerOrderId) {
+        // Fallback to latest non-delivered order if exists
+        const latest = [...state.orders].reverse().find(o => o.status !== 'cancelled');
+        if (latest) {
+          state.activeCustomerOrderId = latest.id;
+          return latest;
+        }
+        return null;
+      }
+      return state.orders.find(o => o.id === state.activeCustomerOrderId) || null;
+    }
+
+    // =========================================================================
+    // SMART ONE-BY-ONE RIDER DISPATCH QUEUE ENGINE
+    // =========================================================================
+    function runAutoDispatchQueue() {
+      let changed = false;
+      // Find unassigned orders that are pending or preparing
+      const unassignedOrders = state.orders.filter(o =>
+        !o.riderId && (o.status === 'pending' || o.status === 'preparing')
+      );
+
+      for (const order of unassignedOrders) {
+        // Find first READY rider who has NO active order right now (One-by-One rule)
+        const availableRider = state.riders.find(r => r.isReady === true && !r.activeOrderId);
+        if (availableRider) {
+          order.riderId = availableRider.id;
+          order.riderName = availableRider.name;
+          order.riderPhone = availableRider.phone;
+          order.riderVehicle = availableRider.vehicle;
+          if (order.status === 'pending') {
+            order.status = 'preparing';
+          }
+          // Initialize rider GPS at restaurant location
+          const restCoords = RESTAURANT_COORDS[order.restaurantId] || { x: 52, y: 48 };
+          availableRider.activeOrderId = order.id;
+          availableRider.gps = { ...restCoords };
+          order.riderGps = { ...restCoords };
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        persistState(true);
+      }
     }
 
     // =========================================================================
@@ -956,7 +1202,6 @@
       }, 3200);
     }
 
-    // Clipboard helper using execCommand fallback for iframe compatibility
     function copyPromoCode(code) {
       const tempInput = document.createElement('input');
       tempInput.value = code;
@@ -972,7 +1217,7 @@
     }
 
     // =========================================================================
-    // 6. NAVIGATION & HEADER SYNC
+    // 6. NAVIGATION, STAFF AUTH & HEADER SYNC
     // =========================================================================
     function updateHeaderUI() {
       const area = getCurrentArea();
@@ -983,9 +1228,10 @@
       const countEl = document.getElementById('header-cart-count');
       if (countEl) countEl.textContent = totalQty;
 
+      const activeOrd = getCustomerActiveOrder();
       const trackBtn = document.getElementById('header-track-btn');
       if (trackBtn) {
-        if (state.activeOrder) {
+        if (activeOrd) {
           trackBtn.classList.remove('hidden');
           trackBtn.classList.add('flex');
         } else {
@@ -993,6 +1239,78 @@
           trackBtn.classList.remove('flex');
         }
       }
+
+      const staffLabel = document.getElementById('header-staff-label');
+      const staffBtn = document.getElementById('header-staff-btn');
+      if (staffLabel && staffBtn) {
+        if (state.currentUser) {
+          staffLabel.textContent = state.currentUser.role === 'admin' ? `لوحة الأدمن (${state.currentUser.name.split(' ')[0]})` : `لوحة الطيار (${state.currentUser.name.split(' ')[0]})`;
+          staffBtn.className = 'flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs transition-all shadow-xs';
+        } else {
+          staffLabel.textContent = 'دخول الإدارة / الطيارين';
+          staffBtn.className = 'flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs';
+        }
+      }
+    }
+
+    function handleStaffHeaderClick() {
+      if (state.currentUser) {
+        navigateTo(state.currentUser.role === 'admin' ? 'admin' : 'rider');
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function openLoginModal() {
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-modal').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function quickFillLogin(user, pass) {
+      document.getElementById('login-username').value = user;
+      document.getElementById('login-password').value = pass;
+    }
+
+    function handleStaffLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim().toLowerCase();
+      const password = document.getElementById('login-password').value.trim();
+
+      // Check Admins
+      const adminMatch = state.admins.find(a => a.username.toLowerCase() === username && a.password === password);
+      if (adminMatch) {
+        state.currentUser = { id: adminMatch.id, name: adminMatch.name, username: adminMatch.username, role: 'admin' };
+        persistState(false);
+        closeLoginModal();
+        showToast(`أهلاً بك يا ${adminMatch.name} في لوحة الإدارة 👑`, 'success');
+        navigateTo('admin');
+        return;
+      }
+
+      // Check Riders
+      const riderMatch = state.riders.find(r => r.username.toLowerCase() === username && r.password === password);
+      if (riderMatch) {
+        state.currentUser = { id: riderMatch.id, name: riderMatch.name, username: riderMatch.username, role: 'rider' };
+        persistState(false);
+        closeLoginModal();
+        showToast(`أهلاً بك يا ${riderMatch.name} في تطبيق كباتن طيران 🛵`, 'success');
+        navigateTo('rider');
+        return;
+      }
+
+      showToast('اسم المستخدم أو كلمة المرور غير صحيحة!', 'error');
+    }
+
+    function logoutStaff() {
+      state.currentUser = null;
+      persistState(false);
+      showToast('تم تسجيل الخروج بنجاح', 'info');
+      navigateTo('home');
     }
 
     function navigateTo(viewName, restaurantId = null) {
@@ -1011,7 +1329,7 @@
     }
 
     // =========================================================================
-    // 7. RENDERING VIEWS (HOME, RESTAURANT STOREFRONT, LIVE TRACKING)
+    // 7. RENDERING VIEWS (HOME, RESTAURANT, LIVE TRACKING, RIDER, ADMIN)
     // =========================================================================
     function renderApp() {
       updateHeaderUI();
@@ -1022,6 +1340,10 @@
         root.innerHTML = renderRestaurantView();
       } else if (state.view === 'tracking') {
         root.innerHTML = renderTrackingView();
+      } else if (state.view === 'rider') {
+        root.innerHTML = renderRiderDashboardView();
+      } else if (state.view === 'admin') {
+        root.innerHTML = renderAdminDashboardView();
       }
     }
 
@@ -1030,12 +1352,8 @@
       const area = getCurrentArea();
       const allRestaurants = Object.values(RESTAURANTS_DATA);
 
-      // Filter restaurants
       const filteredRestaurants = allRestaurants.filter(r => {
-        // Category filter
         if (state.selectedCategory !== 'all' && r.category !== state.selectedCategory) return false;
-
-        // Search filter (matches restaurant name, category, branch, or menu item name)
         if (state.searchQuery.trim() !== '') {
           const q = state.searchQuery.trim().toLowerCase();
           const inName = r.name.toLowerCase().includes(q);
@@ -1044,15 +1362,14 @@
           const inMenu = r.menu.some(sec => sec.items.some(it => it.name.toLowerCase().includes(q)));
           if (!inName && !inBranch && !inCat && !inMenu) return false;
         }
-
-        // Quick filters
         if (state.quickFilter === 'free_delivery' && r.freeDeliveryOver > 250) return false;
         if (state.quickFilter === 'top_rated' && r.rating < 4.8) return false;
         if (state.quickFilter === 'fast' && !r.deliveryTime.includes('20')) return false;
         if (state.quickFilter === 'promos' && !r.promoBadge) return false;
-
         return true;
       });
+
+      const activePromos = state.promoCodes.filter(p => p.active);
 
       return `
         <!-- HERO BANNER -->
@@ -1072,12 +1389,11 @@
                 </h1>
 
                 <p class="text-orange-100 text-sm sm:text-base max-w-2xl font-medium">
-                  اطلب من أشهر مطاعم الحصري، المحور المركزي، الحي الأول، السابع، حدائق أكتوبر وغرب سوميد بضغطة واحدة.
+                  اطلب من أشهر مطاعم الحصري، المحور المركزي، الحي الأول، السابع، حدائق أكتوبر وغرب سوميد وتابع الطيار لايف على الخريطة.
                 </p>
 
                 <!-- Unified Search & Area Selector Box -->
                 <div class="bg-white p-2 sm:p-2.5 rounded-3xl shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-3xl">
-                  <!-- Location Button -->
                   <button onclick="openAddressModal()" class="flex items-center justify-between sm:justify-start gap-2.5 px-4 py-3 rounded-2xl bg-brand-50 hover:bg-brand-100 text-gray-800 transition shrink-0">
                     <div class="flex items-center gap-2">
                       <i class="fa-solid fa-location-crosshairs text-brand-500 text-base"></i>
@@ -1089,7 +1405,6 @@
                     <i class="fa-solid fa-angle-down text-brand-500 text-xs mr-2"></i>
                   </button>
 
-                  <!-- Search Input -->
                   <div class="flex-1 relative flex items-center">
                     <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3"></i>
                     <input
@@ -1102,7 +1417,6 @@
                     ${state.searchQuery ? `<button onclick="handleSearchInput('')" class="text-gray-400 hover:text-gray-600 px-2"><i class="fa-solid fa-circle-xmark"></i></button>` : ''}
                   </div>
 
-                  <!-- CTA Button -->
                   <button onclick="document.getElementById('restaurants-section').scrollIntoView({behavior:'smooth'})" class="bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm px-6 py-3.5 rounded-2xl transition shrink-0 shadow-sm">
                     يلا نطلب
                   </button>
@@ -1119,18 +1433,22 @@
                 </div>
               </div>
 
-              <!-- Decorative Delivery Card Illustration -->
+              <!-- Live Riders & Promo Card -->
               <div class="hidden lg:flex lg:col-span-4 justify-center">
                 <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl p-6 w-full max-w-xs text-center animate-float shadow-2xl">
                   <div class="w-20 h-20 mx-auto rounded-3xl bg-white text-brand-500 flex items-center justify-center text-4xl shadow-lg mb-4">
                     🛵
                   </div>
-                  <div class="text-lg font-black mb-1">كابتن طيران جاهز!</div>
-                  <p class="text-xs text-orange-100 mb-4">متوسط وقت التوصيل الآن في <strong class="text-white">${area.name}</strong> هو <strong class="text-amber-300">${area.deliveryTime}</strong></p>
-                  <div class="bg-white/20 rounded-2xl p-3 text-xs font-extrabold flex items-center justify-between">
-                    <span>كود خصم 20%:</span>
-                    <button onclick="copyPromoCode('TAYARAN20')" class="bg-amber-300 text-gray-900 px-2.5 py-1 rounded-lg font-black hover:bg-amber-200 transition">TAYARAN20</button>
+                  <div class="text-lg font-black mb-1">
+                    ${state.riders.filter(r => r.isReady).length} كباتن طيران جاهزين الآن!
                   </div>
+                  <p class="text-xs text-orange-100 mb-4">متوسط وقت التوصيل الآن في <strong class="text-white">${area.name}</strong> هو <strong class="text-amber-300">${area.deliveryTime}</strong></p>
+                  ${activePromos[0] ? `
+                    <div class="bg-white/20 rounded-2xl p-3 text-xs font-extrabold flex items-center justify-between">
+                      <span>${activePromos[0].title.slice(0, 18)}:</span>
+                      <button onclick="copyPromoCode('${activePromos[0].code}')" class="bg-amber-300 text-gray-900 px-2.5 py-1 rounded-lg font-black hover:bg-amber-200 transition">${activePromos[0].code}</button>
+                    </div>
+                  ` : ''}
                 </div>
               </div>
             </div>
@@ -1190,7 +1508,6 @@
 
         <!-- RESTAURANTS GRID SECTION -->
         <section id="restaurants-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <!-- Header & Quick Filters -->
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
               <h2 class="text-xl sm:text-2xl font-black text-gray-900">
@@ -1200,7 +1517,6 @@
               <p class="text-xs text-gray-500 mt-0.5">اضغط على أي مطعم لفتح المنيو الكامل والطلب فوراً</p>
             </div>
 
-            <!-- Filter Pills -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
               ${[
                 { id: 'all', label: 'الكل', icon: 'fa-border-all' },
@@ -1217,7 +1533,6 @@
             </div>
           </div>
 
-          <!-- Grid of Restaurant Cards -->
           ${filteredRestaurants.length === 0 ? `
             <div class="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-card">
               <div class="text-5xl mb-3">🔍</div>
@@ -1242,7 +1557,6 @@
 
       return `
         <article onclick="openRestaurant('${rest.id}')" class="group bg-white rounded-3xl border border-gray-100 shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
-          <!-- Cover Image with Fallback -->
           <div class="relative h-44 bg-gray-100 overflow-hidden">
             <img
               src="${rest.image}"
@@ -1252,7 +1566,6 @@
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"></div>
 
-            <!-- Top Badges -->
             <div class="absolute top-3 right-3 left-3 flex items-center justify-between gap-2">
               ${rest.promoBadge ? `
                 <span class="bg-brand-500 text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md truncate">
@@ -1267,7 +1580,6 @@
               </span>
             </div>
 
-            <!-- Bottom Overlay Info -->
             <div class="absolute bottom-3 right-3 left-3 flex items-end justify-between text-white">
               <div>
                 <span class="inline-block text-[10px] font-bold bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-lg mb-1">
@@ -1281,7 +1593,6 @@
             </div>
           </div>
 
-          <!-- Card Body -->
           <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
             <div>
               <div class="flex items-center justify-between text-xs text-gray-500 font-bold mb-2">
@@ -1289,14 +1600,12 @@
                 <span class="text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg">${totalItemsCount} صنف بالمنيو</span>
               </div>
 
-              <!-- Coverage Status Pill for Selected Area -->
               <div class="flex items-center gap-1.5 text-[11px] font-bold ${isDirectArea ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'} px-2.5 py-1.5 rounded-xl">
                 <i class="fa-solid ${isDirectArea ? 'fa-circle-check' : 'fa-truck-fast'}"></i>
                 <span>${isDirectArea ? `توصيل مباشر إلى ${area.name}` : `توصيل ممتد إلى ${area.name}`}</span>
               </div>
             </div>
 
-            <!-- Delivery Meta Footer -->
             <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-extrabold text-gray-700">
               <div class="flex items-center gap-1.5">
                 <i class="fa-regular fa-clock text-brand-500"></i>
@@ -1321,7 +1630,6 @@
       const area = getCurrentArea();
       const dynamicFee = getDeliveryFeeForRestaurant(rest);
 
-      // Filter menu items if search query exists
       const q = state.menuSearchQuery.trim().toLowerCase();
       const filteredSections = rest.menu.map(sec => ({
         ...sec,
@@ -1331,7 +1639,6 @@
       })).filter(sec => sec.items.length > 0);
 
       return `
-        <!-- Breadcrumb & Back Bar -->
         <div class="bg-white border-b border-gray-100">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
             <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-gray-600 hover:text-brand-500 transition">
@@ -1346,7 +1653,6 @@
           </div>
         </div>
 
-        <!-- Restaurant Hero Banner -->
         <section class="relative bg-gray-900 text-white">
           <div class="h-52 sm:h-64 w-full overflow-hidden relative">
             <img
@@ -1382,7 +1688,6 @@
                   </div>
                 </div>
 
-                <!-- Stats Boxes -->
                 <div class="grid grid-cols-3 gap-2.5 sm:gap-4 bg-gray-50 p-3.5 rounded-2xl border border-gray-200/70 shrink-0">
                   <div class="text-center px-2">
                     <div class="text-xs text-gray-400 font-bold">التقييم</div>
@@ -1404,7 +1709,6 @@
                 </div>
               </div>
 
-              <!-- Covered Areas Strip -->
               <div class="mt-5 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-1.5 text-[11px]">
                 <span class="font-extrabold text-gray-600 ml-1"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i>المناطق المغطاة في أكتوبر:</span>
                 ${rest.coveredAreas.map(aid => {
@@ -1418,10 +1722,8 @@
           </div>
         </section>
 
-        <!-- MENU SEARCH & STICKY SECTION TABS -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-100 mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <!-- Section Jump Links -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
               ${rest.menu.map((sec, idx) => `
                 <a href="#menu-sec-${idx}" class="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-brand-50 hover:text-brand-600 text-xs font-extrabold text-gray-700 whitespace-nowrap transition">
@@ -1430,7 +1732,6 @@
               `).join('')}
             </div>
 
-            <!-- In-Menu Search -->
             <div class="relative sm:w-72">
               <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
               <input
@@ -1443,7 +1744,6 @@
             </div>
           </div>
 
-          <!-- Menu Sections & Items -->
           <div class="space-y-8">
             ${filteredSections.map((sec, idx) => `
               <div id="menu-sec-${idx}" class="scroll-mt-24">
@@ -1486,52 +1786,148 @@
       `;
     }
 
-    // --- VIEW C: LIVE ORDER TRACKING ---
+    // --- VIEW C: LIVE ORDER TRACKING WITH INTERACTIVE 6TH OF OCTOBER GPS MAP ---
     function renderTrackingView() {
-      if (!state.activeOrder) {
+      const ord = getCustomerActiveOrder();
+      if (!ord) {
         return `
           <div class="max-w-xl mx-auto px-4 py-16 text-center">
             <div class="text-6xl mb-4">🛵</div>
             <h2 class="text-2xl font-black text-gray-900 mb-2">مفيش طلبات نشطة حالياً</h2>
-            <p class="text-sm text-gray-500 mb-6">اطلب أكلتك المفضلة من مطاعم 6 أكتوبر وتابع الطيار لحظة بلحظة!</p>
+            <p class="text-sm text-gray-500 mb-6">اطلب أكلتك المفضلة من مطاعم 6 أكتوبر وتابع الطيار لايف على الخريطة!</p>
             <button onclick="navigateTo('home')" class="bg-brand-500 text-white font-extrabold px-6 py-3 rounded-2xl">استكشف المطاعم</button>
           </div>
         `;
       }
 
-      const ord = state.activeOrder;
+      const statusOrder = ['pending', 'preparing', 'on_the_way', 'delivered'];
+      const currentStep = ord.status === 'cancelled' ? -1 : Math.max(0, statusOrder.indexOf(ord.status));
+
       const steps = [
-        { title: 'تم استلام طلبك بنجاح', desc: `رقم الطلب #${ord.orderNumber} وصل لمطعم ${ord.restaurantName}`, icon: 'fa-receipt' },
-        { title: 'المطعم بيحضر أكلك طازة', desc: 'الشيف بيجهز طلبك بأعلى جودة وسخونة', icon: 'fa-fire-burner' },
-        { title: 'كابتن طيران استلم الطلب وفي الطريق!', desc: `الكابتن متجه الآن إلى ${ord.areaName} (${ord.address.street || 'العنوان المحدد'})`, icon: 'fa-motorcycle' },
-        { title: 'تم التوصيل بالهنا والشفا!', desc: 'نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
+        { key: 'pending', title: 'تم استلام طلبك بنجاح', desc: `رقم الطلب #${ord.orderNumber} وصل لنظام طيران والمطعم`, icon: 'fa-receipt' },
+        { key: 'preparing', title: 'جاري تجهيز الأوردر في المطعم', desc: `شيف ${ord.restaurantName} بيحضر أكلك طازة وسخن`, icon: 'fa-fire-burner' },
+        { key: 'on_the_way', title: 'الطيار استلم الطلب وفي الطريق إليك!', desc: ord.riderName ? `${ord.riderName} متجه الآن إلى ${ord.areaName}` : 'جاري تحرك الكابتن نحو عنوانك', icon: 'fa-motorcycle' },
+        { key: 'delivered', title: 'تم التوصيل بالهنا والشفا!', desc: 'وصل طلبك بنجاح! نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
       ];
 
-      const currentStep = ord.step || 1;
+      // Calculate GPS positions on 6th of October Interactive Map
+      const restCoords = RESTAURANT_COORDS[ord.restaurantId] || { x: 52, y: 48 };
+      const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || getCurrentArea();
+      const custCoords = areaObj.coords || { x: 46, y: 42 };
+      const riderObj = ord.riderId ? state.riders.find(r => r.id === ord.riderId) : null;
+      const riderCoords = (riderObj && riderObj.gps) ? riderObj.gps : (ord.riderGps || restCoords);
+
+      // Calculate distance & ETA dynamically
+      const dx = custCoords.x - riderCoords.x;
+      const dy = custCoords.y - riderCoords.y;
+      const distKm = Math.max(0.2, (Math.sqrt(dx * dx + dy * dy) * 0.18)).toFixed(1);
+      const minsLeft = ord.status === 'delivered' ? 0 : Math.max(2, Math.round(distKm * 3.5));
 
       return `
-        <section class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           <div class="bg-white rounded-3xl shadow-card border border-gray-100 overflow-hidden">
             <!-- Top Status Banner -->
-            <div class="bg-gradient-to-l from-brand-500 to-orange-600 text-white p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="bg-gradient-to-l ${ord.status === 'cancelled' ? 'from-red-600 to-red-800' : 'from-brand-500 to-orange-600'} text-white p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-extrabold mb-2">
                   <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
-                  <span>تتبع مباشر • أوردر #${ord.orderNumber}</span>
+                  <span>تتبع مباشر GPS • أوردر #${ord.orderNumber}</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-black">${steps[currentStep].title}</h1>
-                <p class="text-xs sm:text-sm text-orange-100 mt-1">${steps[currentStep].desc}</p>
+                <h1 class="text-2xl sm:text-3xl font-black">
+                  ${ord.status === 'cancelled' ? 'تم إلغاء الطلب' : steps[currentStep].title}
+                </h1>
+                <p class="text-xs sm:text-sm text-orange-100 mt-1">
+                  ${ord.status === 'cancelled' ? 'تم إلغاء هذا الطلب من الإدارة' : steps[currentStep].desc}
+                </p>
               </div>
               <div class="bg-white text-gray-900 rounded-2xl px-5 py-3 text-center shrink-0 shadow-md">
                 <div class="text-[11px] font-bold text-gray-400">الوصول المتوقع</div>
-                <div class="text-xl font-black text-brand-600">${currentStep === 3 ? 'وصل الآن!' : ord.eta}</div>
+                <div class="text-xl font-black text-brand-600">
+                  ${ord.status === 'delivered' ? 'وصل الآن! 🎉' : ord.status === 'cancelled' ? 'ملغي' : `${minsLeft} دقيقة`}
+                </div>
+                ${ord.status === 'on_the_way' ? `<div class="text-[10px] font-bold text-emerald-600">يبعد ${distKm} كم عنك</div>` : ''}
               </div>
             </div>
 
+            <!-- LIVE 6TH OF OCTOBER GPS MAP -->
+            <div class="p-4 sm:p-6 bg-gray-50 border-b border-gray-200">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  <h3 class="text-sm font-black text-gray-900">خريطة التتبع الحية - مدينة 6 أكتوبر (Live Rider GPS)</h3>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] font-bold">
+                  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> المطعم</span>
+                  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-brand-600 inline-block"></span> الطيار لايف</span>
+                  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span> موقعك</span>
+                </div>
+              </div>
+
+              <!-- Interactive SVG + HTML Radar Map of 6th of October -->
+              <div class="relative w-full h-72 sm:h-80 rounded-3xl october-map-grid border-2 border-gray-200 overflow-hidden shadow-inner">
+                <!-- October Major Highways SVG Overlay -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <!-- Al-Mehwar Al-Markazi -->
+                  <path d="M 10 52 Q 50 46 92 42" stroke="#cbd5e1" stroke-width="2.2" fill="none" />
+                  <path d="M 10 52 Q 50 46 92 42" stroke="#ffffff" stroke-width="0.6" stroke-dasharray="2,2" fill="none" />
+                  <!-- Wahat Road -->
+                  <path d="M 20 82 Q 60 66 95 52" stroke="#cbd5e1" stroke-width="2" fill="none" />
+                  <!-- Route Line from Restaurant -> Rider -> Customer -->
+                  <line x1="${restCoords.x}" y1="${restCoords.y}" x2="${custCoords.x}" y2="${custCoords.y}" stroke="#ff5a00" stroke-width="1.2" stroke-dasharray="2.5,2" />
+                  ${ord.riderId ? `<line x1="${riderCoords.x}" y1="${riderCoords.y}" x2="${custCoords.x}" y2="${custCoords.y}" stroke="#10b981" stroke-width="1.6" />` : ''}
+                </svg>
+
+                <!-- Landmarks Labels on Map -->
+                <span class="absolute top-3 right-4 text-[10px] font-extrabold text-gray-400 bg-white/80 px-2 py-0.5 rounded-lg">الشيخ زايد & مول العرب</span>
+                <span class="absolute bottom-3 left-4 text-[10px] font-extrabold text-gray-400 bg-white/80 px-2 py-0.5 rounded-lg">طريق الواحات & حدائق أكتوبر</span>
+                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] font-extrabold text-gray-400/70">المحور المركزي - 6 أكتوبر</span>
+
+                <!-- 1. Restaurant Pin -->
+                <div style="left: ${restCoords.x}%; top: ${restCoords.y}%;" class="absolute -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
+                  <div class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md whitespace-nowrap mb-1">
+                    ${ord.restaurantName}
+                  </div>
+                  <div class="w-8 h-8 rounded-2xl bg-amber-500 text-white border-2 border-white shadow-lg flex items-center justify-center text-sm">
+                    🏪
+                  </div>
+                </div>
+
+                <!-- 2. Customer Pin -->
+                <div style="left: ${custCoords.x}%; top: ${custCoords.y}%;" class="absolute -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
+                  <div class="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md whitespace-nowrap mb-1">
+                    موقعك (${ord.areaName})
+                  </div>
+                  <div class="w-8 h-8 rounded-2xl bg-emerald-600 text-white border-2 border-white shadow-lg flex items-center justify-center text-sm">
+                    🏠
+                  </div>
+                </div>
+
+                <!-- 3. LIVE RIDER PIN (Moves in Real-Time) -->
+                ${ord.riderId ? `
+                  <div style="left: ${riderCoords.x}%; top: ${riderCoords.y}%; transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);" class="absolute -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+                    <div class="bg-gray-900 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-lg whitespace-nowrap mb-1 border border-brand-400">
+                      🛵 ${ord.riderName} (${ord.status === 'delivered' ? 'وصل!' : `${distKm} كم`})
+                    </div>
+                    <div class="relative flex items-center justify-center">
+                      <span class="absolute w-10 h-10 rounded-full bg-brand-500/40 gps-pulse"></span>
+                      <div class="w-10 h-10 rounded-full bg-brand-600 text-white border-2 border-white shadow-xl flex items-center justify-center text-lg relative z-10">
+                        🛵
+                      </div>
+                    </div>
+                  </div>
+                ` : `
+                  <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs border border-amber-200 px-3 py-2 rounded-2xl text-xs font-extrabold text-amber-800 shadow-sm">
+                    <i class="fa-solid fa-spinner fa-spin ml-1 text-brand-500"></i> جاري إسناد أقرب كابتن طيار متاح...
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <!-- Order Progress & Details -->
             <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
               <!-- Timeline Steps -->
               <div class="lg:col-span-7 space-y-6">
-                <h3 class="font-black text-gray-800 text-base">مراحل توصيل الطلب</h3>
+                <h3 class="font-black text-gray-800 text-base">مراحل توصيل الطلب لحظة بلحظة</h3>
                 <div class="space-y-5 relative before:content-[''] before:absolute before:right-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
                   ${steps.map((st, idx) => {
                     const done = idx <= currentStep;
@@ -1550,15 +1946,14 @@
                   }).join('')}
                 </div>
 
-                <!-- Simulation Control for Demo -->
                 <div class="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
-                  ${currentStep < 3 ? `
-                    <button onclick="advanceOrderStep()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
-                      <i class="fa-solid fa-forward-step ml-1 text-brand-400"></i> محاكاة المرحلة التالية للتوصيل
+                  ${ord.status === 'delivered' || ord.status === 'cancelled' ? `
+                    <button onclick="clearCustomerActiveOrder()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition">
+                      <i class="fa-solid fa-check ml-1"></i> طلب أوردر جديد
                     </button>
                   ` : `
-                    <button onclick="completeAndClearOrder()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition">
-                      <i class="fa-solid fa-check ml-1"></i> إنهاء وطلب أوردر جديد
+                    <button onclick="openLoginModal()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
+                      <i class="fa-solid fa-motorcycle ml-1 text-brand-400"></i> افتح لوحة الطيار / الأدمن للتحكم الحي
                     </button>
                   `}
                   <button onclick="navigateTo('home')" class="text-xs font-bold text-gray-500 hover:text-brand-600 px-3 py-2">
@@ -1567,23 +1962,35 @@
                 </div>
               </div>
 
-              <!-- Rider & Order Summary Card -->
+              <!-- Rider & Receipt Info -->
               <div class="lg:col-span-5 space-y-4">
-                <!-- Rider Info -->
+                <!-- Assigned Rider Card -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-center justify-between">
-                  <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl font-black">
-                      🛵
+                  ${ord.riderId ? `
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl font-black">
+                        🛵
+                      </div>
+                      <div>
+                        <div class="text-[11px] font-bold text-gray-400">كابتن طيران المسؤول</div>
+                        <div class="text-sm font-black text-gray-900">${ord.riderName}</div>
+                        <div class="text-xs text-gray-600 font-bold">${ord.riderVehicle || 'موتوسيكل'} • ${ord.riderPhone || ''}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div class="text-[11px] font-bold text-gray-400">كابتن طيران المسؤول</div>
-                      <div class="text-sm font-black text-gray-900">كابتن / محمود السيد</div>
-                      <div class="text-xs text-amber-500 font-bold">★ 4.95 • موتوسيكل 6 أكتوبر</div>
+                    <button onclick="showToast('جاري الاتصال بـ ${ord.riderName} (${ord.riderPhone})...', 'info')" class="w-10 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-xs transition">
+                      <i class="fa-solid fa-phone"></i>
+                    </button>
+                  ` : `
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-hourglass-half fa-spin"></i>
+                      </div>
+                      <div>
+                        <div class="text-sm font-black text-gray-800">في انتظار قبول كابتن متاح</div>
+                        <div class="text-xs text-gray-500">سيتم إسناد الطلب تلقائياً لأول طيار Ready</div>
+                      </div>
                     </div>
-                  </div>
-                  <button onclick="showToast('جاري الاتصال بكابتن محمود السيد...', 'info')" class="w-10 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-xs transition">
-                    <i class="fa-solid fa-phone"></i>
-                  </button>
+                  `}
                 </div>
 
                 <!-- Delivery Address Summary -->
@@ -1594,13 +2001,12 @@
                   </div>
                   <p class="font-bold text-gray-700">${ord.areaName}</p>
                   <p class="text-gray-500">${ord.address.street || ''} ${ord.address.building ? `- عمارة ${ord.address.building}` : ''} ${ord.address.floor ? `- دور ${ord.address.floor}` : ''} ${ord.address.apt ? `- شقة ${ord.address.apt}` : ''}</p>
-                  ${ord.address.landmark ? `<p class="text-gray-400">علامة مميزة: ${ord.address.landmark}</p>` : ''}
                 </div>
 
                 <!-- Items Receipt -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-2 text-xs">
                   <div class="font-extrabold text-gray-800 border-b border-gray-200 pb-2 flex justify-between">
-                    <span>تفاصيل الفاتورة (${ord.restaurantName})</span>
+                    <span>فاتورة (${ord.restaurantName})</span>
                     <span class="text-brand-600">${ord.paymentLabel}</span>
                   </div>
                   ${ord.items.map(it => `
@@ -1609,8 +2015,14 @@
                       <span>${it.price * it.qty} ج.م</span>
                     </div>
                   `).join('')}
+                  ${ord.discount > 0 ? `
+                    <div class="flex justify-between text-emerald-600 font-bold">
+                      <span>خصم البروموكود (${ord.promoCode || ''})</span>
+                      <span>- ${ord.discount} ج.م</span>
+                    </div>
+                  ` : ''}
                   <div class="border-t border-gray-200 pt-2 flex justify-between font-black text-sm text-gray-900">
-                    <span>الإجمالي المدفوع</span>
+                    <span>الإجمالي النهائي</span>
                     <span class="text-brand-600">${ord.total} ج.م</span>
                   </div>
                 </div>
@@ -1619,6 +2031,919 @@
           </div>
         </section>
       `;
+    }
+
+    // =========================================================================
+    // --- VIEW D: RIDER DASHBOARD (READY / NOT READY + ONE-BY-ONE QUEUE) ---
+    // =========================================================================
+    function renderRiderDashboardView() {
+      if (!state.currentUser || state.currentUser.role !== 'rider') {
+        return `
+          <div class="max-w-md mx-auto my-16 bg-white p-8 rounded-3xl shadow-card text-center">
+            <div class="text-5xl mb-3">🔒</div>
+            <h2 class="text-xl font-black mb-2">يجب تسجيل الدخول كطيار</h2>
+            <button onclick="openLoginModal()" class="bg-brand-500 text-white font-bold px-6 py-3 rounded-2xl">تسجيل الدخول</button>
+          </div>
+        `;
+      }
+
+      const rider = state.riders.find(r => r.id === state.currentUser.id);
+      if (!rider) {
+        logoutStaff();
+        return '';
+      }
+
+      // Find the ONE active order assigned to this rider (One-by-One Dispatch)
+      const activeOrder = rider.activeOrderId
+        ? state.orders.find(o => o.id === rider.activeOrderId && o.status !== 'delivered' && o.status !== 'cancelled')
+        : state.orders.find(o => o.riderId === rider.id && o.status !== 'delivered' && o.status !== 'cancelled');
+
+      if (activeOrder && !rider.activeOrderId) {
+        rider.activeOrderId = activeOrder.id;
+      } else if (!activeOrder && rider.activeOrderId) {
+        rider.activeOrderId = null;
+      }
+
+      const waitingQueueCount = state.orders.filter(o => !o.riderId && (o.status === 'pending' || o.status === 'preparing')).length;
+      const pastRiderOrders = state.orders.filter(o => o.riderId === rider.id && o.status === 'delivered');
+
+      return `
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <!-- Rider Top Control Card -->
+          <div class="bg-gray-900 text-white rounded-3xl p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl ${rider.isReady ? 'bg-emerald-500' : 'bg-gray-700'} text-white flex items-center justify-center text-3xl shadow-lg">
+                🛵
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h1 class="text-xl sm:text-2xl font-black">${rider.name}</h1>
+                  <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold ${rider.isReady ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'}">
+                    ${rider.isReady ? '● Ready (متاح للطلبات)' : '○ Not Ready (غير متاح)'}
+                  </span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">${rider.vehicle} • منطقة العمل: ${rider.zone}</p>
+              </div>
+            </div>
+
+            <!-- READY / NOT READY TOGGLE & LOGOUT -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+              <button onclick="toggleRiderReadyStatus('${rider.id}')" class="px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-md flex items-center gap-2 ${rider.isReady ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}">
+                <i class="fa-solid ${rider.isReady ? 'fa-toggle-on text-lg' : 'fa-toggle-off text-lg'}"></i>
+                <span>${rider.isReady ? 'حالتك: READY' : 'حالتك: NOT READY'}</span>
+              </button>
+
+              <button onclick="logoutStaff()" title="تسجيل خروج" class="px-3.5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-gray-200 text-xs font-bold transition">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Explanation Banner -->
+          ${!rider.isReady ? `
+            <div class="bg-red-50 border-2 border-red-200 rounded-3xl p-6 text-center space-y-2">
+              <div class="text-4xl">⏸️</div>
+              <h3 class="text-lg font-black text-red-800">أنت الآن في وضع NOT READY</h3>
+              <p class="text-xs text-red-600 max-w-md mx-auto">لن يتم إسناد أي أوردرات جديدة لك طالما حالتك Not Ready. اضغط على زر التبديل بالأعلى للتحويل إلى <strong>READY</strong> واستقبال الطلبات واحد تلو الآخر.</p>
+            </div>
+          ` : ''}
+
+          <!-- ACTIVE SINGLE ORDER DISPATCH CARD (ONE-BY-ONE) -->
+          ${activeOrder ? `
+            <div class="bg-white rounded-3xl border-2 border-brand-500 shadow-card overflow-hidden">
+              <div class="bg-brand-500 text-white px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="bg-white text-brand-600 text-xs font-black px-2.5 py-1 rounded-xl">أوردر نشط #${activeOrder.orderNumber}</span>
+                  <span class="text-xs font-bold text-orange-100">نظام التسليم الفردي (1×1)</span>
+                </div>
+                <span class="text-sm font-black">تحصيل: ${activeOrder.total} ج.م (${activeOrder.paymentLabel})</span>
+              </div>
+
+              <div class="p-6 space-y-5">
+                <!-- Pickup & Dropoff Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4">
+                    <div class="text-[11px] font-extrabold text-amber-700 mb-1">1️⃣ الاستلام من المطعم:</div>
+                    <div class="text-base font-black text-gray-900">${activeOrder.restaurantName}</div>
+                    <div class="text-xs text-gray-600 mt-0.5">${RESTAURANTS_DATA[activeOrder.restaurantId]?.branch || '6 أكتوبر'}</div>
+                  </div>
+
+                  <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4">
+                    <div class="text-[11px] font-extrabold text-emerald-700 mb-1">2️⃣ التسليم للعميل:</div>
+                    <div class="text-base font-black text-gray-900">${activeOrder.areaName}</div>
+                    <div class="text-xs text-gray-700 font-bold mt-0.5">${activeOrder.address.street} ${activeOrder.address.building ? `(عمارة ${activeOrder.address.building})` : ''}</div>
+                    <div class="text-xs text-emerald-800 font-extrabold mt-1">
+                      <i class="fa-solid fa-phone ml-1"></i> ${activeOrder.address.phone}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/70">
+                  <div class="text-xs font-extrabold text-gray-600 mb-2">محتويات الأوردر:</div>
+                  <div class="space-y-1.5 text-xs font-bold text-gray-800">
+                    ${activeOrder.items.map(it => `
+                      <div class="flex justify-between">
+                        <span>${it.qty}× ${it.name} ${it.sizeName ? `(${it.sizeName})` : ''}</span>
+                        <span>${it.price * it.qty} ج.م</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Rider Live GPS Simulation & Step Controls -->
+                <div class="bg-gray-900 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div class="text-xs">
+                    <div class="font-extrabold text-brand-400">تحديث موقعك اللايف للعميل (GPS)</div>
+                    <div class="text-gray-400 mt-0.5">كل خطوة بتحدث الخريطة عند العميل فوراً</div>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                    ${activeOrder.status === 'pending' || activeOrder.status === 'preparing' ? `
+                      <button onclick="riderAdvanceOrderStatus('${rider.id}', '${activeOrder.id}', 'on_the_way')" class="bg-brand-500 hover:bg-brand-600 text-white font-black text-xs px-4 py-3 rounded-xl transition shadow-md">
+                        <i class="fa-solid fa-box-open ml-1"></i> استلمت الأوردر من المطعم (انطلاق)
+                      </button>
+                    ` : ''}
+                    ${activeOrder.status === 'on_the_way' ? `
+                      <button onclick="riderMoveCloserGps('${rider.id}', '${activeOrder.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs px-3.5 py-3 rounded-xl transition">
+                        <i class="fa-solid fa-location-arrow ml-1"></i> تحرك خطوة نحو العميل
+                      </button>
+                      <button onclick="riderAdvanceOrderStatus('${rider.id}', '${activeOrder.id}', 'delivered')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs px-4 py-3 rounded-xl transition shadow-md">
+                        <i class="fa-solid fa-circle-check ml-1"></i> تم التسليم للعميل
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ` : rider.isReady ? `
+            <!-- Ready & Waiting for Next Order in Queue -->
+            <div class="bg-white rounded-3xl p-10 text-center border border-gray-100 shadow-card space-y-3">
+              <div class="w-20 h-20 mx-auto rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-4xl">
+                <i class="fa-solid fa-satellite-dish fa-beat"></i>
+              </div>
+              <h3 class="text-xl font-black text-gray-900">أنت متاح (READY) وفي انتظار الأوردر القادم...</h3>
+              <p class="text-xs text-gray-500 max-w-md mx-auto">
+                بمجرد ما أي عميل في 6 أكتوبر يطلب أوردر، هينزلك هنا فوراً واحد ورا التاني.
+                ${waitingQueueCount > 0 ? `<strong class="text-brand-600 block mt-1">يوجد ${waitingQueueCount} طلبات في الطابور!</strong>` : ''}
+              </p>
+              ${waitingQueueCount > 0 ? `
+                <button onclick="runAutoDispatchQueue(); renderApp();" class="bg-brand-500 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl">
+                  سحب الأوردر التالي من الطابور الآن
+                </button>
+              ` : ''}
+            </div>
+          ` : ''}
+
+          <!-- Rider Stats & Completed History -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">إجمالي توصيلاتك</div>
+              <div class="text-2xl font-black text-gray-900 mt-1">${rider.completedCount + pastRiderOrders.length} أوردر</div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">حالة الاستقبال</div>
+              <div class="text-lg font-black mt-1 ${rider.isReady ? 'text-emerald-600' : 'text-red-500'}">${rider.isReady ? 'Ready نشط' : 'Not Ready متوقف'}</div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">التقييم العام</div>
+              <div class="text-2xl font-black text-amber-500 mt-1">4.95 ★</div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    // =========================================================================
+    // --- VIEW E: COMPREHENSIVE ADMIN DASHBOARD ---
+    // =========================================================================
+    function renderAdminDashboardView() {
+      if (!state.currentUser || state.currentUser.role !== 'admin') {
+        return `
+          <div class="max-w-md mx-auto my-16 bg-white p-8 rounded-3xl shadow-card text-center">
+            <div class="text-5xl mb-3">🔐</div>
+            <h2 class="text-xl font-black mb-2">منطقة محمية للإدارة فقط</h2>
+            <button onclick="openLoginModal()" class="bg-brand-500 text-white font-bold px-6 py-3 rounded-2xl">تسجيل دخول الأدمن</button>
+          </div>
+        `;
+      }
+
+      const totalRevenue = state.orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
+      const activeOrdersCount = state.orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+      const readyRidersCount = state.riders.filter(r => r.isReady).length;
+
+      return `
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <!-- Admin Header Banner -->
+          <div class="bg-gradient-to-l from-gray-900 via-gray-800 to-gray-950 text-white rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl shadow-lg">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h1 class="text-xl sm:text-2xl font-black">لوحة تحكم إدارة طيران - 6 أكتوبر</h1>
+                  <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">مزامنة لحظية</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">مرحباً <strong>${state.currentUser.name}</strong> (@${state.currentUser.username})</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <button onclick="navigateTo('home')" class="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-xs font-bold transition">
+                واجهة العميل
+              </button>
+              <button onclick="logoutStaff()" class="px-4 py-2.5 rounded-2xl bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 text-xs font-bold transition">
+                <i class="fa-solid fa-right-from-bracket ml-1"></i> خروج
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Stats Strip -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">إجمالي الطلبات</div>
+              <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${state.orders.length}</div>
+              <div class="text-[11px] text-brand-600 font-bold mt-1">${activeOrdersCount} طلبات نشطة الآن</div>
+            </div>
+            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">إجمالي المبيعات</div>
+              <div class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">${totalRevenue} ج.م</div>
+              <div class="text-[11px] text-gray-400 font-bold mt-1">6 أكتوبر والشيخ زايد</div>
+            </div>
+            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">كباتن الطيارين</div>
+              <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${readyRidersCount} / ${state.riders.length}</div>
+              <div class="text-[11px] text-emerald-600 font-bold mt-1">كباتن في وضع Ready</div>
+            </div>
+            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
+              <div class="text-xs text-gray-400 font-bold">أكواد الخصم النشطة</div>
+              <div class="text-2xl sm:text-3xl font-black text-purple-600 mt-1">${state.promoCodes.filter(p => p.active).length}</div>
+              <div class="text-[11px] text-gray-400 font-bold mt-1">تُطبق تلقائياً للعملاء</div>
+            </div>
+          </div>
+
+          <!-- Admin Navigation Tabs -->
+          <div class="bg-white p-2 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-2 overflow-x-auto no-scrollbar">
+            ${[
+              { id: 'orders', label: 'إدارة الطلبات والتعديل عليها', icon: 'fa-bag-shopping' },
+              { id: 'promos', label: 'إنشاء وإدارة البرومو كود', icon: 'fa-tags' },
+              { id: 'riders', label: 'إضافة وإدارة الطيارين', icon: 'fa-motorcycle' },
+              { id: 'admins', label: 'حسابات الأدمن وتغيير الباسوورد', icon: 'fa-user-lock' }
+            ].map(tab => `
+              <button onclick="switchAdminTab('${tab.id}')" class="flex items-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition ${state.adminTab === tab.id ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}">
+                <i class="fa-solid ${tab.icon}"></i>
+                <span>${tab.label}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- TAB CONTENT -->
+          <div>
+            ${state.adminTab === 'orders' ? renderAdminOrdersTab() : ''}
+            ${state.adminTab === 'promos' ? renderAdminPromosTab() : ''}
+            ${state.adminTab === 'riders' ? renderAdminRidersTab() : ''}
+            ${state.adminTab === 'admins' ? renderAdminAccountsTab() : ''}
+          </div>
+        </section>
+      `;
+    }
+
+    // --- ADMIN TAB 1: ORDERS MANAGEMENT & EDITING ---
+    function renderAdminOrdersTab() {
+      const ordersList = [...state.orders].reverse();
+      const statusBadges = {
+        pending: { label: 'تم الاستلام', cls: 'bg-amber-100 text-amber-800' },
+        preparing: { label: 'جاري التجهيز', cls: 'bg-blue-100 text-blue-800' },
+        on_the_way: { label: 'مع الطيار في الطريق', cls: 'bg-purple-100 text-purple-800' },
+        delivered: { label: 'تم التوصيل', cls: 'bg-emerald-100 text-emerald-800' },
+        cancelled: { label: 'ملغي', cls: 'bg-red-100 text-red-800' }
+      };
+
+      return `
+        <div class="bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-black text-gray-900">سجل الطلبات الحية (تعديل الحالة، السعر، وإسناد الطيارين)</h2>
+              <p class="text-xs text-gray-500">أي تعديل تقوم به هنا ينعكس فوراً في شاشة العميل ولوحة الطيار</p>
+            </div>
+            <button onclick="runAutoDispatchQueue(); renderApp(); showToast('تم تشغيل التوزيع التلقائي للطيارين المتاحين', 'info');" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles ml-1 text-brand-400"></i> توزيع تلقائي للطيارين Ready
+            </button>
+          </div>
+
+          ${ordersList.length === 0 ? `
+            <div class="text-center py-12 bg-gray-50 rounded-2xl">
+              <div class="text-4xl mb-2">📭</div>
+              <p class="text-sm font-extrabold text-gray-700">لا توجد طلبات مسجلة حتى الآن</p>
+              <p class="text-xs text-gray-400 mt-1">اطلب أوردر من واجهة العميل وسيظهر هنا فوراً!</p>
+            </div>
+          ` : `
+            <div class="space-y-4">
+              ${ordersList.map(ord => {
+                const st = statusBadges[ord.status] || statusBadges.pending;
+                return `
+                  <div class="border border-gray-200 rounded-2xl p-4 hover:border-brand-300 transition space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
+                      <div class="flex items-center gap-2.5">
+                        <span class="font-black text-sm text-gray-900">#${ord.orderNumber}</span>
+                        <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full ${st.cls}">${st.label}</span>
+                        <span class="text-xs font-bold text-gray-500">• ${ord.restaurantName}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm font-black text-brand-600">${ord.total} ج.م</span>
+                        <button onclick="openAdminOrderEditor('${ord.id}')" class="bg-brand-50 hover:bg-brand-100 text-brand-700 text-xs font-extrabold px-3 py-1.5 rounded-xl border border-brand-200 transition">
+                          <i class="fa-solid fa-pen-to-square ml-1"></i> تعديل الطلب
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                      <div>
+                        <span class="text-gray-400 font-bold block">العميل والعنوان:</span>
+                        <span class="font-extrabold text-gray-800">${ord.areaName} - ${ord.address.street}</span>
+                        <span class="text-gray-500 block">موبايل: ${ord.address.phone}</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400 font-bold block">الأصناف المطلوبة:</span>
+                        <span class="font-bold text-gray-700">${ord.items.map(i => `${i.qty}× ${i.name}`).join(' ، ')}</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400 font-bold block">الطيار المسؤول:</span>
+                        <span class="font-extrabold ${ord.riderId ? 'text-emerald-700' : 'text-amber-600'}">
+                          ${ord.riderId ? `🛵 ${ord.riderName}` : '⏳ غير مسند لطيار بعد'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    // --- ADMIN TAB 2: PROMO CODES CREATOR & MANAGER ---
+    function renderAdminPromosTab() {
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Create New Promo Form -->
+          <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
+            <h3 class="text-lg font-black text-gray-900 mb-1">إنشاء برومو كود جديد</h3>
+            <p class="text-xs text-gray-500 mb-4">سيعمل الكود تلقائياً في سلة العميل بمجرد إضافته</p>
+
+            <form onsubmit="handleCreatePromoCode(event)" class="space-y-3.5">
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم / رمز الكود (مثال: VIP30)</label>
+                <input type="text" id="new-promo-code" required placeholder="VIP30" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-black uppercase outline-none focus:border-brand-500" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">وصف العرض للعميل</label>
+                <input type="text" id="new-promo-title" required placeholder="مثال: خصم 30% بمناسبة الافتتاح" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">نوع الخصم</label>
+                  <select id="new-promo-type" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white outline-none focus:border-brand-500">
+                    <option value="percent">نسبة مئوية (%)</option>
+                    <option value="fixed">مبلغ ثابت (ج.م)</option>
+                    <option value="free_delivery">توصيل مجاني بالكامل</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">قيمة الخصم</label>
+                  <input type="number" id="new-promo-value" min="0" value="15" required class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-brand-500" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">الحد الأدنى للطلب (ج.م)</label>
+                <input type="number" id="new-promo-min" min="0" value="100" required class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-brand-500" />
+              </div>
+
+              <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3 rounded-2xl shadow-md transition">
+                <i class="fa-solid fa-plus ml-1"></i> حفظ وتفعيل البرومو كود
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Promo Codes List -->
+          <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
+            <h3 class="text-lg font-black text-gray-900">أكواد الخصم المسجلة (${state.promoCodes.length})</h3>
+            <div class="space-y-3">
+              ${state.promoCodes.map(pr => {
+                const typeDesc = pr.type === 'percent' ? `خصم ${pr.value}%` : pr.type === 'fixed' ? `خصم ${pr.value} ج.م` : 'توصيل مجاني 100%';
+                return `
+                  <div class="p-4 rounded-2xl border ${pr.active ? 'border-emerald-200 bg-emerald-50/30' : 'border-gray-200 bg-gray-50 opacity-70'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="bg-gray-900 text-brand-400 font-black px-3 py-1 rounded-xl text-sm tracking-wider">${pr.code}</span>
+                        <span class="text-xs font-extrabold bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-full">${typeDesc}</span>
+                        <span class="text-[11px] font-bold text-gray-500">أقل طلب: ${pr.minOrder} ج</span>
+                      </div>
+                      <p class="text-xs font-bold text-gray-700 mt-1.5">${pr.title}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                      <button onclick="togglePromoActive('${pr.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold ${pr.active ? 'bg-amber-100 text-amber-800' : 'bg-emerald-600 text-white'}">
+                        ${pr.active ? 'إيقاف مؤقت' : 'تفعيل'}
+                      </button>
+                      <button onclick="deletePromoCode('${pr.id}')" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- ADMIN TAB 3: CREATE & MANAGE RIDERS ---
+    function renderAdminRidersTab() {
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Create New Rider Account -->
+          <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
+            <h3 class="text-lg font-black text-gray-900 mb-1">إنشاء حساب طيار جديد (Rider)</h3>
+            <p class="text-xs text-gray-500 mb-4">يمكن للطيار تسجيل الدخول فوراً باليوزرنيم والباسوورد لاستلام الطلبات</p>
+
+            <form onsubmit="handleCreateRider(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم الكابتن بالكامل</label>
+                <input type="text" id="new-rider-name" required placeholder="مثال: كابتن إسلام حسن" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">اليوزرنيم للدخول</label>
+                  <input type="text" id="new-rider-user" required placeholder="rider4" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">الباسوورد</label>
+                  <input type="text" id="new-rider-pass" required value="123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">رقم الموبايل</label>
+                <input type="tel" id="new-rider-phone" required placeholder="010xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">نوع الموتوسيكل / المركبة</label>
+                  <input type="text" id="new-rider-vehicle" required placeholder="موتوسيكل هوجن" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">نطاق العمل بأكتوبر</label>
+                  <input type="text" id="new-rider-zone" required placeholder="الحصري والحي السابع" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+              </div>
+
+              <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm py-3 rounded-2xl shadow-md transition">
+                <i class="fa-solid fa-user-plus ml-1"></i> إنشاء حساب الطيار
+              </button>
+            </form>
+          </div>
+
+          <!-- Riders Fleet List -->
+          <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
+            <h3 class="text-lg font-black text-gray-900">أسطول كباتن طيران (${state.riders.length} طيار)</h3>
+            <div class="space-y-3">
+              ${state.riders.map(r => `
+                <div class="p-4 rounded-2xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl ${r.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'} flex items-center justify-center text-xl shrink-0">
+                      🛵
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-black text-gray-900">${r.name}</h4>
+                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${r.isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}">
+                          ${r.isReady ? 'READY' : 'NOT READY'}
+                        </span>
+                      </div>
+                      <div class="text-xs text-gray-500 mt-0.5">
+                        يوزر: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.username}</code> • باسوورد: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.password}</code>
+                      </div>
+                      <div class="text-[11px] text-gray-400 mt-0.5">${r.phone} • ${r.vehicle} • ${r.zone}</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold border ${r.isReady ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-emerald-300 text-emerald-700 bg-emerald-50'}">
+                      تبديل الحالة
+                    </button>
+                    <button onclick="deleteRiderAccount('${r.id}')" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center">
+                      <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- ADMIN TAB 4: ADMIN USERS & PASSWORD SECURITY ---
+    function renderAdminAccountsTab() {
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Update Current Admin Credentials -->
+          <div class="lg:col-span-6 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center">
+                <i class="fa-solid fa-key"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-black text-gray-900">تغيير اليوزرنيم والباسوورد لحسابك الحالي</h3>
+                <p class="text-xs text-gray-500">تحديث بيانات الدخول الخاصة بالأدمن (${state.currentUser.username})</p>
+              </div>
+            </div>
+
+            <form onsubmit="handleUpdateOwnAdminCredentials(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">الاسم الظاهر</label>
+                <input type="text" id="self-admin-name" value="${state.currentUser.name}" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">اليوزرنيم الجديد (Username)</label>
+                <input type="text" id="self-admin-username" value="${state.currentUser.username}" required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">كلمة المرور الجديدة (Password)</label>
+                <input type="text" id="self-admin-password" placeholder="اكتب الباسوورد الجديد..." required class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+              </div>
+              <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-black text-sm py-3 rounded-2xl shadow-md transition">
+                <i class="fa-solid fa-floppy-disk ml-1"></i> حفظ وتحديث بياناتي
+              </button>
+            </form>
+          </div>
+
+          <!-- Create New Admin User & List -->
+          <div class="lg:col-span-6 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-5">
+            <div>
+              <h3 class="text-lg font-black text-gray-900 mb-1">إضافة حساب أدمن جديد</h3>
+              <p class="text-xs text-gray-500 mb-3">إنشاء صلاحيات إدارة لمشرفين جدد في طيران</p>
+
+              <form onsubmit="handleCreateNewAdmin(event)" class="space-y-3 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                <input type="text" id="new-admin-name" required placeholder="اسم الأدمن الجديد (مثال: أ. سارة محمد)" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
+                <div class="grid grid-cols-2 gap-2.5">
+                  <input type="text" id="new-admin-user" required placeholder="اليوزرنيم (admin2)" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
+                  <input type="text" id="new-admin-pass" required placeholder="الباسوورد" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+                <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-xs py-2.5 rounded-xl transition">
+                  <i class="fa-solid fa-user-shield ml-1 text-brand-400"></i> إنشاء حساب الأدمن
+                </button>
+              </form>
+            </div>
+
+            <!-- List of Admins -->
+            <div class="space-y-2">
+              <div class="text-xs font-extrabold text-gray-600">حسابات الإدارة الحالية (${state.admins.length}):</div>
+              ${state.admins.map(adm => `
+                <div class="p-3 rounded-2xl border border-gray-200 flex items-center justify-between text-xs">
+                  <div>
+                    <div class="font-black text-gray-900">${adm.name}</div>
+                    <div class="text-gray-500">يوزر: <strong>${adm.username}</strong> • باسوورد: <strong>${adm.password}</strong></div>
+                  </div>
+                  ${adm.id !== state.currentUser.id ? `
+                    <button onclick="deleteAdminAccount('${adm.id}')" class="text-red-500 hover:text-red-700 p-2">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  ` : '<span class="text-[10px] font-extrabold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">حسابك الحالي</span>'}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // ADMIN & RIDER INTERACTIVE HANDLERS
+    // =========================================================================
+    function switchAdminTab(tabId) {
+      state.adminTab = tabId;
+      renderApp();
+    }
+
+    function toggleRiderReadyStatus(riderId) {
+      const rider = state.riders.find(r => r.id === riderId);
+      if (!rider) return;
+      rider.isReady = !rider.isReady;
+      if (rider.isReady) {
+        runAutoDispatchQueue();
+        showToast(`${rider.name} الآن في وضع READY لاستقبال الطلبات 🟢`, 'success');
+      } else {
+        showToast(`${rider.name} الآن في وضع NOT READY ولن يستقبل طلبات 🔴`, 'info');
+      }
+      persistState(true);
+      renderApp();
+    }
+
+    function riderMoveCloserGps(riderId, orderId) {
+      const rider = state.riders.find(r => r.id === riderId);
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!rider || !ord) return;
+
+      const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || OCTOBER_AREAS[0];
+      const target = areaObj.coords;
+      const cur = rider.gps || { x: 52, y: 48 };
+
+      // Move 45% closer to customer on map
+      rider.gps = {
+        x: Math.round((cur.x + (target.x - cur.x) * 0.45) * 10) / 10,
+        y: Math.round((cur.y + (target.y - cur.y) * 0.45) * 10) / 10
+      };
+      ord.riderGps = { ...rider.gps };
+      persistState(true);
+      showToast('تم تحديث موقعك GPS على خريطة العميل 📍', 'info');
+      renderApp();
+    }
+
+    function riderAdvanceOrderStatus(riderId, orderId, nextStatus) {
+      const rider = state.riders.find(r => r.id === riderId);
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!rider || !ord) return;
+
+      ord.status = nextStatus;
+      const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || OCTOBER_AREAS[0];
+
+      if (nextStatus === 'on_the_way') {
+        const restCoords = RESTAURANT_COORDS[ord.restaurantId] || { x: 52, y: 48 };
+        rider.gps = {
+          x: Math.round((restCoords.x + (areaObj.coords.x - restCoords.x) * 0.35) * 10) / 10,
+          y: Math.round((restCoords.y + (areaObj.coords.y - restCoords.y) * 0.35) * 10) / 10
+        };
+        ord.riderGps = { ...rider.gps };
+        showToast('تم تحديث الحالة: الأوردر معك وفي الطريق للعميل 🛵', 'success');
+      } else if (nextStatus === 'delivered') {
+        rider.gps = { ...areaObj.coords };
+        ord.riderGps = { ...areaObj.coords };
+        rider.activeOrderId = null;
+        rider.completedCount = (rider.completedCount || 0) + 1;
+        showToast('عاش يا كابتن! تم تسليم الأوردر بنجاح 🎉', 'success');
+        // Automatically pull next order from queue if rider is still Ready!
+        runAutoDispatchQueue();
+      }
+
+      persistState(true);
+      renderApp();
+    }
+
+    function openAdminOrderEditor(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      state.editingOrderId = orderId;
+
+      const modal = document.getElementById('admin-order-modal');
+      const content = document.getElementById('admin-order-modal-content');
+      content.innerHTML = `
+        <div class="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
+          <h3 class="font-black text-base">تعديل الطلب #${ord.orderNumber} (${ord.restaurantName})</h3>
+          <button onclick="closeAdminOrderEditor()" class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form onsubmit="saveAdminOrderEdits(event)" class="p-6 overflow-y-auto space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">حالة الطلب</label>
+              <select id="edit-ord-status" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white">
+                <option value="pending" ${ord.status === 'pending' ? 'selected' : ''}>تم الاستلام (Pending)</option>
+                <option value="preparing" ${ord.status === 'preparing' ? 'selected' : ''}>جاري التجهيز (Preparing)</option>
+                <option value="on_the_way" ${ord.status === 'on_the_way' ? 'selected' : ''}>في الطريق (On The Way)</option>
+                <option value="delivered" ${ord.status === 'delivered' ? 'selected' : ''}>تم التوصيل (Delivered)</option>
+                <option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>ملغي (Cancelled)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">إسناد إلى طيار</label>
+              <select id="edit-ord-rider" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white">
+                <option value="">-- بدون طيار (توزيع تلقائي) --</option>
+                ${state.riders.map(r => `
+                  <option value="${r.id}" ${ord.riderId === r.id ? 'selected' : ''}>${r.name} (${r.isReady ? 'Ready' : 'Not Ready'})</option>
+                `).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">عنوان العميل في 6 أكتوبر</label>
+              <input type="text" id="edit-ord-street" value="${ord.address.street}" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">إجمالي الفاتورة (ج.م)</label>
+              <input type="number" id="edit-ord-total" value="${ord.total}" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-black" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-gray-700 mb-1">ملاحظات إدارية على الطلب</label>
+            <input type="text" id="edit-ord-note" value="${ord.adminNote || ''}" placeholder="أضف ملاحظة للعميل أو الطيار..." class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold" />
+          </div>
+
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
+            <button type="button" onclick="closeAdminOrderEditor()" class="px-4 py-2.5 rounded-xl bg-gray-100 text-xs font-bold text-gray-600">إلغاء</button>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-500 text-white text-xs font-black shadow-sm">حفظ التعديلات</button>
+          </div>
+        </form>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeAdminOrderEditor() {
+      document.getElementById('admin-order-modal').classList.add('hidden');
+    }
+
+    function saveAdminOrderEdits(e) {
+      e.preventDefault();
+      const ord = state.orders.find(o => o.id === state.editingOrderId);
+      if (!ord) return;
+
+      const newStatus = document.getElementById('edit-ord-status').value;
+      const newRiderId = document.getElementById('edit-ord-rider').value;
+      const newStreet = document.getElementById('edit-ord-street').value.trim();
+      const newTotal = Number(document.getElementById('edit-ord-total').value);
+      const newNote = document.getElementById('edit-ord-note').value.trim();
+
+      // Release previous rider if changed
+      if (ord.riderId && ord.riderId !== newRiderId) {
+        const oldR = state.riders.find(r => r.id === ord.riderId);
+        if (oldR && oldR.activeOrderId === ord.id) oldR.activeOrderId = null;
+      }
+
+      ord.status = newStatus;
+      ord.address.street = newStreet;
+      if (!isNaN(newTotal) && newTotal >= 0) ord.total = newTotal;
+      ord.adminNote = newNote;
+
+      if (newRiderId) {
+        const rObj = state.riders.find(r => r.id === newRiderId);
+        if (rObj) {
+          ord.riderId = rObj.id;
+          ord.riderName = rObj.name;
+          ord.riderPhone = rObj.phone;
+          ord.riderVehicle = rObj.vehicle;
+          if (newStatus !== 'delivered' && newStatus !== 'cancelled') {
+            rObj.activeOrderId = ord.id;
+          } else if (rObj.activeOrderId === ord.id) {
+            rObj.activeOrderId = null;
+          }
+        }
+      } else {
+        ord.riderId = null;
+        ord.riderName = null;
+      }
+
+      persistState(true);
+      closeAdminOrderEditor();
+      renderApp();
+      showToast(`تم تحديث الطلب #${ord.orderNumber} بنجاح ✅`, 'success');
+    }
+
+    function handleCreatePromoCode(e) {
+      e.preventDefault();
+      const code = document.getElementById('new-promo-code').value.trim().toUpperCase();
+      const title = document.getElementById('new-promo-title').value.trim();
+      const type = document.getElementById('new-promo-type').value;
+      const value = Number(document.getElementById('new-promo-value').value) || 0;
+      const minOrder = Number(document.getElementById('new-promo-min').value) || 0;
+
+      if (state.promoCodes.some(p => p.code === code)) {
+        showToast('هذا الكود موجود بالفعل! اختر اسماً آخر', 'error');
+        return;
+      }
+
+      state.promoCodes.unshift({
+        id: 'pr_' + Date.now(),
+        code,
+        title,
+        type,
+        value,
+        minOrder,
+        active: true
+      });
+
+      persistState(true);
+      renderApp();
+      showToast(`تم إنشاء البرومو كود (${code}) وتفعيله للعملاء 🎉`, 'success');
+    }
+
+    function togglePromoActive(promoId) {
+      const p = state.promoCodes.find(x => x.id === promoId);
+      if (!p) return;
+      p.active = !p.active;
+      persistState(true);
+      renderApp();
+    }
+
+    function deletePromoCode(promoId) {
+      state.promoCodes = state.promoCodes.filter(x => x.id !== promoId);
+      persistState(true);
+      renderApp();
+      showToast('تم حذف البرومو كود', 'info');
+    }
+
+    function handleCreateRider(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-rider-name').value.trim();
+      const username = document.getElementById('new-rider-user').value.trim().toLowerCase();
+      const password = document.getElementById('new-rider-pass').value.trim();
+      const phone = document.getElementById('new-rider-phone').value.trim();
+      const vehicle = document.getElementById('new-rider-vehicle').value.trim();
+      const zone = document.getElementById('new-rider-zone').value.trim();
+
+      if (state.riders.some(r => r.username === username) || state.admins.some(a => a.username === username)) {
+        showToast('اسم المستخدم مستخدم بالفعل!', 'error');
+        return;
+      }
+
+      state.riders.push({
+        id: 'rid_' + Date.now(),
+        name,
+        username,
+        password,
+        phone,
+        vehicle,
+        zone,
+        isReady: true,
+        activeOrderId: null,
+        completedCount: 0,
+        gps: { x: 52, y: 48 }
+      });
+
+      runAutoDispatchQueue();
+      persistState(true);
+      renderApp();
+      showToast(`تم إنشاء حساب الكابتن ${name} بنجاح 🛵`, 'success');
+    }
+
+    function deleteRiderAccount(riderId) {
+      state.riders = state.riders.filter(r => r.id !== riderId);
+      persistState(true);
+      renderApp();
+      showToast('تم حذف حساب الطيار', 'info');
+    }
+
+    function handleUpdateOwnAdminCredentials(e) {
+      e.preventDefault();
+      const newName = document.getElementById('self-admin-name').value.trim();
+      const newUser = document.getElementById('self-admin-username').value.trim().toLowerCase();
+      const newPass = document.getElementById('self-admin-password').value.trim();
+
+      const adm = state.admins.find(a => a.id === state.currentUser.id);
+      if (!adm) return;
+
+      adm.name = newName;
+      adm.username = newUser;
+      adm.password = newPass;
+
+      state.currentUser.name = newName;
+      state.currentUser.username = newUser;
+
+      persistState(true);
+      renderApp();
+      showToast('تم تحديث اليوزرنيم والباسوورد بنجاح 🔐', 'success');
+    }
+
+    function handleCreateNewAdmin(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-admin-name').value.trim();
+      const username = document.getElementById('new-admin-user').value.trim().toLowerCase();
+      const password = document.getElementById('new-admin-pass').value.trim();
+
+      if (state.admins.some(a => a.username === username) || state.riders.some(r => r.username === username)) {
+        showToast('اسم المستخدم موجود مسبقاً!', 'error');
+        return;
+      }
+
+      state.admins.push({
+        id: 'adm_' + Date.now(),
+        name,
+        username,
+        password,
+        role: 'Admin'
+      });
+
+      persistState(true);
+      renderApp();
+      showToast(`تم إنشاء حساب أدمن جديد (${username}) بنجاح 👑`, 'success');
+    }
+
+    function deleteAdminAccount(adminId) {
+      state.admins = state.admins.filter(a => a.id !== adminId);
+      persistState(true);
+      renderApp();
+      showToast('تم حذف حساب الأدمن', 'info');
     }
 
     // =========================================================================
@@ -1652,281 +2977,7 @@
     }
 
     // =========================================================================
-    // 9. 6TH OF OCTOBER AREA SELECTOR MODAL LOGIC
-    // =========================================================================
-    function openAddressModal() {
-      state.tempSelectedAreaId = state.selectedAreaId;
-      document.getElementById('area-search-input').value = '';
-      document.getElementById('addr-street').value = state.addressDetails.street || '';
-      document.getElementById('addr-landmark').value = state.addressDetails.landmark || '';
-      document.getElementById('addr-building').value = state.addressDetails.building || '';
-      document.getElementById('addr-floor').value = state.addressDetails.floor || '';
-      document.getElementById('addr-apt').value = state.addressDetails.apt || '';
-
-      renderAreasGrid('');
-      document.getElementById('address-modal').classList.remove('hidden');
-    }
-
-    function closeAddressModal() {
-      document.getElementById('address-modal').classList.add('hidden');
-    }
-
-    function filterAreasList(query) {
-      renderAreasGrid(query);
-    }
-
-    function renderAreasGrid(query) {
-      const q = query.trim().toLowerCase();
-      const list = OCTOBER_AREAS.filter(a =>
-        !q || a.name.toLowerCase().includes(q) || a.zone.toLowerCase().includes(q)
-      );
-
-      const container = document.getElementById('areas-grid-list');
-      container.innerHTML = list.map(a => {
-        const selected = a.id === state.tempSelectedAreaId;
-        return `
-          <button type="button" onclick="pickTempArea('${a.id}')" class="text-right p-3 rounded-2xl border transition-all flex items-center justify-between ${selected ? 'bg-brand-50 border-brand-500 ring-2 ring-brand-500/20' : 'bg-white border-gray-200 hover:border-brand-300'}">
-            <div>
-              <div class="text-xs sm:text-sm font-extrabold ${selected ? 'text-brand-700' : 'text-gray-800'}">${a.name}</div>
-              <div class="text-[10px] text-gray-500 font-semibold">${a.zone} • ${a.deliveryTime}</div>
-            </div>
-            <div class="text-left shrink-0">
-              <span class="text-[11px] font-extrabold ${selected ? 'text-brand-600' : 'text-gray-500'}">${a.baseFee} ج</span>
-              ${selected ? '<i class="fa-solid fa-circle-check text-brand-500 mr-1"></i>' : ''}
-            </div>
-          </button>
-        `;
-      }).join('');
-
-      const activeObj = OCTOBER_AREAS.find(a => a.id === state.tempSelectedAreaId);
-      if (activeObj) {
-        document.getElementById('modal-preview-area').textContent = activeObj.name;
-      }
-    }
-
-    function pickTempArea(areaId) {
-      state.tempSelectedAreaId = areaId;
-      renderAreasGrid(document.getElementById('area-search-input').value);
-    }
-
-    function saveAddressSelection() {
-      state.selectedAreaId = state.tempSelectedAreaId;
-      state.addressDetails = {
-        ...state.addressDetails,
-        street: document.getElementById('addr-street').value.trim(),
-        landmark: document.getElementById('addr-landmark').value.trim(),
-        building: document.getElementById('addr-building').value.trim(),
-        floor: document.getElementById('addr-floor').value.trim(),
-        apt: document.getElementById('addr-apt').value.trim()
-      };
-      persistState();
-      closeAddressModal();
-      renderApp();
-      renderCartDrawer();
-      const area = getCurrentArea();
-      showToast(`تم تحديد منطقة التوصيل: ${area.name} (${area.deliveryTime})`, 'success');
-    }
-
-    function quickSelectArea(areaId) {
-      state.selectedAreaId = areaId;
-      state.tempSelectedAreaId = areaId;
-      persistState();
-      renderApp();
-      renderCartDrawer();
-      const area = getCurrentArea();
-      showToast(`تم تغيير المنطقة إلى ${area.name}`, 'info');
-    }
-
-    // =========================================================================
-    // 10. ITEM CUSTOMIZATION & ADD TO CART LOGIC
-    // =========================================================================
-    let modalItemState = {
-      restaurantId: null,
-      itemId: null,
-      selectedSizeIdx: 0,
-      qty: 1,
-      notes: ''
-    };
-
-    function openItemModal(restaurantId, itemId) {
-      const rest = RESTAURANTS_DATA[restaurantId];
-      if (!rest) return;
-      let foundItem = null;
-      for (const sec of rest.menu) {
-        const match = sec.items.find(i => i.id === itemId);
-        if (match) { foundItem = match; break; }
-      }
-      if (!foundItem) return;
-
-      modalItemState = {
-        restaurantId,
-        itemId,
-        selectedSizeIdx: 0,
-        qty: 1,
-        notes: ''
-      };
-
-      renderItemModalContent(rest, foundItem);
-      document.getElementById('item-modal').classList.remove('hidden');
-    }
-
-    function closeItemModal() {
-      document.getElementById('item-modal').classList.add('hidden');
-    }
-
-    function renderItemModalContent(rest, item) {
-      const sizes = item.sizes || [];
-      const currentSize = sizes[modalItemState.selectedSizeIdx] || null;
-      const unitPrice = item.price + (currentSize ? currentSize.extra : 0);
-      const totalPrice = unitPrice * modalItemState.qty;
-
-      const container = document.getElementById('item-modal-content');
-      container.innerHTML = `
-        <!-- Top Banner -->
-        <div class="bg-brand-50 p-6 flex items-center justify-between border-b border-brand-100">
-          <div class="flex items-center gap-3.5">
-            <div class="w-16 h-16 rounded-2xl bg-white shadow-xs flex items-center justify-center text-4xl shrink-0">
-              ${item.emoji || rest.heroEmoji}
-            </div>
-            <div>
-              <span class="text-[11px] font-extrabold text-brand-600">${rest.name}</span>
-              <h3 class="text-lg font-black text-gray-900">${item.name}</h3>
-              <p class="text-xs text-gray-500 mt-0.5">${item.desc}</p>
-            </div>
-          </div>
-          <button onclick="closeItemModal()" class="w-9 h-9 rounded-xl bg-white hover:bg-gray-100 text-gray-600 flex items-center justify-center shrink-0">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <!-- Customization Options -->
-        <div class="p-6 overflow-y-auto space-y-5 flex-1">
-          ${sizes.length > 0 ? `
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-sm font-extrabold text-gray-800">اختر الحجم / النوع</span>
-                <span class="text-[11px] font-bold bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">مطلوب</span>
-              </div>
-              <div class="space-y-2">
-                ${sizes.map((sz, idx) => {
-                  const checked = idx === modalItemState.selectedSizeIdx;
-                  const szPrice = item.price + sz.extra;
-                  return `
-                    <label onclick="selectModalItemSize(${idx})" class="flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition ${checked ? 'border-brand-500 bg-brand-50/60' : 'border-gray-200 hover:border-brand-300'}">
-                      <div class="flex items-center gap-2.5">
-                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center ${checked ? 'border-brand-500' : 'border-gray-300'}">
-                          ${checked ? '<div class="w-2.5 h-2.5 rounded-full bg-brand-500"></div>' : ''}
-                        </div>
-                        <span class="text-xs sm:text-sm font-extrabold text-gray-800">${sz.name}</span>
-                      </div>
-                      <span class="text-xs sm:text-sm font-black text-brand-600">${szPrice} ج.م</span>
-                    </label>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Special Instructions -->
-          <div>
-            <label class="block text-xs font-extrabold text-gray-700 mb-1.5">ملاحظات خاصة للمطعم (اختياري)</label>
-            <input type="text" id="item-notes-input" value="${modalItemState.notes}" oninput="modalItemState.notes = this.value" placeholder="مثال: بدون بصل، زود تومية، سبايسي خفيف..." class="w-full px-3.5 py-2.5 rounded-2xl border border-gray-200 text-xs font-semibold focus:border-brand-500 outline-none" />
-          </div>
-        </div>
-
-        <!-- Bottom Add to Cart Bar -->
-        <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-4">
-          <!-- Quantity Stepper -->
-          <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-3 py-2">
-            <button onclick="changeModalItemQty(1)" class="w-7 h-7 rounded-xl bg-brand-50 text-brand-600 hover:bg-brand-100 font-black flex items-center justify-center">+</button>
-            <span class="text-sm font-black w-5 text-center">${modalItemState.qty}</span>
-            <button onclick="changeModalItemQty(-1)" class="w-7 h-7 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-black flex items-center justify-center">-</button>
-          </div>
-
-          <button onclick="confirmAddItemToCart()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm py-3.5 px-5 rounded-2xl shadow-md flex items-center justify-between transition">
-            <span>أضف إلى السلة</span>
-            <span>${totalPrice} ج.م</span>
-          </button>
-        </div>
-      `;
-    }
-
-    function selectModalItemSize(idx) {
-      modalItemState.selectedSizeIdx = idx;
-      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
-      let foundItem = null;
-      for (const sec of rest.menu) {
-        const m = sec.items.find(i => i.id === modalItemState.itemId);
-        if (m) { foundItem = m; break; }
-      }
-      renderItemModalContent(rest, foundItem);
-    }
-
-    function changeModalItemQty(delta) {
-      modalItemState.qty = Math.max(1, modalItemState.qty + delta);
-      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
-      let foundItem = null;
-      for (const sec of rest.menu) {
-        const m = sec.items.find(i => i.id === modalItemState.itemId);
-        if (m) { foundItem = m; break; }
-      }
-      renderItemModalContent(rest, foundItem);
-    }
-
-    function confirmAddItemToCart() {
-      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
-      let foundItem = null;
-      for (const sec of rest.menu) {
-        const m = sec.items.find(i => i.id === modalItemState.itemId);
-        if (m) { foundItem = m; break; }
-      }
-      if (!rest || !foundItem) return;
-
-      // Check if cart already has items from another restaurant
-      if (state.cart.length > 0 && state.cart[0].restaurantId !== rest.id) {
-        // Replace cart smoothly and inform user via toast (never using confirm/alert)
-        const prevRestName = RESTAURANTS_DATA[state.cart[0].restaurantId]?.name || 'مطعم آخر';
-        state.cart = [];
-        showToast(`تم بدء سلة جديدة من ${rest.name} بدلاً من ${prevRestName}`, 'info');
-      }
-
-      const sizes = foundItem.sizes || [];
-      const currentSize = sizes[modalItemState.selectedSizeIdx] || null;
-      const unitPrice = foundItem.price + (currentSize ? currentSize.extra : 0);
-      const sizeName = currentSize ? currentSize.name : '';
-
-      // Merge if identical item + size + notes exists
-      const existingIdx = state.cart.findIndex(c =>
-        c.restaurantId === rest.id &&
-        c.itemId === foundItem.id &&
-        c.sizeName === sizeName &&
-        c.notes === modalItemState.notes.trim()
-      );
-
-      if (existingIdx > -1) {
-        state.cart[existingIdx].qty += modalItemState.qty;
-      } else {
-        state.cart.push({
-          uid: 'ci_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-          restaurantId: rest.id,
-          itemId: foundItem.id,
-          name: foundItem.name,
-          price: unitPrice,
-          sizeName,
-          qty: modalItemState.qty,
-          notes: modalItemState.notes.trim(),
-          emoji: foundItem.emoji || rest.heroEmoji
-        });
-      }
-
-      persistState();
-      updateHeaderUI();
-      closeItemModal();
-      showToast(`تمت إضافة "${foundItem.name}" إلى السلة 🛒`, 'success');
-    }
-
-    // =========================================================================
-    // 11. CART DRAWER & CHECKOUT LOGIC
+    // 11. CART DRAWER & DYNAMIC PROMO CODES + CHECKOUT LOGIC
     // =========================================================================
     function toggleCartDrawer(open) {
       const backdrop = document.getElementById('cart-drawer-backdrop');
@@ -1959,13 +3010,27 @@
       const input = document.getElementById('cart-promo-input');
       if (!input) return;
       const code = input.value.trim().toUpperCase();
-      if (code === 'TAYARAN20' || code === 'OCTOBER20') {
-        state.promoCode = { code, discountPercent: 20 };
-        showToast(`مبروك! تم تفعيل خصم 20% بكود ${code} 🎉`, 'success');
+      if (!code) {
+        state.appliedPromoCode = '';
         renderCartDrawer();
-      } else {
-        showToast('كود الخصم غير صحيح. جرب TAYARAN20', 'error');
+        return;
       }
+
+      const promoObj = state.promoCodes.find(p => p.code.toUpperCase() === code && p.active);
+      if (!promoObj) {
+        showToast('كود الخصم غير صالح أو منتهي الصلاحية', 'error');
+        return;
+      }
+
+      const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      if (subtotal < promoObj.minOrder) {
+        showToast(`الحد الأدنى لتطبيق كود ${code} هو ${promoObj.minOrder} ج.م`, 'error');
+        return;
+      }
+
+      state.appliedPromoCode = promoObj.code;
+      showToast(`مبروك! تم تفعيل (${promoObj.title}) 🎉`, 'success');
+      renderCartDrawer();
     }
 
     function setPaymentMethod(method) {
@@ -2000,14 +3065,28 @@
       const area = getCurrentArea();
       restLabel.textContent = `من ${rest.name} • إلى ${area.name}`;
 
-      // Calculate totals
+      // Calculate totals with Dynamic Admin Promo Codes
       const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const rawDeliveryFee = getDeliveryFeeForRestaurant(rest);
-      const isFreeDelivery = subtotal >= rest.freeDeliveryOver;
+      let isFreeDelivery = subtotal >= rest.freeDeliveryOver;
+      let discountAmount = 0;
+
+      const activePromo = state.promoCodes.find(p => p.code === state.appliedPromoCode && p.active && subtotal >= p.minOrder);
+      if (activePromo) {
+        if (activePromo.type === 'percent') {
+          discountAmount = Math.round((subtotal * activePromo.value) / 100);
+        } else if (activePromo.type === 'fixed') {
+          discountAmount = activePromo.value;
+        } else if (activePromo.type === 'free_delivery') {
+          isFreeDelivery = true;
+        }
+      }
+
       const deliveryFee = isFreeDelivery ? 0 : rawDeliveryFee;
       const serviceFee = 7;
-      const discountAmount = state.promoCode ? Math.round((subtotal * state.promoCode.discountPercent) / 100) : 0;
       const grandTotal = Math.max(0, subtotal + deliveryFee + serviceFee - discountAmount);
+
+      const availablePromoHints = state.promoCodes.filter(p => p.active).slice(0, 2).map(p => p.code).join(' أو ');
 
       body.innerHTML = `
         <!-- Delivery Destination Mini Box -->
@@ -2049,11 +3128,14 @@
 
         <!-- Promo Code Box -->
         <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200/80">
-          <label class="block text-[11px] font-extrabold text-gray-700 mb-1.5">عندك كود خصم؟ (جرب TAYARAN20)</label>
+          <label class="block text-[11px] font-extrabold text-gray-700 mb-1.5">
+            عندك كود خصم؟ ${availablePromoHints ? `(جرب ${availablePromoHints})` : ''}
+          </label>
           <div class="flex gap-2">
-            <input type="text" id="cart-promo-input" value="${state.promoCode ? state.promoCode.code : ''}" placeholder="أدخل كود الخصم هنا" class="flex-1 px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold uppercase outline-none focus:border-brand-500" />
+            <input type="text" id="cart-promo-input" value="${state.appliedPromoCode || ''}" placeholder="أدخل كود الخصم هنا" class="flex-1 px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold uppercase outline-none focus:border-brand-500" />
             <button onclick="applyPromoInCart()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2 rounded-xl transition">تطبيق</button>
           </div>
+          ${activePromo ? `<div class="text-[11px] text-emerald-600 font-extrabold mt-1.5">✓ مطبق: ${activePromo.title}</div>` : ''}
         </div>
 
         <!-- Phone & Quick Address Confirmation -->
@@ -2096,7 +3178,7 @@
           </div>
           ${discountAmount > 0 ? `
             <div class="flex justify-between text-emerald-600 font-extrabold">
-              <span>خصم البروموكود (${state.promoCode.code})</span>
+              <span>خصم البروموكود (${activePromo.code})</span>
               <span>- ${discountAmount} ج.م</span>
             </div>
           ` : ''}
@@ -2109,14 +3191,14 @@
 
       footer.classList.remove('hidden');
       footer.innerHTML = `
-        <button onclick="placeOrderNow(${grandTotal})" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-between transition">
+        <button onclick="placeOrderNow(${grandTotal}, ${discountAmount})" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-between transition">
           <span>تأكيد وإرسال الطلب الآن 🚀</span>
           <span>${grandTotal} ج.م</span>
         </button>
       `;
     }
 
-    function placeOrderNow(totalAmount) {
+    function placeOrderNow(totalAmount, discountAmount = 0) {
       if (state.cart.length === 0) return;
 
       const phone = (state.addressDetails.phone || '').trim();
@@ -2141,62 +3223,48 @@
         wallet: 'محفظة إلكترونية'
       };
 
-      state.activeOrder = {
+      const newOrderId = 'ord_' + Date.now();
+      const newOrder = {
+        id: newOrderId,
         orderNumber: Math.floor(100000 + Math.random() * 900000),
         restaurantId: rest.id,
         restaurantName: rest.name,
+        areaId: area.id,
         areaName: area.name,
         eta: rest.deliveryTime,
         address: { ...state.addressDetails },
         paymentLabel: paymentLabels[state.paymentMethod] || 'كاش',
         items: [...state.cart],
+        discount: discountAmount,
+        promoCode: state.appliedPromoCode,
         total: totalAmount,
-        step: 0,
+        status: 'pending',
+        riderId: null,
+        riderName: null,
+        riderPhone: null,
+        riderVehicle: null,
+        riderGps: RESTAURANT_COORDS[rest.id] || { x: 52, y: 48 },
         createdAt: new Date().toISOString()
       };
 
+      state.orders.push(newOrder);
+      state.activeCustomerOrderId = newOrderId;
+
+      // Dispatch automatically to first Ready Rider in One-by-One queue
+      runAutoDispatchQueue();
+
       // Clear cart after placing order
       state.cart = [];
-      persistState();
+      state.appliedPromoCode = '';
+      persistState(true);
       toggleCartDrawer(false);
-      showToast('تم إرسال طلبك بنجاح! كابتن طيران في الطريق 🚀', 'success');
+      showToast('تم إرسال طلبك بنجاح! وتوجيهه لأقرب طيار متاح 🚀', 'success');
       navigateTo('tracking');
-
-      // Start automatic progress simulation
-      startOrderProgressSimulation();
     }
 
-    let orderTimer = null;
-    function startOrderProgressSimulation() {
-      if (orderTimer) clearInterval(orderTimer);
-      orderTimer = setInterval(() => {
-        if (!state.activeOrder) {
-          clearInterval(orderTimer);
-          return;
-        }
-        if (state.activeOrder.step < 3) {
-          state.activeOrder.step += 1;
-          persistState();
-          if (state.view === 'tracking') renderApp();
-        } else {
-          clearInterval(orderTimer);
-        }
-      }, 9000);
-    }
-
-    function advanceOrderStep() {
-      if (!state.activeOrder) return;
-      if (state.activeOrder.step < 3) {
-        state.activeOrder.step += 1;
-        persistState();
-        renderApp();
-        showToast('تم تحديث حالة الطلب!', 'info');
-      }
-    }
-
-    function completeAndClearOrder() {
-      state.activeOrder = null;
-      persistState();
+    function clearCustomerActiveOrder() {
+      state.activeCustomerOrderId = null;
+      persistState(false);
       navigateTo('home');
       showToast('شكراً لاستخدامك طيران! مستنيين طلبك الجاي 🧡', 'success');
     }
@@ -2311,10 +3379,8 @@
     // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedState();
+      runAutoDispatchQueue();
       renderApp();
-      if (state.activeOrder && state.activeOrder.step < 3) {
-        startOrderProgressSimulation();
-      }
     });
   </script>
 </body>
