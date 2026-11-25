@@ -481,6 +481,56 @@
   </div>
 
   <!-- =========================================================
+       MODAL 6: FORCED TEMPORARY ADMIN CREDENTIALS CHANGE MODAL
+  ========================================================== -->
+  <div id="force-creds-modal" class="fixed inset-0 z-[70] hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border-2 border-purple-500">
+      <div class="bg-gradient-to-l from-purple-800 via-purple-700 to-indigo-900 text-white p-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl">
+            <i class="fa-solid fa-shield-keyhole"></i>
+          </div>
+          <div>
+            <span class="bg-amber-300 text-gray-900 text-[10px] font-black px-2.5 py-0.5 rounded-full">حساب أدمن مؤقت</span>
+            <h3 class="font-black text-lg mt-1">تغيير اليوزرنيم والباسوورد الآن</h3>
+          </div>
+        </div>
+        <p class="text-xs text-purple-100 mt-2 leading-relaxed">
+          لأنك دخلت بحساب الأدمن المؤقت (<strong>temp_admin</strong>)، لازم تغير اليوزرنيم والباسوورد دلوقتي عشان تأمن حسابك وتكمل للوحة التحكم.
+        </p>
+      </div>
+
+      <form onsubmit="handleForceCredentialsUpdate(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم الأدمن</label>
+          <input type="text" id="force-admin-name" required value="مدير نظام طيران" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-purple-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1">اليوزرنيم الجديد (Username) *</label>
+          <input type="text" id="force-admin-username" required placeholder="مثال: october_admin" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-purple-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1">الباسوورد الجديد (Password) *</label>
+          <input type="text" id="force-admin-password" required placeholder="اكتب كلمة مرور قوية (6 أحرف فأكثر)" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-purple-600" />
+        </div>
+        <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-black text-sm py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check-double"></i>
+          <span>حفظ البيانات الجديدة والدخول للوحة الأدمن</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 7: ADMIN EDIT PRODUCT / CHANGE IMAGE MODAL
+  ========================================================== -->
+  <div id="edit-product-modal" class="fixed inset-0 z-[60] hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div id="edit-product-modal-content" class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- =========================================================
        DRAWER: SHOPPING CART & CHECKOUT
   ========================================================== -->
   <div id="cart-drawer-backdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs transition-opacity"></div>
@@ -959,13 +1009,14 @@
     // 4. HIGH-CONCURRENCY STATE ENGINE (LOCALSTORAGE + BROADCASTCHANNEL SYNC)
     // =========================================================================
     const DEFAULT_ADMINS = [
-      { id: 'adm_1', name: 'المدير العام - طيران أكتوبر', username: 'admin', password: '123456', role: 'Super Admin' }
+      { id: 'adm_1', name: 'المدير العام - طيران أكتوبر', username: 'admin', password: '123456', role: 'Super Admin', isTemp: false, mustChangeCredentials: false },
+      { id: 'adm_temp_2026', name: 'أدمن مؤقت - طيران أكتوبر', username: 'temp_admin', password: 'Temp@2026', role: 'Temporary Admin', isTemp: true, mustChangeCredentials: true }
     ];
 
     const DEFAULT_RIDERS = [
-      { id: 'rid_1', name: 'كابتن محمود السيد', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل هوجن 150', zone: 'ميدان الحصري والأحياء 1-4', isReady: true, activeOrderId: null, completedCount: 42, gps: { x: 51, y: 47 } },
-      { id: 'rid_2', name: 'كابتن كريم عادل', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل دايون 4', zone: 'الحي السابع وحدائق أكتوبر', isReady: true, activeOrderId: null, completedCount: 29, gps: { x: 58, y: 55 } },
-      { id: 'rid_3', name: 'كابتن أحمد طارق', username: 'rider3', password: '123456', phone: '01233445566', vehicle: 'موتوسيكل بوكسر هندي', zone: 'غرب سوميد ومول العرب', isReady: false, activeOrderId: null, completedCount: 18, gps: { x: 66, y: 39 } }
+      { id: 'rid_1', name: 'محمود السيد أحمد حسن', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل', age: 25, photo: '', zone: 'ميدان الحصري والأحياء 1-4', isReady: true, activeOrderId: null, completedCount: 42, gps: { x: 51, y: 47 } },
+      { id: 'rid_2', name: 'كريم عادل محمد إبراهيم', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل', age: 27, photo: '', zone: 'الحي السابع وحدائق أكتوبر', isReady: true, activeOrderId: null, completedCount: 29, gps: { x: 58, y: 55 } },
+      { id: 'rid_3', name: 'أحمد طارق عبد الله محمود', username: 'rider3', password: '123456', phone: '01233445566', vehicle: 'سكوتر', age: 23, photo: '', zone: 'غرب سوميد ومول العرب', isReady: false, activeOrderId: null, completedCount: 18, gps: { x: 66, y: 39 } }
     ];
 
     const DEFAULT_PROMOS = [
@@ -976,8 +1027,9 @@
 
     let state = {
       view: 'home', // 'home' | 'restaurant' | 'tracking' | 'admin' | 'rider'
-      adminTab: 'orders', // 'orders' | 'promos' | 'riders' | 'admins'
-      currentUser: null, // { id, name, username, role: 'admin' | 'rider' }
+      adminTab: 'ccpulse', // 'ccpulse' | 'orders' | 'products' | 'promos' | 'riders' | 'admins'
+      adminSelectedRestId: 'abou_mazen',
+      currentUser: null, // { id, name, username, role: 'admin' | 'rider', mustChangeCredentials?: boolean }
       selectedAreaId: 'hosary',
       tempSelectedAreaId: 'hosary',
       addressDetails: {
@@ -996,17 +1048,20 @@
       cart: [],
       appliedPromoCode: '',
       paymentMethod: 'cash',
-      orders: [], // Master shared orders queue
+      orders: [], // Master shared orders queue (each order also has messages: [])
       activeCustomerOrderId: null,
       admins: [...DEFAULT_ADMINS],
       riders: [...DEFAULT_RIDERS],
       promoCodes: [...DEFAULT_PROMOS],
       selectedFolderId: 'abou_mazen',
-      editingOrderId: null
+      editingOrderId: null,
+      editingProductCtx: null, // { restId, secIdx, itemId }
+      newProductImageData: '',
+      newRiderPhotoData: ''
     };
 
     // Real-time Cross-Tab Synchronization Channel (Zero-Latency Multi-Window Sync)
-    const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tayaran_october_realtime_v2') : null;
+    const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tayaran_october_realtime_v3') : null;
     if (syncChannel) {
       syncChannel.onmessage = (event) => {
         if (event.data && event.data.type === 'STATE_UPDATED') {
@@ -1033,10 +1088,25 @@
         const admins = localStorage.getItem('tayaran_db_admins');
         const riders = localStorage.getItem('tayaran_db_riders');
         const promos = localStorage.getItem('tayaran_db_promos');
+        const customMenus = localStorage.getItem('tayaran_db_restaurants_menus');
+
         if (orders) state.orders = JSON.parse(orders);
-        if (admins) state.admins = JSON.parse(admins);
+        if (admins) {
+          const parsedAdmins = JSON.parse(admins);
+          // Ensure temp_admin exists if default list was reset
+          const hasTemp = parsedAdmins.some(a => a.id === 'adm_temp_2026' || a.username === 'temp_admin');
+          state.admins = hasTemp ? parsedAdmins : [...parsedAdmins, DEFAULT_ADMINS[1]];
+        }
         if (riders) state.riders = JSON.parse(riders);
         if (promos) state.promoCodes = JSON.parse(promos);
+        if (customMenus) {
+          const parsedMenus = JSON.parse(customMenus);
+          Object.keys(parsedMenus).forEach(rId => {
+            if (RESTAURANTS_DATA[rId]) {
+              RESTAURANTS_DATA[rId].menu = parsedMenus[rId];
+            }
+          });
+        }
       } catch (err) {
         console.warn('Sync read error:', err);
       }
@@ -1060,8 +1130,13 @@
         if (savedActiveOrderId) state.activeCustomerOrderId = savedActiveOrderId;
         if (savedUser) {
           state.currentUser = JSON.parse(savedUser);
-          if (state.currentUser.role === 'admin') state.view = 'admin';
-          if (state.currentUser.role === 'rider') state.view = 'rider';
+          if (state.currentUser.mustChangeCredentials && state.currentUser.role === 'admin') {
+            state.view = 'admin';
+          } else if (state.currentUser.role === 'admin') {
+            state.view = 'admin';
+          } else if (state.currentUser.role === 'rider') {
+            state.view = 'rider';
+          }
         }
       } catch (e) {
         console.warn('Storage load skipped:', e);
@@ -1071,6 +1146,11 @@
     let saveDebounceTimer = null;
     function persistState(broadcast = true) {
       try {
+        const menusMap = {};
+        Object.keys(RESTAURANTS_DATA).forEach(rId => {
+          menusMap[rId] = RESTAURANTS_DATA[rId].menu;
+        });
+
         localStorage.setItem('tayaran_area', state.selectedAreaId);
         localStorage.setItem('tayaran_addr', JSON.stringify(state.addressDetails));
         localStorage.setItem('tayaran_cart', JSON.stringify(state.cart));
@@ -1078,6 +1158,7 @@
         localStorage.setItem('tayaran_db_admins', JSON.stringify(state.admins));
         localStorage.setItem('tayaran_db_riders', JSON.stringify(state.riders));
         localStorage.setItem('tayaran_db_promos', JSON.stringify(state.promoCodes));
+        localStorage.setItem('tayaran_db_restaurants_menus', JSON.stringify(menusMap));
 
         if (state.activeCustomerOrderId) {
           localStorage.setItem('tayaran_active_order_id', state.activeCustomerOrderId);
@@ -1102,6 +1183,25 @@
       }
     }
 
+    // Helper: Render Rider Avatar (Photo if uploaded/URL, otherwise clean initials badge)
+    function renderRiderAvatar(rider, sizeClass = 'w-11 h-11 text-lg') {
+      if (rider && rider.photo && rider.photo.trim() !== '') {
+        return `<img src="${rider.photo}" alt="${rider.name}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="${sizeClass} rounded-2xl object-cover border border-gray-200 shrink-0" />
+                <div style="display:none;" class="${sizeClass} rounded-2xl bg-brand-500 text-white font-black items-center justify-center shrink-0">${(rider.name || 'ط').charAt(0)}</div>`;
+      }
+      const initial = (rider && rider.name ? rider.name.trim().charAt(0) : '🛵');
+      return `<div class="${sizeClass} rounded-2xl bg-gradient-to-br from-brand-500 to-orange-600 text-white font-black flex items-center justify-center shrink-0 shadow-xs">${initial}</div>`;
+    }
+
+    // Helper: Render Product Thumbnail (Custom image URL/base64 or emoji box)
+    function renderProductVisual(item, fallbackEmoji = '🍽️', boxClass = 'w-16 h-16 sm:w-20 sm:h-20 text-3xl sm:text-4xl') {
+      if (item && item.image && item.image.trim() !== '') {
+        return `<img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="${boxClass.split(' ').slice(0, 2).join(' ')} rounded-2xl object-cover border border-gray-200 shrink-0" />
+                <div style="display:none;" class="${boxClass} rounded-2xl bg-brand-50/70 items-center justify-center shrink-0">${item.emoji || fallbackEmoji}</div>`;
+      }
+      return `<div class="${boxClass} rounded-2xl bg-brand-50/70 flex items-center justify-center shrink-0">${item.emoji || fallbackEmoji}</div>`;
+    }
+
     // Helper: Get current Area Object
     function getCurrentArea() {
       return OCTOBER_AREAS.find(a => a.id === state.selectedAreaId) || OCTOBER_AREAS[0];
@@ -1120,7 +1220,6 @@
     // Helper: Get Active Customer Order
     function getCustomerActiveOrder() {
       if (!state.activeCustomerOrderId) {
-        // Fallback to latest non-delivered order if exists
         const latest = [...state.orders].reverse().find(o => o.status !== 'cancelled');
         if (latest) {
           state.activeCustomerOrderId = latest.id;
@@ -1136,27 +1235,34 @@
     // =========================================================================
     function runAutoDispatchQueue() {
       let changed = false;
-      // Find unassigned orders that are pending or preparing
       const unassignedOrders = state.orders.filter(o =>
         !o.riderId && (o.status === 'pending' || o.status === 'preparing')
       );
 
       for (const order of unassignedOrders) {
-        // Find first READY rider who has NO active order right now (One-by-One rule)
+        // One-by-One Rule: Rider must be READY and must NOT have any activeOrderId
         const availableRider = state.riders.find(r => r.isReady === true && !r.activeOrderId);
         if (availableRider) {
           order.riderId = availableRider.id;
           order.riderName = availableRider.name;
           order.riderPhone = availableRider.phone;
           order.riderVehicle = availableRider.vehicle;
+          order.riderPhoto = availableRider.photo || '';
           if (order.status === 'pending') {
             order.status = 'preparing';
           }
-          // Initialize rider GPS at restaurant location
           const restCoords = RESTAURANT_COORDS[order.restaurantId] || { x: 52, y: 48 };
           availableRider.activeOrderId = order.id;
           availableRider.gps = { ...restCoords };
           order.riderGps = { ...restCoords };
+          if (!Array.isArray(order.messages)) order.messages = [];
+          order.messages.push({
+            id: 'msg_sys_' + Date.now(),
+            senderRole: 'system',
+            senderName: 'نظام طيران',
+            text: `تم إسناد الطلب #${order.orderNumber} للكابتن (${availableRider.name} - ${availableRider.vehicle}). يمكنك مراسلته مباشرة هنا!`,
+            time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+          });
           changed = true;
         }
       }
@@ -1164,6 +1270,108 @@
       if (changed) {
         persistState(true);
       }
+    }
+
+    // =========================================================================
+    // LIVE CHAT BETWEEN RIDER AND CUSTOMER
+    // =========================================================================
+    function sendOrderChatMessage(orderId, senderRole, customText = null) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+
+      const inputId = senderRole === 'customer' ? 'customer-chat-input' : 'rider-chat-input';
+      const inputEl = document.getElementById(inputId);
+      const text = (customText !== null ? customText : (inputEl ? inputEl.value : '')).trim();
+      if (!text) return;
+
+      if (!Array.isArray(ord.messages)) ord.messages = [];
+      const senderName = senderRole === 'customer'
+        ? 'العميل'
+        : (ord.riderName || 'كابتن طيران');
+
+      ord.messages.push({
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        senderRole,
+        senderName,
+        text,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      if (inputEl && customText === null) inputEl.value = '';
+      persistState(true);
+      renderApp();
+      showToast('تم إرسال الرسالة لحظياً 💬', 'info');
+    }
+
+    function renderOrderChatBox(ord, viewerRole) {
+      const msgs = Array.isArray(ord.messages) ? ord.messages : [];
+      const quickPresets = viewerRole === 'rider'
+        ? ['أنا تحت العمارة في انتظارك 🛵', 'استلمت الأوردر من المطعم ومتجه ليك', 'ممكن تأكيد رقم الدور والشقة؟']
+        : ['أنا مستنيك تحت / على الباب 👍', 'كلمني لما توصل عند العمارة لو سمحت', 'الطلب مستعجل بالهنا والشفا'];
+
+      return `
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden flex flex-col">
+          <div class="bg-gray-900 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-comments text-brand-400"></i>
+              <span class="text-xs sm:text-sm font-black">
+                ${viewerRole === 'rider' ? 'شات مباشر مع العميل' : `شات مباشر مع الكابتن (${ord.riderName || 'طيار طيران'})`}
+              </span>
+            </div>
+            <span class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">● متصل الآن</span>
+          </div>
+
+          <!-- Messages Feed -->
+          <div id="chat-messages-${ord.id}" class="p-3.5 space-y-2.5 max-h-56 overflow-y-auto bg-gray-50/70">
+            ${msgs.length === 0 ? `
+              <div class="text-center text-xs text-gray-400 py-6">لا توجد رسائل بعد. ابدأ المحادثة الآن!</div>
+            ` : msgs.map(m => {
+              if (m.senderRole === 'system') {
+                return `
+                  <div class="text-center">
+                    <span class="inline-block bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold px-3 py-1 rounded-full">${m.text}</span>
+                  </div>
+                `;
+              }
+              const isMine = m.senderRole === viewerRole;
+              return `
+                <div class="flex flex-col ${isMine ? 'items-start' : 'items-end'}">
+                  <div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-xs font-bold shadow-2xs ${isMine ? 'bg-brand-500 text-white rounded-br-xs' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-xs'}">
+                    <div class="text-[10px] opacity-80 mb-0.5 flex items-center justify-between gap-2">
+                      <span>${m.senderName}</span>
+                      <span>${m.time}</span>
+                    </div>
+                    <p class="leading-relaxed">${m.text}</p>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Quick Preset Chips -->
+          <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            ${quickPresets.map(qText => `
+              <button type="button" onclick="sendOrderChatMessage('${ord.id}', '${viewerRole}', '${qText.replace(/'/g, "\\'")}')" class="text-[10px] font-extrabold bg-white hover:bg-brand-50 text-gray-700 hover:text-brand-600 border border-gray-200 px-2.5 py-1 rounded-full whitespace-nowrap transition shrink-0">
+                ${qText}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Input Form -->
+          <form onsubmit="event.preventDefault(); sendOrderChatMessage('${ord.id}', '${viewerRole}');" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
+            <input
+              type="text"
+              id="${viewerRole === 'customer' ? 'customer-chat-input' : 'rider-chat-input'}"
+              placeholder="${viewerRole === 'rider' ? 'اكتب رسالة للعميل...' : 'اكتب رسالة للكابتن...'}"
+              class="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500"
+            />
+            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1 shrink-0">
+              <span>إرسال</span>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      `;
     }
 
     // =========================================================================
@@ -1217,7 +1425,7 @@
     }
 
     // =========================================================================
-    // 6. NAVIGATION, STAFF AUTH & HEADER SYNC
+    // 6. NAVIGATION, STAFF AUTH & FORCED TEMP ADMIN CREDENTIALS CHANGE
     // =========================================================================
     function updateHeaderUI() {
       const area = getCurrentArea();
@@ -1276,6 +1484,51 @@
       document.getElementById('login-password').value = pass;
     }
 
+    function openForceCredentialsModal(adminObj) {
+      document.getElementById('force-admin-name').value = adminObj.name || 'مدير نظام طيران';
+      document.getElementById('force-admin-username').value = '';
+      document.getElementById('force-admin-password').value = '';
+      document.getElementById('force-creds-modal').classList.remove('hidden');
+    }
+
+    function handleForceCredentialsUpdate(e) {
+      e.preventDefault();
+      if (!state.currentUser || state.currentUser.role !== 'admin') return;
+
+      const newName = document.getElementById('force-admin-name').value.trim();
+      const newUser = document.getElementById('force-admin-username').value.trim().toLowerCase();
+      const newPass = document.getElementById('force-admin-password').value.trim();
+
+      if (newUser.length < 3 || newPass.length < 4) {
+        showToast('اليوزرنيم 3 أحرف على الأقل والباسوورد 4 أحرف على الأقل', 'error');
+        return;
+      }
+
+      const duplicate = state.admins.some(a => a.id !== state.currentUser.id && a.username.toLowerCase() === newUser);
+      if (duplicate) {
+        showToast('هذا اليوزرنيم مستخدم لحساب أدمن آخر!', 'error');
+        return;
+      }
+
+      const adm = state.admins.find(a => a.id === state.currentUser.id);
+      if (adm) {
+        adm.name = newName;
+        adm.username = newUser;
+        adm.password = newPass;
+        adm.isTemp = false;
+        adm.mustChangeCredentials = false;
+      }
+
+      state.currentUser.name = newName;
+      state.currentUser.username = newUser;
+      state.currentUser.mustChangeCredentials = false;
+
+      document.getElementById('force-creds-modal').classList.add('hidden');
+      persistState(true);
+      showToast(`تم تغيير اليوزرنيم والباسوورد بنجاح! مرحباً ${newName} 🎉`, 'success');
+      navigateTo('admin');
+    }
+
     function handleStaffLogin(e) {
       e.preventDefault();
       const username = document.getElementById('login-username').value.trim().toLowerCase();
@@ -1284,9 +1537,24 @@
       // Check Admins
       const adminMatch = state.admins.find(a => a.username.toLowerCase() === username && a.password === password);
       if (adminMatch) {
-        state.currentUser = { id: adminMatch.id, name: adminMatch.name, username: adminMatch.username, role: 'admin' };
+        state.currentUser = {
+          id: adminMatch.id,
+          name: adminMatch.name,
+          username: adminMatch.username,
+          role: 'admin',
+          mustChangeCredentials: !!adminMatch.mustChangeCredentials
+        };
         persistState(false);
         closeLoginModal();
+
+        if (adminMatch.mustChangeCredentials) {
+          state.view = 'admin';
+          renderApp();
+          openForceCredentialsModal(adminMatch);
+          showToast('حساب مؤقت: يرجى تعيين اليوزرنيم والباسوورد الجديد أولاً 🔐', 'info');
+          return;
+        }
+
         showToast(`أهلاً بك يا ${adminMatch.name} في لوحة الإدارة 👑`, 'success');
         navigateTo('admin');
         return;
@@ -1308,6 +1576,7 @@
 
     function logoutStaff() {
       state.currentUser = null;
+      document.getElementById('force-creds-modal').classList.add('hidden');
       persistState(false);
       showToast('تم تسجيل الخروج بنجاح', 'info');
       navigateTo('home');
@@ -1344,6 +1613,13 @@
         root.innerHTML = renderRiderDashboardView();
       } else if (state.view === 'admin') {
         root.innerHTML = renderAdminDashboardView();
+      }
+
+      if (state.currentUser && state.currentUser.role === 'admin' && state.currentUser.mustChangeCredentials) {
+        const adm = state.admins.find(a => a.id === state.currentUser.id);
+        if (adm && adm.mustChangeCredentials) {
+          openForceCredentialsModal(adm);
+        }
       }
     }
 
@@ -1768,9 +2044,7 @@
                       </div>
 
                       <div class="flex flex-col items-center gap-2 shrink-0">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-brand-50/70 flex items-center justify-center text-3xl sm:text-4xl group-hover:scale-105 transition-transform">
-                          ${item.emoji || rest.heroEmoji}
-                        </div>
+                        ${renderProductVisual(item, rest.heroEmoji)}
                         <button class="bg-brand-500 group-hover:bg-brand-600 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-xl shadow-xs transition flex items-center gap-1">
                           <i class="fa-solid fa-plus"></i>
                           <span>أضف</span>
@@ -1786,7 +2060,7 @@
       `;
     }
 
-    // --- VIEW C: LIVE ORDER TRACKING WITH INTERACTIVE 6TH OF OCTOBER GPS MAP ---
+    // --- VIEW C: LIVE ORDER TRACKING WITH INTERACTIVE 6TH OF OCTOBER GPS MAP & CHAT ---
     function renderTrackingView() {
       const ord = getCustomerActiveOrder();
       if (!ord) {
@@ -1810,14 +2084,12 @@
         { key: 'delivered', title: 'تم التوصيل بالهنا والشفا!', desc: 'وصل طلبك بنجاح! نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
       ];
 
-      // Calculate GPS positions on 6th of October Interactive Map
       const restCoords = RESTAURANT_COORDS[ord.restaurantId] || { x: 52, y: 48 };
       const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || getCurrentArea();
       const custCoords = areaObj.coords || { x: 46, y: 42 };
       const riderObj = ord.riderId ? state.riders.find(r => r.id === ord.riderId) : null;
       const riderCoords = (riderObj && riderObj.gps) ? riderObj.gps : (ord.riderGps || restCoords);
 
-      // Calculate distance & ETA dynamically
       const dx = custCoords.x - riderCoords.x;
       const dy = custCoords.y - riderCoords.y;
       const distKm = Math.max(0.2, (Math.sqrt(dx * dx + dy * dy) * 0.18)).toFixed(1);
@@ -1863,26 +2135,19 @@
                 </div>
               </div>
 
-              <!-- Interactive SVG + HTML Radar Map of 6th of October -->
               <div class="relative w-full h-72 sm:h-80 rounded-3xl october-map-grid border-2 border-gray-200 overflow-hidden shadow-inner">
-                <!-- October Major Highways SVG Overlay -->
                 <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <!-- Al-Mehwar Al-Markazi -->
                   <path d="M 10 52 Q 50 46 92 42" stroke="#cbd5e1" stroke-width="2.2" fill="none" />
                   <path d="M 10 52 Q 50 46 92 42" stroke="#ffffff" stroke-width="0.6" stroke-dasharray="2,2" fill="none" />
-                  <!-- Wahat Road -->
                   <path d="M 20 82 Q 60 66 95 52" stroke="#cbd5e1" stroke-width="2" fill="none" />
-                  <!-- Route Line from Restaurant -> Rider -> Customer -->
                   <line x1="${restCoords.x}" y1="${restCoords.y}" x2="${custCoords.x}" y2="${custCoords.y}" stroke="#ff5a00" stroke-width="1.2" stroke-dasharray="2.5,2" />
                   ${ord.riderId ? `<line x1="${riderCoords.x}" y1="${riderCoords.y}" x2="${custCoords.x}" y2="${custCoords.y}" stroke="#10b981" stroke-width="1.6" />` : ''}
                 </svg>
 
-                <!-- Landmarks Labels on Map -->
                 <span class="absolute top-3 right-4 text-[10px] font-extrabold text-gray-400 bg-white/80 px-2 py-0.5 rounded-lg">الشيخ زايد & مول العرب</span>
                 <span class="absolute bottom-3 left-4 text-[10px] font-extrabold text-gray-400 bg-white/80 px-2 py-0.5 rounded-lg">طريق الواحات & حدائق أكتوبر</span>
                 <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] font-extrabold text-gray-400/70">المحور المركزي - 6 أكتوبر</span>
 
-                <!-- 1. Restaurant Pin -->
                 <div style="left: ${restCoords.x}%; top: ${restCoords.y}%;" class="absolute -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
                   <div class="bg-amber-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md whitespace-nowrap mb-1">
                     ${ord.restaurantName}
@@ -1892,7 +2157,6 @@
                   </div>
                 </div>
 
-                <!-- 2. Customer Pin -->
                 <div style="left: ${custCoords.x}%; top: ${custCoords.y}%;" class="absolute -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center">
                   <div class="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-md whitespace-nowrap mb-1">
                     موقعك (${ord.areaName})
@@ -1902,7 +2166,6 @@
                   </div>
                 </div>
 
-                <!-- 3. LIVE RIDER PIN (Moves in Real-Time) -->
                 ${ord.riderId ? `
                   <div style="left: ${riderCoords.x}%; top: ${riderCoords.y}%; transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);" class="absolute -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
                     <div class="bg-gray-900 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-lg whitespace-nowrap mb-1 border border-brand-400">
@@ -1923,9 +2186,9 @@
               </div>
             </div>
 
-            <!-- Order Progress & Details -->
+            <!-- Order Progress, Live Chat & Details -->
             <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <!-- Timeline Steps -->
+              <!-- Timeline Steps + Live Chat -->
               <div class="lg:col-span-7 space-y-6">
                 <h3 class="font-black text-gray-800 text-base">مراحل توصيل الطلب لحظة بلحظة</h3>
                 <div class="space-y-5 relative before:content-[''] before:absolute before:right-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
@@ -1946,6 +2209,9 @@
                   }).join('')}
                 </div>
 
+                <!-- LIVE CUSTOMER <-> RIDER CHAT -->
+                ${renderOrderChatBox(ord, 'customer')}
+
                 <div class="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
                   ${ord.status === 'delivered' || ord.status === 'cancelled' ? `
                     <button onclick="clearCustomerActiveOrder()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition">
@@ -1964,17 +2230,14 @@
 
               <!-- Rider & Receipt Info -->
               <div class="lg:col-span-5 space-y-4">
-                <!-- Assigned Rider Card -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-center justify-between">
                   ${ord.riderId ? `
                     <div class="flex items-center gap-3">
-                      <div class="w-12 h-12 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl font-black">
-                        🛵
-                      </div>
+                      ${renderRiderAvatar(riderObj || { name: ord.riderName, photo: ord.riderPhoto }, 'w-12 h-12 text-xl')}
                       <div>
                         <div class="text-[11px] font-bold text-gray-400">كابتن طيران المسؤول</div>
                         <div class="text-sm font-black text-gray-900">${ord.riderName}</div>
-                        <div class="text-xs text-gray-600 font-bold">${ord.riderVehicle || 'موتوسيكل'} • ${ord.riderPhone || ''}</div>
+                        <div class="text-xs text-gray-600 font-bold">${ord.riderVehicle || 'موتوسيكل'} ${riderObj?.age ? `• ${riderObj.age} سنة` : ''} • ${ord.riderPhone || ''}</div>
                       </div>
                     </div>
                     <button onclick="showToast('جاري الاتصال بـ ${ord.riderName} (${ord.riderPhone})...', 'info')" class="w-10 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-xs transition">
@@ -1993,7 +2256,6 @@
                   `}
                 </div>
 
-                <!-- Delivery Address Summary -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-1.5 text-xs">
                   <div class="font-extrabold text-gray-800 flex items-center gap-1.5">
                     <i class="fa-solid fa-location-dot text-brand-500"></i>
@@ -2003,7 +2265,6 @@
                   <p class="text-gray-500">${ord.address.street || ''} ${ord.address.building ? `- عمارة ${ord.address.building}` : ''} ${ord.address.floor ? `- دور ${ord.address.floor}` : ''} ${ord.address.apt ? `- شقة ${ord.address.apt}` : ''}</p>
                 </div>
 
-                <!-- Items Receipt -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-2 text-xs">
                   <div class="font-extrabold text-gray-800 border-b border-gray-200 pb-2 flex justify-between">
                     <span>فاتورة (${ord.restaurantName})</span>
@@ -2034,7 +2295,7 @@
     }
 
     // =========================================================================
-    // --- VIEW D: RIDER DASHBOARD (READY / NOT READY + ONE-BY-ONE QUEUE) ---
+    // --- VIEW D: RIDER DASHBOARD (READY / NOT READY + ONE-BY-ONE + CHAT) ---
     // =========================================================================
     function renderRiderDashboardView() {
       if (!state.currentUser || state.currentUser.role !== 'rider') {
@@ -2053,7 +2314,6 @@
         return '';
       }
 
-      // Find the ONE active order assigned to this rider (One-by-One Dispatch)
       const activeOrder = rider.activeOrderId
         ? state.orders.find(o => o.id === rider.activeOrderId && o.status !== 'delivered' && o.status !== 'cancelled')
         : state.orders.find(o => o.riderId === rider.id && o.status !== 'delivered' && o.status !== 'cancelled');
@@ -2072,21 +2332,20 @@
           <!-- Rider Top Control Card -->
           <div class="bg-gray-900 text-white rounded-3xl p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-              <div class="w-14 h-14 rounded-2xl ${rider.isReady ? 'bg-emerald-500' : 'bg-gray-700'} text-white flex items-center justify-center text-3xl shadow-lg">
-                🛵
-              </div>
+              ${renderRiderAvatar(rider, 'w-14 h-14 text-2xl')}
               <div>
-                <div class="flex items-center gap-2">
-                  <h1 class="text-xl sm:text-2xl font-black">${rider.name}</h1>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h1 class="text-lg sm:text-xl font-black">${rider.name}</h1>
                   <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold ${rider.isReady ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'}">
                     ${rider.isReady ? '● Ready (متاح للطلبات)' : '○ Not Ready (غير متاح)'}
                   </span>
                 </div>
-                <p class="text-xs text-gray-400 mt-1">${rider.vehicle} • منطقة العمل: ${rider.zone}</p>
+                <p class="text-xs text-gray-400 mt-1">
+                  ${rider.vehicle} ${rider.age ? `• السن: ${rider.age} سنة` : ''} • ${rider.phone} • منطقة: ${rider.zone}
+                </p>
               </div>
             </div>
 
-            <!-- READY / NOT READY TOGGLE & LOGOUT -->
             <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <button onclick="toggleRiderReadyStatus('${rider.id}')" class="px-5 py-3 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-md flex items-center gap-2 ${rider.isReady ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}">
                 <i class="fa-solid ${rider.isReady ? 'fa-toggle-on text-lg' : 'fa-toggle-off text-lg'}"></i>
@@ -2099,7 +2358,6 @@
             </div>
           </div>
 
-          <!-- Status Explanation Banner -->
           ${!rider.isReady ? `
             <div class="bg-red-50 border-2 border-red-200 rounded-3xl p-6 text-center space-y-2">
               <div class="text-4xl">⏸️</div>
@@ -2108,7 +2366,6 @@
             </div>
           ` : ''}
 
-          <!-- ACTIVE SINGLE ORDER DISPATCH CARD (ONE-BY-ONE) -->
           ${activeOrder ? `
             <div class="bg-white rounded-3xl border-2 border-brand-500 shadow-card overflow-hidden">
               <div class="bg-brand-500 text-white px-6 py-4 flex items-center justify-between">
@@ -2120,7 +2377,6 @@
               </div>
 
               <div class="p-6 space-y-5">
-                <!-- Pickup & Dropoff Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-4">
                     <div class="text-[11px] font-extrabold text-amber-700 mb-1">1️⃣ الاستلام من المطعم:</div>
@@ -2138,7 +2394,6 @@
                   </div>
                 </div>
 
-                <!-- Order Items -->
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/70">
                   <div class="text-xs font-extrabold text-gray-600 mb-2">محتويات الأوردر:</div>
                   <div class="space-y-1.5 text-xs font-bold text-gray-800">
@@ -2151,7 +2406,9 @@
                   </div>
                 </div>
 
-                <!-- Rider Live GPS Simulation & Step Controls -->
+                <!-- LIVE RIDER <-> CUSTOMER CHAT -->
+                ${renderOrderChatBox(activeOrder, 'rider')}
+
                 <div class="bg-gray-900 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div class="text-xs">
                     <div class="font-extrabold text-brand-400">تحديث موقعك اللايف للعميل (GPS)</div>
@@ -2176,7 +2433,6 @@
               </div>
             </div>
           ` : rider.isReady ? `
-            <!-- Ready & Waiting for Next Order in Queue -->
             <div class="bg-white rounded-3xl p-10 text-center border border-gray-100 shadow-card space-y-3">
               <div class="w-20 h-20 mx-auto rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-4xl">
                 <i class="fa-solid fa-satellite-dish fa-beat"></i>
@@ -2194,7 +2450,6 @@
             </div>
           ` : ''}
 
-          <!-- Rider Stats & Completed History -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
               <div class="text-xs text-gray-400 font-bold">إجمالي توصيلاتك</div>
@@ -2214,7 +2469,7 @@
     }
 
     // =========================================================================
-    // --- VIEW E: COMPREHENSIVE ADMIN DASHBOARD ---
+    // --- VIEW E: COMPREHENSIVE ADMIN DASHBOARD (CCPULSE + PRODUCTS + RIDERS) ---
     // =========================================================================
     function renderAdminDashboardView() {
       if (!state.currentUser || state.currentUser.role !== 'admin') {
@@ -2228,8 +2483,11 @@
       }
 
       const totalRevenue = state.orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
-      const activeOrdersCount = state.orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
-      const readyRidersCount = state.riders.filter(r => r.isReady).length;
+      const readyRiders = state.riders.filter(r => r.isReady);
+      const notReadyRiders = state.riders.filter(r => !r.isReady);
+      const waitingForRiderOrders = state.orders.filter(o =>
+        (o.status === 'pending' || o.status === 'preparing') && !o.riderId
+      );
 
       return `
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -2242,7 +2500,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h1 class="text-xl sm:text-2xl font-black">لوحة تحكم إدارة طيران - 6 أكتوبر</h1>
-                  <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">مزامنة لحظية</span>
+                  <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">CCPulse LIVE</span>
                 </div>
                 <p class="text-xs text-gray-400 mt-1">مرحباً <strong>${state.currentUser.name}</strong> (@${state.currentUser.username})</p>
               </div>
@@ -2258,37 +2516,51 @@
             </div>
           </div>
 
-          <!-- KPI Stats Strip -->
+          <!-- CCPulse Live Operations Strip -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
-              <div class="text-xs text-gray-400 font-bold">إجمالي الطلبات</div>
-              <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${state.orders.length}</div>
-              <div class="text-[11px] text-brand-600 font-bold mt-1">${activeOrdersCount} طلبات نشطة الآن</div>
+            <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-emerald-200 hover:border-emerald-400 shadow-xs transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-emerald-700 font-extrabold">طيارين READY</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">${readyRiders.length}</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">جاهزين لاستلام الأوردرات</div>
             </div>
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
+
+            <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-red-200 hover:border-red-400 shadow-xs transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-red-700 font-extrabold">طيارين NOT READY</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-red-600 mt-1">${notReadyRiders.length}</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">غير متاحين حالياً</div>
+            </div>
+
+            <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-amber-200 hover:border-amber-400 shadow-xs transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-amber-800 font-extrabold">طلبات مستنية طيار</span>
+                <i class="fa-solid fa-clock-rotate-left text-amber-500 text-sm"></i>
+              </div>
+              <div class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">${waitingForRiderOrders.length}</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">في انتظار إسناد كابتن</div>
+            </div>
+
+            <div onclick="switchAdminTab('orders')" class="cursor-pointer bg-white p-5 rounded-3xl border border-gray-100 hover:border-brand-300 shadow-xs transition">
               <div class="text-xs text-gray-400 font-bold">إجمالي المبيعات</div>
-              <div class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">${totalRevenue} ج.م</div>
-              <div class="text-[11px] text-gray-400 font-bold mt-1">6 أكتوبر والشيخ زايد</div>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
-              <div class="text-xs text-gray-400 font-bold">كباتن الطيارين</div>
-              <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${readyRidersCount} / ${state.riders.length}</div>
-              <div class="text-[11px] text-emerald-600 font-bold mt-1">كباتن في وضع Ready</div>
-            </div>
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-xs">
-              <div class="text-xs text-gray-400 font-bold">أكواد الخصم النشطة</div>
-              <div class="text-2xl sm:text-3xl font-black text-purple-600 mt-1">${state.promoCodes.filter(p => p.active).length}</div>
-              <div class="text-[11px] text-gray-400 font-bold mt-1">تُطبق تلقائياً للعملاء</div>
+              <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${totalRevenue} ج.م</div>
+              <div class="text-[11px] text-brand-600 font-bold mt-1">${state.orders.length} طلب إجمالي</div>
             </div>
           </div>
 
           <!-- Admin Navigation Tabs -->
           <div class="bg-white p-2 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-2 overflow-x-auto no-scrollbar">
             ${[
-              { id: 'orders', label: 'إدارة الطلبات والتعديل عليها', icon: 'fa-bag-shopping' },
-              { id: 'promos', label: 'إنشاء وإدارة البرومو كود', icon: 'fa-tags' },
+              { id: 'ccpulse', label: 'CCPulse (مراقبة الطيارين والطلبات)', icon: 'fa-chart-line' },
+              { id: 'orders', label: 'إدارة الطلبات والتعديل', icon: 'fa-bag-shopping' },
+              { id: 'products', label: 'إضافة منتجات وتعديل الصور', icon: 'fa-utensils' },
+              { id: 'promos', label: 'البرومو كود', icon: 'fa-tags' },
               { id: 'riders', label: 'إضافة وإدارة الطيارين', icon: 'fa-motorcycle' },
-              { id: 'admins', label: 'حسابات الأدمن وتغيير الباسوورد', icon: 'fa-user-lock' }
+              { id: 'admins', label: 'الأدمن وتغيير الباسوورد', icon: 'fa-user-lock' }
             ].map(tab => `
               <button onclick="switchAdminTab('${tab.id}')" class="flex items-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition ${state.adminTab === tab.id ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}">
                 <i class="fa-solid ${tab.icon}"></i>
@@ -2299,12 +2571,126 @@
 
           <!-- TAB CONTENT -->
           <div>
+            ${state.adminTab === 'ccpulse' ? renderAdminCcPulseTab(readyRiders, notReadyRiders, waitingForRiderOrders) : ''}
             ${state.adminTab === 'orders' ? renderAdminOrdersTab() : ''}
+            ${state.adminTab === 'products' ? renderAdminProductsTab() : ''}
             ${state.adminTab === 'promos' ? renderAdminPromosTab() : ''}
             ${state.adminTab === 'riders' ? renderAdminRidersTab() : ''}
             ${state.adminTab === 'admins' ? renderAdminAccountsTab() : ''}
           </div>
         </section>
+      `;
+    }
+
+    // --- ADMIN TAB 0: CCPULSE LIVE COMMAND MONITOR ---
+    function renderAdminCcPulseTab(readyRiders, notReadyRiders, waitingOrders) {
+      const busyRiders = state.riders.filter(r => r.isReady && r.activeOrderId);
+      const freeReadyRiders = state.riders.filter(r => r.isReady && !r.activeOrderId);
+
+      return `
+        <div class="space-y-6">
+          <div class="bg-gray-900 text-white rounded-3xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 bg-brand-500/20 border border-brand-500/40 text-brand-300 text-xs font-black px-3 py-1 rounded-full mb-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>CCPulse Real-Time Dispatch & Fleet Monitor</span>
+              </div>
+              <h2 class="text-xl font-black">شاشة مراقبة العمليات الحية لمدينة 6 أكتوبر</h2>
+              <p class="text-xs text-gray-400 mt-1">
+                متابعة فورية لعدد الطيارين <strong>Ready</strong> و<strong>Not Ready</strong>، والطلبات المنتظرة طياراً، وتوزيع الطلبات بنظام واحد ورا التاني.
+              </p>
+            </div>
+            <button onclick="runAutoDispatchQueue(); renderApp(); showToast('تم تحديث وتوزيع طابور الطلبات الآن ⚡', 'success');" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-black px-5 py-3 rounded-2xl shadow-md transition shrink-0">
+              <i class="fa-solid fa-bolt ml-1"></i> تشغيل التوزيع الفوري الآن
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Column 1: READY RIDERS -->
+            <div class="bg-white rounded-3xl border border-emerald-200 shadow-card p-5 space-y-4">
+              <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h3 class="font-black text-emerald-700 text-base flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                  <span>طيارين READY (${readyRiders.length})</span>
+                </h3>
+                <span class="text-[11px] font-bold text-gray-500">${freeReadyRiders.length} فاضي • ${busyRiders.length} في توصيل</span>
+              </div>
+              <div class="space-y-2.5 max-h-80 overflow-y-auto">
+                ${readyRiders.length === 0 ? `<p class="text-xs text-gray-400 text-center py-6">لا يوجد طيارين في وضع Ready حالياً</p>` : readyRiders.map(r => `
+                  <div class="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
+                      <div class="min-w-0">
+                        <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
+                        <div class="text-[10px] text-gray-500 font-bold">${r.vehicle} • ${r.activeOrderId ? '🚚 معه أوردر نشط' : '⏳ جاهز لأوردر جديد'}</div>
+                      </div>
+                    </div>
+                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-white hover:bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-xl shrink-0">
+                      تحويل Not Ready
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Column 2: NOT READY RIDERS -->
+            <div class="bg-white rounded-3xl border border-red-200 shadow-card p-5 space-y-4">
+              <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h3 class="font-black text-red-700 text-base flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                  <span>طيارين NOT READY (${notReadyRiders.length})</span>
+                </h3>
+                <span class="text-[11px] font-bold text-red-500">لا يستقبلون طلبات</span>
+              </div>
+              <div class="space-y-2.5 max-h-80 overflow-y-auto">
+                ${notReadyRiders.length === 0 ? `<p class="text-xs text-gray-400 text-center py-6">كل الطيارين في وضع Ready الآن 🎉</p>` : notReadyRiders.map(r => `
+                  <div class="p-3 rounded-2xl bg-red-50/50 border border-red-100 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
+                      <div class="min-w-0">
+                        <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
+                        <div class="text-[10px] text-gray-500 font-bold">${r.vehicle} • ${r.zone}</div>
+                      </div>
+                    </div>
+                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl shrink-0">
+                      تفعيل Ready
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Column 3: ORDERS WAITING FOR RIDER -->
+            <div class="bg-white rounded-3xl border border-amber-200 shadow-card p-5 space-y-4">
+              <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h3 class="font-black text-amber-800 text-base flex items-center gap-2">
+                  <i class="fa-solid fa-bell text-amber-500"></i>
+                  <span>طلبات مستنية طيار (${waitingOrders.length})</span>
+                </h3>
+                <span class="text-[11px] font-bold text-amber-700">طابور الانتظار</span>
+              </div>
+              <div class="space-y-2.5 max-h-80 overflow-y-auto">
+                ${waitingOrders.length === 0 ? `
+                  <div class="text-center py-6 space-y-1">
+                    <div class="text-2xl">✅</div>
+                    <p class="text-xs font-extrabold text-gray-600">لا توجد طلبات منتظرة طياراً حالياً</p>
+                  </div>
+                ` : waitingOrders.map(ord => `
+                  <div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-black text-gray-900">#${ord.orderNumber} • ${ord.restaurantName}</span>
+                      <span class="text-xs font-black text-brand-600">${ord.total} ج.م</span>
+                    </div>
+                    <div class="text-[11px] text-gray-600 font-bold">المنطقة: ${ord.areaName}</div>
+                    <button onclick="openAdminOrderEditor('${ord.id}')" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-extrabold py-1.5 rounded-xl transition">
+                      إسناد طيار يدوياً الآن
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
       `;
     }
 
@@ -2383,11 +2769,307 @@
       `;
     }
 
-    // --- ADMIN TAB 2: PROMO CODES CREATOR & MANAGER ---
+    // --- ADMIN TAB 2: ADD PRODUCTS & EDIT PRODUCT IMAGES / DETAILS ---
+    function renderAdminProductsTab() {
+      const restList = Object.values(RESTAURANTS_DATA);
+      const selectedRest = RESTAURANTS_DATA[state.adminSelectedRestId] || restList[0];
+
+      return `
+        <div class="space-y-6">
+          <!-- Restaurant Selector Bar -->
+          <div class="bg-white rounded-3xl border border-gray-100 shadow-xs p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-base font-black text-gray-900">إدارة منيو المطاعم وإضافة / تعديل صور المنتجات</h2>
+              <p class="text-xs text-gray-500">اختر المطعم لإضافة منتج جديد أو تغيير صورة أي منتج حالي</p>
+            </div>
+            <select onchange="handleAdminSelectRestaurant(this.value)" class="px-4 py-2.5 rounded-2xl border border-gray-200 bg-gray-50 text-xs sm:text-sm font-black text-gray-900 outline-none focus:border-brand-500">
+              ${restList.map(r => `<option value="${r.id}" ${r.id === selectedRest.id ? 'selected' : ''}>${r.heroEmoji} ${r.name} (${r.branch})</option>`).join('')}
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Add New Product Form -->
+            <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
+              <h3 class="text-lg font-black text-gray-900 mb-1">إضافة منتج جديد إلى (${selectedRest.name})</h3>
+              <p class="text-xs text-gray-500 mb-4">هيظهر فوراً في منيو المطعم وفي فولدر المطعم</p>
+
+              <form onsubmit="handleAddNewProduct(event)" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم المنتج *</label>
+                  <input type="text" id="new-prod-name" required placeholder="مثال: وجبة شاورما صاروخ دبل" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-extrabold text-gray-700 mb-1">القسم داخل المنيو</label>
+                    <select id="new-prod-section" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white outline-none focus:border-brand-500">
+                      ${selectedRest.menu.map((s, idx) => `<option value="${idx}">${s.section}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-extrabold text-gray-700 mb-1">السعر (ج.م) *</label>
+                    <input type="number" id="new-prod-price" min="1" required placeholder="120" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-black outline-none focus:border-brand-500" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">وصف المنتج *</label>
+                  <textarea id="new-prod-desc" rows="2" required placeholder="اكتب مكونات الوجبة أو الصنف..." class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500"></textarea>
+                </div>
+
+                <!-- Product Image Upload or URL -->
+                <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 space-y-2.5">
+                  <label class="block text-xs font-extrabold text-gray-800">صورة المنتج (رفع من الجهاز أو رابط URL)</label>
+                  <input type="file" accept="image/*" onchange="handleNewProductImageFile(this)" class="w-full text-[11px] font-bold text-gray-600 file:ml-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-brand-500 file:text-white file:font-extrabold hover:file:bg-brand-600" />
+                  <input type="text" id="new-prod-img-url" oninput="state.newProductImageData = this.value.trim(); updateNewProductPreview();" placeholder="أو الصق رابط صورة (https://...)" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold outline-none focus:border-brand-500" />
+                  <div id="new-prod-img-preview" class="flex items-center gap-2.5 pt-1">
+                    <span class="text-[11px] text-gray-400 font-bold">معاينة الصورة: لا توجد صورة مخصصة (سيُعرض الإيموجي الافتراضي)</span>
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3 rounded-2xl shadow-md transition">
+                  <i class="fa-solid fa-plus-circle ml-1"></i> إضافة المنتج للمنيو الآن
+                </button>
+              </form>
+            </div>
+
+            <!-- Existing Products List with Quick Change Image Button -->
+            <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
+              <h3 class="text-lg font-black text-gray-900">منتجات (${selectedRest.name}) — اضغط لتغيير الصورة أو البيانات</h3>
+
+              <div class="space-y-4 max-h-[620px] overflow-y-auto pr-1">
+                ${selectedRest.menu.map((sec, secIdx) => `
+                  <div class="space-y-2">
+                    <div class="text-xs font-black text-gray-500 bg-gray-100 px-3 py-1.5 rounded-xl">${sec.section}</div>
+                    ${sec.items.map(item => `
+                      <div class="p-3 rounded-2xl border border-gray-200 hover:border-brand-300 flex items-center justify-between gap-3 transition">
+                        <div class="flex items-center gap-3 min-w-0">
+                          ${renderProductVisual(item, selectedRest.heroEmoji, 'w-14 h-14 text-2xl')}
+                          <div class="min-w-0">
+                            <div class="text-xs sm:text-sm font-black text-gray-900 truncate">${item.name}</div>
+                            <div class="text-[11px] text-gray-500 truncate">${item.desc}</div>
+                            <div class="text-xs font-black text-brand-600 mt-0.5">${item.price} ج.م</div>
+                          </div>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 shrink-0">
+                          <button onclick="openEditProductModal('${selectedRest.id}', ${secIdx}, '${item.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-extrabold px-3 py-2 rounded-xl transition">
+                            <i class="fa-solid fa-image ml-1"></i> تغيير الصورة / تعديل
+                          </button>
+                          <button onclick="deleteMenuProduct('${selectedRest.id}', ${secIdx}, '${item.id}')" title="حذف المنتج" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center transition">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                          </button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function handleAdminSelectRestaurant(restId) {
+      state.adminSelectedRestId = restId;
+      state.newProductImageData = '';
+      renderApp();
+    }
+
+    function handleNewProductImageFile(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        state.newProductImageData = ev.target.result;
+        const urlInput = document.getElementById('new-prod-img-url');
+        if (urlInput) urlInput.value = '';
+        updateNewProductPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateNewProductPreview() {
+      const prev = document.getElementById('new-prod-img-preview');
+      if (!prev) return;
+      if (state.newProductImageData) {
+        prev.innerHTML = `
+          <img src="${state.newProductImageData}" alt="Preview" class="w-12 h-12 rounded-xl object-cover border border-brand-300" />
+          <span class="text-xs font-extrabold text-emerald-700">تم اختيار الصورة بنجاح ✓</span>
+        `;
+      } else {
+        prev.innerHTML = `<span class="text-[11px] text-gray-400 font-bold">معاينة الصورة: لا توجد صورة مخصصة</span>`;
+      }
+    }
+
+    function handleAddNewProduct(e) {
+      e.preventDefault();
+      const rest = RESTAURANTS_DATA[state.adminSelectedRestId];
+      if (!rest) return;
+
+      const name = document.getElementById('new-prod-name').value.trim();
+      const secIdx = Number(document.getElementById('new-prod-section').value) || 0;
+      const price = Number(document.getElementById('new-prod-price').value);
+      const desc = document.getElementById('new-prod-desc').value.trim();
+
+      if (!name || isNaN(price) || price <= 0) {
+        showToast('من فضلك أدخل اسم المنتج والسعر بشكل صحيح', 'error');
+        return;
+      }
+
+      const targetSection = rest.menu[secIdx] || rest.menu[0];
+      targetSection.items.unshift({
+        id: 'prod_' + Date.now(),
+        name,
+        desc,
+        price,
+        badge: 'جديد',
+        emoji: rest.heroEmoji,
+        image: state.newProductImageData || ''
+      });
+
+      state.newProductImageData = '';
+      persistState(true);
+      renderApp();
+      showToast(`تمت إضافة (${name}) إلى منيو ${rest.name} بنجاح 🍽️`, 'success');
+    }
+
+    function openEditProductModal(restId, secIdx, itemId) {
+      const rest = RESTAURANTS_DATA[restId];
+      if (!rest || !rest.menu[secIdx]) return;
+      const item = rest.menu[secIdx].items.find(i => i.id === itemId);
+      if (!item) return;
+
+      state.editingProductCtx = { restId, secIdx, itemId, tempImage: item.image || '' };
+
+      const modal = document.getElementById('edit-product-modal');
+      const content = document.getElementById('edit-product-modal-content');
+      content.innerHTML = `
+        <div class="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
+          <div>
+            <h3 class="font-black text-base">تعديل المنتج وصورته — ${rest.name}</h3>
+            <p class="text-[11px] text-gray-400">${item.name}</p>
+          </div>
+          <button onclick="closeEditProductModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form onsubmit="saveEditedProduct(event)" class="p-6 overflow-y-auto space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم المنتج</label>
+              <input type="text" id="edit-prod-name" required value="${item.name}" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-extrabold text-gray-700 mb-1">السعر (ج.م)</label>
+              <input type="number" id="edit-prod-price" min="1" required value="${item.price}" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-black outline-none focus:border-brand-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-extrabold text-gray-700 mb-1">الوصف</label>
+            <textarea id="edit-prod-desc" rows="2" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500">${item.desc}</textarea>
+          </div>
+
+          <!-- Change Product Image Section -->
+          <div class="bg-brand-50/60 border border-brand-200 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-black text-gray-900"><i class="fa-solid fa-camera text-brand-500 ml-1"></i> تغيير صورة المنتج</label>
+              <button type="button" onclick="clearEditedProductImage()" class="text-[11px] font-extrabold text-red-600 hover:underline">إزالة الصورة (استخدام الإيموجي)</button>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div id="edit-prod-img-box">
+                ${renderProductVisual({ ...item, image: state.editingProductCtx.tempImage }, rest.heroEmoji, 'w-20 h-20 text-4xl')}
+              </div>
+              <div class="flex-1 space-y-2">
+                <input type="file" accept="image/*" onchange="handleEditProductImageFile(this)" class="w-full text-[11px] font-bold text-gray-600 file:ml-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-brand-500 file:text-white file:font-extrabold" />
+                <input type="text" id="edit-prod-img-url" value="${item.image && !item.image.startsWith('data:') ? item.image : ''}" oninput="handleEditProductImageUrl(this.value)" placeholder="أو ضع رابط صورة جديد (https://...)" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold outline-none focus:border-brand-500" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
+            <button type="button" onclick="closeEditProductModal()" class="px-4 py-2.5 rounded-xl bg-gray-100 text-xs font-bold text-gray-600">إلغاء</button>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-black shadow-md transition">حفظ التعديلات والصورة</button>
+          </div>
+        </form>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function handleEditProductImageFile(input) {
+      const file = input.files && input.files[0];
+      if (!file || !state.editingProductCtx) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        state.editingProductCtx.tempImage = ev.target.result;
+        const urlInput = document.getElementById('edit-prod-img-url');
+        if (urlInput) urlInput.value = '';
+        refreshEditProductPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleEditProductImageUrl(val) {
+      if (!state.editingProductCtx) return;
+      state.editingProductCtx.tempImage = val.trim();
+      refreshEditProductPreview();
+    }
+
+    function clearEditedProductImage() {
+      if (!state.editingProductCtx) return;
+      state.editingProductCtx.tempImage = '';
+      const urlInput = document.getElementById('edit-prod-img-url');
+      if (urlInput) urlInput.value = '';
+      refreshEditProductPreview();
+    }
+
+    function refreshEditProductPreview() {
+      const box = document.getElementById('edit-prod-img-box');
+      if (!box || !state.editingProductCtx) return;
+      const rest = RESTAURANTS_DATA[state.editingProductCtx.restId];
+      const item = rest.menu[state.editingProductCtx.secIdx].items.find(i => i.id === state.editingProductCtx.itemId);
+      box.innerHTML = renderProductVisual({ ...item, image: state.editingProductCtx.tempImage }, rest.heroEmoji, 'w-20 h-20 text-4xl');
+    }
+
+    function closeEditProductModal() {
+      state.editingProductCtx = null;
+      document.getElementById('edit-product-modal').classList.add('hidden');
+    }
+
+    function saveEditedProduct(e) {
+      e.preventDefault();
+      const ctx = state.editingProductCtx;
+      if (!ctx) return;
+      const rest = RESTAURANTS_DATA[ctx.restId];
+      const item = rest.menu[ctx.secIdx].items.find(i => i.id === ctx.itemId);
+      if (!item) return;
+
+      item.name = document.getElementById('edit-prod-name').value.trim();
+      item.price = Number(document.getElementById('edit-prod-price').value) || item.price;
+      item.desc = document.getElementById('edit-prod-desc').value.trim();
+      item.image = ctx.tempImage || '';
+
+      persistState(true);
+      closeEditProductModal();
+      renderApp();
+      showToast(`تم تحديث بيانات وصورة (${item.name}) بنجاح ✅`, 'success');
+    }
+
+    function deleteMenuProduct(restId, secIdx, itemId) {
+      const rest = RESTAURANTS_DATA[restId];
+      if (!rest || !rest.menu[secIdx]) return;
+      rest.menu[secIdx].items = rest.menu[secIdx].items.filter(i => i.id !== itemId);
+      persistState(true);
+      renderApp();
+      showToast('تم حذف المنتج من المنيو', 'info');
+    }
+
+    // --- ADMIN TAB 3: PROMO CODES CREATOR & MANAGER ---
     function renderAdminPromosTab() {
       return `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Create New Promo Form -->
           <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
             <h3 class="text-lg font-black text-gray-900 mb-1">إنشاء برومو كود جديد</h3>
             <p class="text-xs text-gray-500 mb-4">سيعمل الكود تلقائياً في سلة العميل بمجرد إضافته</p>
@@ -2429,7 +3111,6 @@
             </form>
           </div>
 
-          <!-- Existing Promo Codes List -->
           <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
             <h3 class="text-lg font-black text-gray-900">أكواد الخصم المسجلة (${state.promoCodes.length})</h3>
             <div class="space-y-3">
@@ -2463,45 +3144,62 @@
       `;
     }
 
-    // --- ADMIN TAB 3: CREATE & MANAGE RIDERS ---
+    // --- ADMIN TAB 4: CREATE NEW RIDER (QUADRUPLE NAME, PHONE, VEHICLE, AGE, OPTIONAL PHOTO) ---
     function renderAdminRidersTab() {
       return `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Create New Rider Account -->
           <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
             <h3 class="text-lg font-black text-gray-900 mb-1">إنشاء حساب طيار جديد (Rider)</h3>
-            <p class="text-xs text-gray-500 mb-4">يمكن للطيار تسجيل الدخول فوراً باليوزرنيم والباسوورد لاستلام الطلبات</p>
+            <p class="text-xs text-gray-500 mb-4">أدخل الاسم رباعي، التليفون، نوع المركبة، السن، والصورة (اختياري)</p>
 
             <form onsubmit="handleCreateRider(event)" class="space-y-3">
               <div>
-                <label class="block text-xs font-extrabold text-gray-700 mb-1">اسم الكابتن بالكامل</label>
-                <input type="text" id="new-rider-name" required placeholder="مثال: كابتن إسلام حسن" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                <label class="block text-xs font-extrabold text-gray-700 mb-1">الاسم رباعي *</label>
+                <input type="text" id="new-rider-name" required placeholder="مثال: إسلام حسن محمد علي" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs font-extrabold text-gray-700 mb-1">اليوزرنيم للدخول</label>
-                  <input type="text" id="new-rider-user" required placeholder="rider4" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">رقم التليفون *</label>
+                  <input type="tel" id="new-rider-phone" required placeholder="010xxxxxxxx" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
                 </div>
                 <div>
-                  <label class="block text-xs font-extrabold text-gray-700 mb-1">الباسوورد</label>
-                  <input type="text" id="new-rider-pass" required value="123456" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">السن *</label>
+                  <input type="number" id="new-rider-age" min="18" max="65" required placeholder="24" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-black outline-none focus:border-brand-500" />
                 </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-extrabold text-gray-700 mb-1">رقم الموبايل</label>
-                <input type="tel" id="new-rider-phone" required placeholder="010xxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
               </div>
 
               <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-xs font-extrabold text-gray-700 mb-1">نوع الموتوسيكل / المركبة</label>
-                  <input type="text" id="new-rider-vehicle" required placeholder="موتوسيكل هوجن" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">نوع المركبة *</label>
+                  <select id="new-rider-vehicle" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white outline-none focus:border-brand-500">
+                    <option value="موتوسيكل">موتوسيكل</option>
+                    <option value="سكوتر">سكوتر</option>
+                    <option value="عجلة كهربائية">عجلة كهربائية</option>
+                    <option value="عربية">عربية</option>
+                  </select>
                 </div>
                 <div>
                   <label class="block text-xs font-extrabold text-gray-700 mb-1">نطاق العمل بأكتوبر</label>
-                  <input type="text" id="new-rider-zone" required placeholder="الحصري والحي السابع" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                  <input type="text" id="new-rider-zone" value="ميدان الحصري والحي السابع" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+              </div>
+
+              <!-- Optional Rider Photo -->
+              <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200 space-y-2">
+                <label class="block text-xs font-extrabold text-gray-700">صورة الطيار (اختياري)</label>
+                <input type="file" accept="image/*" onchange="handleNewRiderPhotoFile(this)" class="w-full text-[11px] font-bold text-gray-600 file:ml-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white file:font-bold" />
+                <input type="text" id="new-rider-photo-url" oninput="state.newRiderPhotoData = this.value.trim();" placeholder="أو رابط صورة اختياري (https://...)" class="w-full px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold outline-none focus:border-brand-500" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">اليوزرنيم للدخول *</label>
+                  <input type="text" id="new-rider-user" required placeholder="rider4" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+                </div>
+                <div>
+                  <label class="block text-xs font-extrabold text-gray-700 mb-1">الباسوورد *</label>
+                  <input type="text" id="new-rider-pass" required value="123456" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
                 </div>
               </div>
 
@@ -2511,18 +3209,15 @@
             </form>
           </div>
 
-          <!-- Riders Fleet List -->
           <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
             <h3 class="text-lg font-black text-gray-900">أسطول كباتن طيران (${state.riders.length} طيار)</h3>
             <div class="space-y-3">
               ${state.riders.map(r => `
                 <div class="p-4 rounded-2xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-2xl ${r.isReady ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'} flex items-center justify-center text-xl shrink-0">
-                      🛵
-                    </div>
+                    ${renderRiderAvatar(r, 'w-12 h-12 text-lg')}
                     <div>
-                      <div class="flex items-center gap-2">
+                      <div class="flex flex-wrap items-center gap-2">
                         <h4 class="text-sm font-black text-gray-900">${r.name}</h4>
                         <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${r.isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}">
                           ${r.isReady ? 'READY' : 'NOT READY'}
@@ -2531,7 +3226,9 @@
                       <div class="text-xs text-gray-500 mt-0.5">
                         يوزر: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.username}</code> • باسوورد: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.password}</code>
                       </div>
-                      <div class="text-[11px] text-gray-400 mt-0.5">${r.phone} • ${r.vehicle} • ${r.zone}</div>
+                      <div class="text-[11px] text-gray-400 mt-0.5">
+                        تليفون: ${r.phone} • مركبة: ${r.vehicle} ${r.age ? `• السن: ${r.age} سنة` : ''} • ${r.zone}
+                      </div>
                     </div>
                   </div>
 
@@ -2551,11 +3248,10 @@
       `;
     }
 
-    // --- ADMIN TAB 4: ADMIN USERS & PASSWORD SECURITY ---
+    // --- ADMIN TAB 5: ADMIN USERS & PASSWORD SECURITY ---
     function renderAdminAccountsTab() {
       return `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Update Current Admin Credentials -->
           <div class="lg:col-span-6 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center">
@@ -2586,7 +3282,6 @@
             </form>
           </div>
 
-          <!-- Create New Admin User & List -->
           <div class="lg:col-span-6 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-5">
             <div>
               <h3 class="text-lg font-black text-gray-900 mb-1">إضافة حساب أدمن جديد</h3>
@@ -2604,13 +3299,12 @@
               </form>
             </div>
 
-            <!-- List of Admins -->
             <div class="space-y-2">
               <div class="text-xs font-extrabold text-gray-600">حسابات الإدارة الحالية (${state.admins.length}):</div>
               ${state.admins.map(adm => `
                 <div class="p-3 rounded-2xl border border-gray-200 flex items-center justify-between text-xs">
                   <div>
-                    <div class="font-black text-gray-900">${adm.name}</div>
+                    <div class="font-black text-gray-900">${adm.name} ${adm.mustChangeCredentials ? '<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full mr-1">مؤقت</span>' : ''}</div>
                     <div class="text-gray-500">يوزر: <strong>${adm.username}</strong> • باسوورد: <strong>${adm.password}</strong></div>
                   </div>
                   ${adm.id !== state.currentUser.id ? `
@@ -2657,7 +3351,6 @@
       const target = areaObj.coords;
       const cur = rider.gps || { x: 52, y: 48 };
 
-      // Move 45% closer to customer on map
       rider.gps = {
         x: Math.round((cur.x + (target.x - cur.x) * 0.45) * 10) / 10,
         y: Math.round((cur.y + (target.y - cur.y) * 0.45) * 10) / 10
@@ -2690,7 +3383,6 @@
         rider.activeOrderId = null;
         rider.completedCount = (rider.completedCount || 0) + 1;
         showToast('عاش يا كابتن! تم تسليم الأوردر بنجاح 🎉', 'success');
-        // Automatically pull next order from queue if rider is still Ready!
         runAutoDispatchQueue();
       }
 
@@ -2775,7 +3467,6 @@
       const newTotal = Number(document.getElementById('edit-ord-total').value);
       const newNote = document.getElementById('edit-ord-note').value.trim();
 
-      // Release previous rider if changed
       if (ord.riderId && ord.riderId !== newRiderId) {
         const oldR = state.riders.find(r => r.id === ord.riderId);
         if (oldR && oldR.activeOrderId === ord.id) oldR.activeOrderId = null;
@@ -2793,6 +3484,7 @@
           ord.riderName = rObj.name;
           ord.riderPhone = rObj.phone;
           ord.riderVehicle = rObj.vehicle;
+          ord.riderPhoto = rObj.photo || '';
           if (newStatus !== 'delivered' && newStatus !== 'cancelled') {
             rObj.activeOrderId = ord.id;
           } else if (rObj.activeOrderId === ord.id) {
@@ -2853,14 +3545,29 @@
       showToast('تم حذف البرومو كود', 'info');
     }
 
+    function handleNewRiderPhotoFile(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        state.newRiderPhotoData = ev.target.result;
+        const urlEl = document.getElementById('new-rider-photo-url');
+        if (urlEl) urlEl.value = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
     function handleCreateRider(e) {
       e.preventDefault();
       const name = document.getElementById('new-rider-name').value.trim();
+      const phone = document.getElementById('new-rider-phone').value.trim();
+      const age = Number(document.getElementById('new-rider-age').value) || 24;
+      const vehicle = document.getElementById('new-rider-vehicle').value.trim();
+      const zone = document.getElementById('new-rider-zone').value.trim() || 'ميدان الحصري و6 أكتوبر';
       const username = document.getElementById('new-rider-user').value.trim().toLowerCase();
       const password = document.getElementById('new-rider-pass').value.trim();
-      const phone = document.getElementById('new-rider-phone').value.trim();
-      const vehicle = document.getElementById('new-rider-vehicle').value.trim();
-      const zone = document.getElementById('new-rider-zone').value.trim();
+      const urlPhoto = (document.getElementById('new-rider-photo-url')?.value || '').trim();
+      const finalPhoto = state.newRiderPhotoData || urlPhoto || '';
 
       if (state.riders.some(r => r.username === username) || state.admins.some(a => a.username === username)) {
         showToast('اسم المستخدم مستخدم بالفعل!', 'error');
@@ -2873,7 +3580,9 @@
         username,
         password,
         phone,
+        age,
         vehicle,
+        photo: finalPhoto,
         zone,
         isReady: true,
         activeOrderId: null,
@@ -2881,10 +3590,11 @@
         gps: { x: 52, y: 48 }
       });
 
+      state.newRiderPhotoData = '';
       runAutoDispatchQueue();
       persistState(true);
       renderApp();
-      showToast(`تم إنشاء حساب الكابتن ${name} بنجاح 🛵`, 'success');
+      showToast(`تم إنشاء حساب الكابتن (${name}) بنجاح 🛵`, 'success');
     }
 
     function deleteRiderAccount(riderId) {
@@ -2906,9 +3616,12 @@
       adm.name = newName;
       adm.username = newUser;
       adm.password = newPass;
+      adm.isTemp = false;
+      adm.mustChangeCredentials = false;
 
       state.currentUser.name = newName;
       state.currentUser.username = newUser;
+      state.currentUser.mustChangeCredentials = false;
 
       persistState(true);
       renderApp();
@@ -2931,7 +3644,9 @@
         name,
         username,
         password,
-        role: 'Admin'
+        role: 'Admin',
+        isTemp: false,
+        mustChangeCredentials: false
       });
 
       persistState(true);
@@ -2974,6 +3689,215 @@
       state.searchQuery = '';
       state.quickFilter = 'all';
       renderApp();
+    }
+
+    // =========================================================================
+    // 9. 6TH OF OCTOBER AREA MODAL & ADDRESS FORM HANDLERS
+    // =========================================================================
+    function openAddressModal() {
+      state.tempSelectedAreaId = state.selectedAreaId;
+      const searchEl = document.getElementById('area-search-input');
+      if (searchEl) searchEl.value = '';
+      document.getElementById('addr-street').value = state.addressDetails.street || '';
+      document.getElementById('addr-landmark').value = state.addressDetails.landmark || '';
+      document.getElementById('addr-building').value = state.addressDetails.building || '';
+      document.getElementById('addr-floor').value = state.addressDetails.floor || '';
+      document.getElementById('addr-apt').value = state.addressDetails.apt || '';
+      filterAreasList('');
+      updateModalPreviewArea();
+      document.getElementById('address-modal').classList.remove('hidden');
+    }
+
+    function closeAddressModal() {
+      document.getElementById('address-modal').classList.add('hidden');
+    }
+
+    function filterAreasList(query) {
+      const q = (query || '').trim().toLowerCase();
+      const matches = OCTOBER_AREAS.filter(a =>
+        a.name.toLowerCase().includes(q) || a.zone.toLowerCase().includes(q)
+      );
+      const grid = document.getElementById('areas-grid-list');
+      grid.innerHTML = matches.map(a => {
+        const active = a.id === state.tempSelectedAreaId;
+        return `
+          <button type="button" onclick="pickTempArea('${a.id}')" class="p-3 rounded-2xl border text-right transition flex items-center justify-between gap-2 ${active ? 'bg-brand-50 border-brand-500 text-brand-900 shadow-2xs' : 'bg-white hover:bg-gray-50 border-gray-200 text-gray-800'}">
+            <div>
+              <div class="text-xs font-black">${a.name}</div>
+              <div class="text-[10px] text-gray-500 font-bold">${a.zone} • ${a.deliveryTime}</div>
+            </div>
+            <span class="text-[11px] font-black px-2 py-0.5 rounded-lg ${active ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-700'}">${a.baseFee} ج</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function pickTempArea(areaId) {
+      state.tempSelectedAreaId = areaId;
+      filterAreasList(document.getElementById('area-search-input')?.value || '');
+      updateModalPreviewArea();
+    }
+
+    function updateModalPreviewArea() {
+      const aObj = OCTOBER_AREAS.find(a => a.id === state.tempSelectedAreaId) || OCTOBER_AREAS[0];
+      const preview = document.getElementById('modal-preview-area');
+      if (preview) preview.textContent = aObj.name;
+    }
+
+    function saveAddressSelection() {
+      state.selectedAreaId = state.tempSelectedAreaId;
+      state.addressDetails = {
+        ...state.addressDetails,
+        street: document.getElementById('addr-street').value.trim(),
+        landmark: document.getElementById('addr-landmark').value.trim(),
+        building: document.getElementById('addr-building').value.trim(),
+        floor: document.getElementById('addr-floor').value.trim(),
+        apt: document.getElementById('addr-apt').value.trim()
+      };
+      persistState(false);
+      closeAddressModal();
+      renderApp();
+      showToast(`تم تحديد التوصيل إلى (${getCurrentArea().name}) 📍`, 'success');
+    }
+
+    function quickSelectArea(areaId) {
+      if (!OCTOBER_AREAS.find(a => a.id === areaId)) return;
+      state.selectedAreaId = areaId;
+      state.tempSelectedAreaId = areaId;
+      persistState(false);
+      renderApp();
+      showToast(`تم التبديل إلى (${getCurrentArea().name})`, 'info');
+    }
+
+    // =========================================================================
+    // 10. ITEM CUSTOMIZATION & CART ADDITION MODAL
+    // =========================================================================
+    let modalItemCtx = { restId: null, item: null, sizeIdx: 0, qty: 1 };
+
+    function openItemModal(restId, itemId) {
+      const rest = RESTAURANTS_DATA[restId];
+      if (!rest) return;
+      let foundItem = null;
+      for (const sec of rest.menu) {
+        const hit = sec.items.find(i => i.id === itemId);
+        if (hit) {
+          foundItem = hit;
+          break;
+        }
+      }
+      if (!foundItem) return;
+
+      modalItemCtx = { restId, item: foundItem, sizeIdx: 0, qty: 1 };
+      renderItemModal();
+      document.getElementById('item-modal').classList.remove('hidden');
+    }
+
+    function closeItemModal() {
+      document.getElementById('item-modal').classList.add('hidden');
+    }
+
+    function selectModalSize(idx) {
+      modalItemCtx.sizeIdx = idx;
+      renderItemModal();
+    }
+
+    function changeModalQty(delta) {
+      modalItemCtx.qty = Math.max(1, modalItemCtx.qty + delta);
+      renderItemModal();
+    }
+
+    function renderItemModal() {
+      const rest = RESTAURANTS_DATA[modalItemCtx.restId];
+      const item = modalItemCtx.item;
+      const sizes = Array.isArray(item.sizes) && item.sizes.length > 0 ? item.sizes : null;
+      const extraPrice = sizes ? (sizes[modalItemCtx.sizeIdx]?.extra || 0) : 0;
+      const unitPrice = Math.max(1, item.price + extraPrice);
+      const totalPrice = unitPrice * modalItemCtx.qty;
+
+      document.getElementById('item-modal-content').innerHTML = `
+        <div class="p-5 bg-gray-900 text-white flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            ${renderProductVisual(item, rest.heroEmoji, 'w-14 h-14 text-3xl')}
+            <div>
+              <h3 class="font-black text-base sm:text-lg">${item.name}</h3>
+              <p class="text-xs text-gray-400">${rest.name}</p>
+            </div>
+          </div>
+          <button onclick="closeItemModal()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="p-5 overflow-y-auto space-y-4">
+          <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">${item.desc}</p>
+
+          ${sizes ? `
+            <div class="space-y-2">
+              <label class="block text-xs font-extrabold text-gray-800">اختر الحجم:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                ${sizes.map((s, i) => `
+                  <button type="button" onclick="selectModalSize(${i})" class="p-2.5 rounded-2xl border text-right transition ${modalItemCtx.sizeIdx === i ? 'bg-brand-50 border-brand-500 text-brand-900' : 'bg-white border-gray-200 text-gray-700'}">
+                    <div class="text-xs font-black">${s.name}</div>
+                    <div class="text-[10px] font-bold text-brand-600">${s.extra > 0 ? `+${s.extra} ج` : s.extra < 0 ? `${s.extra} ج` : 'السعر الأساسي'}</div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div>
+            <label class="block text-xs font-extrabold text-gray-800 mb-1">ملاحظات خاصة للمطعم (اختياري)</label>
+            <input type="text" id="item-custom-notes" placeholder="مثال: بدون صوص حار، زيادة مخلل..." class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500" />
+          </div>
+        </div>
+
+        <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-2xl px-3 py-1.5">
+            <button type="button" onclick="changeModalQty(-1)" class="w-7 h-7 rounded-lg bg-gray-100 font-black text-sm">-</button>
+            <span class="text-sm font-black w-5 text-center">${modalItemCtx.qty}</span>
+            <button type="button" onclick="changeModalQty(1)" class="w-7 h-7 rounded-lg bg-brand-50 text-brand-600 font-black text-sm">+</button>
+          </div>
+
+          <button type="button" onclick="confirmAddItemToCart(${unitPrice}, '${sizes ? sizes[modalItemCtx.sizeIdx].name.replace(/'/g, "\\'") : ''}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-black text-xs sm:text-sm py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between transition">
+            <span>إضافة إلى السلة</span>
+            <span>${totalPrice} ج.م</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function confirmAddItemToCart(unitPrice, sizeName) {
+      const rest = RESTAURANTS_DATA[modalItemCtx.restId];
+      const item = modalItemCtx.item;
+      const notes = (document.getElementById('item-custom-notes')?.value || '').trim();
+
+      // Prevent mixing items from different restaurants in same cart
+      if (state.cart.length > 0 && state.cart[0].restaurantId !== rest.id) {
+        state.cart = [];
+        showToast(`تم تفريغ السلة وبدء طلب جديد من (${rest.name})`, 'info');
+      }
+
+      const uid = `${item.id}__${sizeName}__${notes}`;
+      const existing = state.cart.find(c => c.uid === uid);
+      if (existing) {
+        existing.qty += modalItemCtx.qty;
+      } else {
+        state.cart.push({
+          uid,
+          restaurantId: rest.id,
+          restaurantName: rest.name,
+          itemId: item.id,
+          name: item.name,
+          emoji: item.emoji || rest.heroEmoji,
+          sizeName,
+          notes,
+          price: unitPrice,
+          qty: modalItemCtx.qty
+        });
+      }
+
+      persistState(false);
+      updateHeaderUI();
+      closeItemModal();
+      showToast(`تمت إضافة (${item.name}) إلى السلة 🛍️`, 'success');
     }
 
     // =========================================================================
