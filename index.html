@@ -1,148 +1,2321 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طيران | اطلب طعامك ومقاضيك أونلاين</title>
-    <!-- استدعاء خط تجوال العربي وتيلويند CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Tajawal', 'sans-serif'],
-                    },
-                    colors: {
-                        tayaran: {
-                            DEFAULT: '#FF5A00', // البرتقالي المميز لطلبات
-                            dark: '#E04F00',
-                            light: '#FFF0E6'
-                        }
-                    }
-                }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طيران | أسرع توصيل أكل في 6 أكتوبر</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cairo & Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Cairo', 'Tajawal', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff5f0',
+              100: '#ffe6d9',
+              200: '#ffcab0',
+              300: '#ffa57d',
+              400: '#ff773d',
+              500: '#ff5a00', // Talabat-inspired vibrant orange
+              600: '#e64a00',
+              700: '#bf3900',
+              800: '#992e00',
+              900: '#7a2600',
             }
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(0, 0, 0, 0.06)',
+            'card-hover': '0 12px 28px -4px rgba(255, 90, 0, 0.14)',
+            'nav': '0 2px 15px rgba(0, 0, 0, 0.05)',
+          }
         }
-    </script>
-    <style>
-        body { font-family: 'Tajawal', sans-serif; background-color: #F8F9FA; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background-color: #f8f9fb;
+      color: #1f2937;
+      overflow-x: hidden;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff5a00;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(-2deg); }
+    }
+    .animate-float {
+      animation: floatSlow 3.5s ease-in-out infinite;
+    }
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .drawer-enter {
+      animation: slideInLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .hero-pattern {
+      background-color: #ff5a00;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px), radial-gradient(rgba(255, 255, 255, 0.1) 1.5px, #ff5a00 1.5px);
+      background-size: 36px 36px;
+      background-position: 0 0, 18px 18px;
+    }
+  </style>
 </head>
-<body class="text-gray-800">
+<body class="min-h-screen flex flex-col">
 
-    <!-- 1. الهيدر (Navbar) -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- الشعار -->
-            <div class="flex items-center gap-6">
-                <a href="#" class="flex items-center gap-2 text-3xl font-extrabold text-tayaran tracking-tight">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>طيران</span>
-                </a>
-                <!-- محدد الموقع -->
-                <div class="hidden md:flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-gray-200 transition" onclick="changeLocation()">
-                    <i class="fa-solid fa-location-dot text-tayaran"></i>
-                    <span id="current-location" class="font-medium">التجمع الخامس، القاهرة</span>
-                    <i class="fa-solid fa-chevron-down text-xs text-gray-500 mr-1"></i>
-                </div>
-            </div>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-            <!-- أزرار التحكم والسلة -->
-            <div class="flex items-center gap-4">
-                <button onclick="toggleCart()" class="relative bg-tayaran-light text-tayaran hover:bg-tayaran hover:text-white transition px-4 py-2.5 rounded-full font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-bag-shopping text-lg"></i>
-                    <span class="hidden sm:inline">السلة</span>
-                    <span id="cart-badge" class="bg-tayaran text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border border-white">0</span>
-                </button>
-                <button onclick="openLoginModal()" class="border border-gray-300 hover:border-tayaran hover:text-tayaran px-5 py-2.5 rounded-full font-bold text-sm transition">
-                    تسجيل الدخول
-                </button>
+  <!-- Top Sticky Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white shadow-nav border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Area Selector -->
+      <div class="flex items-center gap-3 sm:gap-5">
+        <!-- Tayaran Logo -->
+        <button onclick="navigateTo('home')" class="flex items-center gap-2.5 group focus:outline-none">
+          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-brand-500 to-orange-600 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-paper-plane text-lg sm:text-xl -rotate-12"></i>
+          </div>
+          <div class="text-right">
+            <span class="text-2xl sm:text-3xl font-black tracking-tight text-brand-500 leading-none block">طيران</span>
+            <span class="text-[10px] sm:text-[11px] font-bold text-gray-400 tracking-wide block">أكتوبر في ثواني</span>
+          </div>
+        </button>
+
+        <!-- Divider -->
+        <div class="hidden md:block h-8 w-[1px] bg-gray-200"></div>
+
+        <!-- Active October Area Pill -->
+        <button onclick="openAddressModal()" class="flex items-center gap-2 bg-brand-50 hover:bg-brand-100/80 border border-brand-200/70 px-3 py-2 rounded-2xl transition-all text-right max-w-[200px] sm:max-w-[280px]">
+          <div class="w-7 h-7 rounded-xl bg-brand-500 text-white flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-location-dot text-xs"></i>
+          </div>
+          <div class="overflow-hidden">
+            <div class="text-[10px] text-gray-500 font-semibold leading-tight">التوصيل إلى 6 أكتوبر</div>
+            <div id="header-selected-area" class="text-xs sm:text-sm font-extrabold text-gray-800 truncate">الحصري - المحور المركزي</div>
+          </div>
+          <i class="fa-solid fa-chevron-down text-brand-500 text-xs mr-1 shrink-0"></i>
+        </button>
+      </div>
+
+      <!-- Right Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Restaurant Folders / Directory Explorer Button -->
+        <button onclick="openFoldersModal()" class="hidden lg:flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200/80 text-gray-700 font-bold text-xs sm:text-sm transition-colors">
+          <i class="fa-solid fa-folder-tree text-brand-500"></i>
+          <span>فولدرات ومنيوهات أكتوبر</span>
+        </button>
+
+        <!-- Mobile Folder Button -->
+        <button onclick="openFoldersModal()" title="فولدرات المطاعم" class="lg:hidden p-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors">
+          <i class="fa-solid fa-folder-open text-brand-500"></i>
+        </button>
+
+        <!-- Active Order Tracker Pill (shown if an active order exists) -->
+        <button id="header-track-btn" onclick="navigateTo('tracking')" class="hidden items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs sm:text-sm transition-all">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="hidden sm:inline">تتبع طلبك</span>
+        </button>
+
+        <!-- Cart Trigger Button -->
+        <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2.5 bg-brand-500 hover:bg-brand-600 text-white px-4 py-2.5 rounded-2xl font-bold text-sm shadow-sm hover:shadow transition-all">
+          <i class="fa-solid fa-bag-shopping text-base"></i>
+          <span class="hidden sm:inline">السلة</span>
+          <span id="header-cart-count" class="bg-white text-brand-600 text-xs font-black px-2 py-0.5 rounded-full min-w-[22px] text-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION CONTAINER -->
+  <main id="app-root" class="flex-1">
+    <!-- Dynamic Views Rendered Here -->
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-300 mt-16 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Brand Info -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-brand-500 text-white flex items-center justify-center">
+              <i class="fa-solid fa-paper-plane text-lg -rotate-12"></i>
             </div>
+            <span class="text-2xl font-black text-white">طيران</span>
+          </div>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">
+            منصة توصيل الطعام الأولى المتخصصة في كل أحياء ومناطق مدينة 6 أكتوبر والشيخ زايد. من الحصري لحدائق أكتوبر، ومن الحي الأول لغرب سوميد.. أكلك بيطير لعندك سخن وطازة!
+          </p>
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1.5 rounded-xl bg-gray-800 text-xs font-bold text-brand-400 border border-gray-700">
+              <i class="fa-solid fa-bolt ml-1"></i> توصيل خلال 25 - 40 دقيقة
+            </span>
+          </div>
         </div>
-    </header>
 
-    <!-- 2. قسم الهيرو والبحث (Hero Section) -->
-    <section class="bg-gradient-to-l from-tayaran to-orange-500 text-white py-14 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-3xl sm:text-5xl font-extrabold mb-4 leading-tight">
-                أكلك ومقاضيك توصلك <span class="underline decoration-yellow-300">طيران</span>!
-            </h1>
-            <p class="text-orange-100 text-lg mb-8">اكتشف آلاف المطاعم والمتاجر حولك واطلب بضغطة زر</p>
-            
-            <!-- شريط البحث -->
-            <div class="bg-white p-2 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
-                <div class="flex-1 flex items-center px-3">
-                    <i class="fa-solid fa-magnifying-glass text-gray-400 ml-3"></i>
-                    <input type="text" id="search-input" onkeyup="filterRestaurants()" placeholder="ابحث عن مطعم، وجبة، أو سوبرماركت..." class="w-full py-2.5 text-gray-800 focus:outline-none">
-                </div>
-                <button onclick="filterRestaurants()" class="bg-tayaran hover:bg-tayaran-dark text-white font-bold px-8 py-3 rounded-xl transition">
-                    ابحث الآن
-                </button>
-            </div>
+        <!-- Popular October Areas -->
+        <div>
+          <h4 class="text-white font-extrabold text-base mb-4">أشهر مناطق التوصيل في أكتوبر</h4>
+          <ul class="grid grid-cols-2 gap-2 text-xs text-gray-400">
+            <li><button onclick="quickSelectArea('hosary')" class="hover:text-brand-400 transition">ميدان الحصري</button></li>
+            <li><button onclick="quickSelectArea('d1')" class="hover:text-brand-400 transition">الحي الأول</button></li>
+            <li><button onclick="quickSelectArea('d7')" class="hover:text-brand-400 transition">الحي السابع</button></li>
+            <li><button onclick="quickSelectArea('hadayek')" class="hover:text-brand-400 transition">حدائق أكتوبر</button></li>
+            <li><button onclick="quickSelectArea('somid')" class="hover:text-brand-400 transition">غرب سوميد</button></li>
+            <li><button onclick="quickSelectArea('central')" class="hover:text-brand-400 transition">المحور المركزي</button></li>
+            <li><button onclick="quickSelectArea('d11')" class="hover:text-brand-400 transition">الحي الحادي عشر</button></li>
+            <li><button onclick="quickSelectArea('zayed')" class="hover:text-brand-400 transition">الشيخ زايد</button></li>
+          </ul>
         </div>
-    </section>
 
-    <!-- 3. الأقسام الرئيسية (Categories) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div onclick="filterByCategory('all')" class="category-card bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer border-2 border-tayaran flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-orange-100 text-tayaran rounded-full flex items-center justify-center text-2xl mb-3">
-                    <i class="fa-solid fa-utensils"></i>
-                </div>
-                <h3 class="font-bold text-lg">كل المطاعم</h3>
-                <p class="text-xs text-gray-500 mt-1">أشهى الوجبات السريعة والشرقية</p>
-            </div>
-
-            <div onclick="filterByCategory('burger')" class="category-card bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer border-2 border-transparent flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-2xl mb-3">
-                    <i class="fa-solid fa-burger"></i>
-                </div>
-                <h3 class="font-bold text-lg">برجر وساندوتشات</h3>
-                <p class="text-xs text-gray-500 mt-1">أقوى عروض البرجر</p>
-            </div>
-
-            <div onclick="filterByCategory('pizza')" class="category-card bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer border-2 border-transparent flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-2xl mb-3">
-                    <i class="fa-solid fa-pizza-slice"></i>
-                </div>
-                <h3 class="font-bold text-lg">بيتزا وإيطالي</h3>
-                <p class="text-xs text-gray-500 mt-1">بيتزا ساخنة لعند بابك</p>
-            </div>
-
-            <div onclick="filterByCategory('grocery')" class="category-card bg-white p-5 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer border-2 border-transparent flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-2xl mb-3">
-                    <i class="fa-solid fa-basket-shopping"></i>
-                </div>
-                <h3 class="font-bold text-lg">طيران مارت</h3>
-                <p class="text-xs text-gray-500 mt-1">مقاضي البيت في 20 دقيقة</p>
-            </div>
+        <!-- Top Restaurants -->
+        <div>
+          <h4 class="text-white font-extrabold text-base mb-4">أشهر مطاعم 6 أكتوبر</h4>
+          <ul class="space-y-2 text-xs text-gray-400">
+            <li><button onclick="openRestaurant('abou_mazen')" class="hover:text-brand-400 transition">أبو مازن السوري - الحصري</button></li>
+            <li><button onclick="openRestaurant('hadramout_antar')" class="hover:text-brand-400 transition">حضرموت عنتر - طريق الواحات</button></li>
+            <li><button onclick="openRestaurant('koshary_tahrir')" class="hover:text-brand-400 transition">كشري التحرير - المحور المركزي</button></li>
+            <li><button onclick="openRestaurant('bazooka')" class="hover:text-brand-400 transition">بازوكا فرايد تشيكن - الحصري</button></li>
+            <li><button onclick="openRestaurant('blaban')" class="hover:text-brand-400 transition">بـ لبن (B.Laban) - الحي الأول</button></li>
+          </ul>
         </div>
-    </section>
 
-    <!-- 4. العروض الترويجية (Promo Banner) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        <div class="bg-gray-900 rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6">
+        <!-- Promo & Support -->
+        <div>
+          <h4 class="text-white font-extrabold text-base mb-4">كود خصم طيران لأهل أكتوبر</h4>
+          <div class="bg-gray-800/90 border border-dashed border-brand-500/60 rounded-2xl p-4">
+            <p class="text-xs text-gray-300 mb-2">استخدم الكود ده في السلة واحصل على خصم 20% على أول أوردر:</p>
+            <div class="flex items-center justify-between bg-gray-900 px-3 py-2 rounded-xl border border-gray-700">
+              <code class="text-brand-400 font-black tracking-wider text-sm">TAYARAN20</code>
+              <button onclick="copyPromoCode('TAYARAN20')" class="text-xs bg-brand-500 hover:bg-brand-600 text-white px-2.5 py-1 rounded-lg font-bold transition">نسخ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-3">
+        <p>© 2026 طيران (Tayaran) لتوصيل الطعام - مدينة 6 أكتوبر، الجيزة. جميع الحقوق محفوظة.</p>
+        <p>مصمم بحب لخدمة كل سكان وطلبة مدينة 6 أكتوبر 🚀</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       MODAL 1: 6TH OF OCTOBER AREA & DETAILED ADDRESS SELECTOR
+  ========================================================== -->
+  <div id="address-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-gradient-to-l from-brand-500 to-orange-600 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
+            <i class="fa-solid fa-map-location-dot text-xl"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-lg">حدد منطقتك وعنوانك في 6 أكتوبر</h3>
+            <p class="text-xs text-orange-100">بنحسبلك وقت وتكلفة التوصيل بدقة حسب الحي</p>
+          </div>
+        </div>
+        <button onclick="closeAddressModal()" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-5">
+        <!-- Search Area Input -->
+        <div>
+          <label class="block text-xs font-extrabold text-gray-700 mb-1.5">ابحث عن الحي أو الكمبوند في 6 أكتوبر</label>
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="area-search-input" oninput="filterAreasList(this.value)" placeholder="مثال: الحصري، الحي السابع، حدائق أكتوبر، غرب سوميد..." class="w-full pr-10 pl-4 py-3 rounded-2xl border border-gray-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none text-sm font-semibold" />
+          </div>
+        </div>
+
+        <!-- Areas Grid -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-extrabold text-gray-500">مناطق وأحياء مدينة 6 أكتوبر (22 منطقة مغطاة)</span>
+            <span class="text-[11px] font-bold text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full">تغطية شاملة</span>
+          </div>
+          <div id="areas-grid-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto p-1">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Detailed Street & Building Form -->
+        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200/80 space-y-3">
+          <h4 class="text-sm font-extrabold text-gray-800 flex items-center gap-2">
+            <i class="fa-solid fa-house-chimney text-brand-500"></i>
+            <span>تفاصيل العنوان الدقيق (اختياري الآن ومطلوب عند الطلب)</span>
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-                <span class="bg-tayaran text-xs font-bold px-3 py-1 rounded-full uppercase">عرض لفترة محدودة</span>
-                <h2 class="text-2xl sm:text-3xl font-bold mt-3">خصم 50% على أول طلب لك من طيران!</h2>
-                <p class="text-gray-400 mt-1">استخدم كود الخصم: <span class="text-yellow-400 font-mono font-bold text-lg">TAYARAN50</span></p>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">اسم الشارع / المجاورة</label>
+              <input type="text" id="addr-street" placeholder="مثال: شارع التحرير - مجاورة 3" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-brand-500 outline-none" />
             </div>
-            <button onclick="copyPromo()" class="bg-white text-gray-900 hover:bg-gray-100 font-bold px-6 py-3 rounded-xl transition whitespace-nowrap">
-                نسخ الكود
-            </button>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">علامة مميزة</label>
+              <input type="text" id="addr-landmark" placeholder="مثال: بجوار مسجد الحصري / سنتر الأردنية" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-brand-500 outline-none" />
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">رقم العمارة / الفيلا</label>
+              <input type="text" id="addr-building" placeholder="مثال: 14 ب" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-brand-500 outline-none" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">الدور</label>
+              <input type="text" id="addr-floor" placeholder="مثال: الثالث" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-brand-500 outline-none" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">رقم الشقة</label>
+              <input type="text" id="addr-apt" placeholder="مثال: 6" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold focus:border-brand-500 outline-none" />
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- 5. قائمة المطاعم (Restaurants Grid) -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-            <h2 class="text-2xl font-extrabold text-gray-900">المطاعم والمتاجر المتاحة</h2>
-            
-            <!-- فلاتر سريعة -->
-            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
-                <button onclick="sortRestaurants('rating')" class="bg-white border border-gray-200 hover:border-tayaran px-4 py-1
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
+        <div class="text-xs text-gray-600">
+          المنطقة المختارة: <strong id="modal-preview-area" class="text-brand-600">الحصري</strong>
+        </div>
+        <button onclick="saveAddressSelection()" class="bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm px-6 py-3 rounded-2xl shadow-md transition-all">
+          تأكيد العنوان وعرض المطاعم
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 2: RESTAURANT ITEM CUSTOMIZATION MODAL
+  ========================================================== -->
+  <div id="item-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div id="item-modal-content" class="flex flex-col max-h-[90vh]">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL 3: RESTAURANT FOLDERS & FULL MENUS EXPLORER
+  ========================================================== -->
+  <div id="folders-modal" class="fixed inset-0 z-50 hidden bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="px-6 py-4 bg-gray-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center">
+            <i class="fa-solid fa-folder-tree text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-base sm:text-lg">فولدرات مطاعم 6 أكتوبر والمنيوهات الكاملة</h3>
+            <p class="text-xs text-gray-400">كل مطعم في فولدر مستقل شامل الفروع، المناطق المغطاة، والمنيو بالأسعار</p>
+          </div>
+        </div>
+        <button onclick="closeFoldersModal()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Body: Split Folder Tree & Folder Content -->
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <!-- Left Sidebar: Restaurant Folders List -->
+        <div class="w-full md:w-80 bg-gray-50 border-b md:border-b-0 md:border-l border-gray-200 p-3 overflow-y-auto shrink-0 max-h-48 md:max-h-none">
+          <div class="text-[11px] font-extrabold text-gray-400 uppercase px-2 mb-2 flex items-center justify-between">
+            <span>مجلدات المطاعم (<span id="folders-count">0</span>)</span>
+            <i class="fa-solid fa-hard-drive text-brand-500"></i>
+          </div>
+          <div id="folders-sidebar-list" class="space-y-1.5">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Right Panel: Selected Restaurant Folder Contents -->
+        <div id="folder-detail-pane" class="flex-1 p-5 overflow-y-auto bg-white">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       DRAWER: SHOPPING CART & CHECKOUT
+  ========================================================== -->
+  <div id="cart-drawer-backdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed top-0 left-0 bottom-0 z-50 w-full max-w-md bg-white shadow-2xl hidden flex-col">
+    <!-- Cart Header -->
+    <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
+          <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <div>
+          <h3 class="font-black text-gray-900 text-base">سلة طلباتك</h3>
+          <p id="cart-restaurant-label" class="text-xs text-gray-500 font-semibold">لسه مفيش مطعم مختار</p>
+        </div>
+      </div>
+      <button onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Cart Body -->
+    <div id="cart-body" class="flex-1 overflow-y-auto p-5 space-y-4">
+      <!-- Rendered dynamically -->
+    </div>
+
+    <!-- Cart Footer / Checkout Action -->
+    <div id="cart-footer" class="p-5 bg-gray-50 border-t border-gray-200 hidden">
+      <!-- Rendered dynamically -->
+    </div>
+  </aside>
+
+  <!-- =========================================================
+       JAVASCRIPT DATA LAYER & APPLICATION LOGIC
+  ========================================================== -->
+  <script>
+    // =========================================================================
+    // 1. 6TH OF OCTOBER CITY AREAS & DISTRICTS DATABASE (22 AREAS)
+    // =========================================================================
+    const OCTOBER_AREAS = [
+      { id: 'hosary', name: 'ميدان الحصري والمحور', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
+      { id: 'd1', name: 'الحي الأول', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: true },
+      { id: 'd2', name: 'الحي الثاني', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false },
+      { id: 'd3', name: 'الحي الثالث', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
+      { id: 'd4', name: 'الحي الرابع', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
+      { id: 'd5', name: 'الحي الخامس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
+      { id: 'd6', name: 'الحي السادس', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true },
+      { id: 'd7', name: 'الحي السابع', zone: 'أحياء أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
+      { id: 'd8', name: 'الحي الثامن', zone: 'أحياء أكتوبر', deliveryTime: '25 - 35 دقيقة', baseFee: 18, popular: false },
+      { id: 'd9', name: 'الحي التاسع', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
+      { id: 'd10', name: 'الحي العاشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: false },
+      { id: 'd11', name: 'الحي الحادي عشر', zone: 'أحياء أكتوبر', deliveryTime: '30 - 40 دقيقة', baseFee: 22, popular: true },
+      { id: 'd12', name: 'الحي الثاني عشر', zone: 'أحياء أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false },
+      { id: 'central', name: 'المحور المركزي وميدان النجدة', zone: 'وسط أكتوبر', deliveryTime: '20 - 30 دقيقة', baseFee: 15, popular: true },
+      { id: 'somid', name: 'غرب سوميد والمتميز', zone: 'كمبوندات وأحياء راقية', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: true },
+      { id: 'northern', name: 'التوسعات الشمالية', zone: 'شمال أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false },
+      { id: 'hadayek', name: 'حدائق أكتوبر (طريق الفيوم/الواحات)', zone: 'حدائق أكتوبر', deliveryTime: '35 - 50 دقيقة', baseFee: 28, popular: true },
+      { id: 'dreamland', name: 'دريم لاند ومول مصر', zone: 'طريق الواحات', deliveryTime: '30 - 40 دقيقة', baseFee: 25, popular: false },
+      { id: 'mall_arab', name: 'محيط مول العرب وجهينة', zone: 'ميدان جهينة', deliveryTime: '25 - 35 دقيقة', baseFee: 20, popular: false },
+      { id: 'palm_hills', name: 'بالم هيلز ونيو جيزة', zone: 'طريق إسكندرية الصحراوي', deliveryTime: '35 - 45 دقيقة', baseFee: 30, popular: false },
+      { id: 'zayed', name: 'الشيخ زايد وبيفرلي هيلز', zone: 'الشيخ زايد', deliveryTime: '30 - 45 دقيقة', baseFee: 25, popular: true },
+      { id: 'industrial', name: 'المنطقة الصناعية بأكتوبر', zone: 'جنوب أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false }
+    ];
+
+    // =========================================================================
+    // 2. CUISINE CATEGORIES
+    // =========================================================================
+    const CATEGORIES = [
+      { id: 'all', name: 'الكل', icon: '🍽️' },
+      { id: 'syrian', name: 'شاورما وسوري', icon: '🌯' },
+      { id: 'grills', name: 'مشويات ومندي', icon: '🍖' },
+      { id: 'koshary', name: 'كشري وطواجن', icon: '🍲' },
+      { id: 'burger', name: 'برجر وفرايد تشيكن', icon: '🍔' },
+      { id: 'pizza', name: 'بيتزا وإيطالي', icon: '🍕' },
+      { id: 'seafood', name: 'مأكولات بحرية', icon: '🦐' },
+      { id: 'oriental', name: 'فول وطعمية وكبدة', icon: '🧆' },
+      { id: 'desserts', name: 'حلويات وكافيهات', icon: '🍨' }
+    ];
+
+    // =========================================================================
+    // 3. STRUCTURED RESTAURANT FOLDERS & COMPLETE MENUS (6TH OF OCTOBER)
+    // =========================================================================
+    const RESTAURANTS_DATA = {
+      abou_mazen: {
+        id: 'abou_mazen',
+        folderName: '01_Abou_Mazen_El_Soury_Hosary',
+        name: 'أبو مازن السوري',
+        branch: 'فرع ميدان الحصري - بجوار مسجد الحصري',
+        category: 'syrian',
+        categoryLabel: 'شاورما وسوري • مشويات',
+        rating: 4.8,
+        reviewsCount: 3420,
+        deliveryTime: '25 - 35 دقيقة',
+        deliveryFee: 15,
+        minOrder: 60,
+        freeDeliveryOver: 250,
+        promoBadge: 'خصم 20% على الوجبات العربي',
+        isOpen: true,
+        accentColor: '#d97706',
+        heroEmoji: '🌯',
+        image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd7', 'd8', 'central', 'somid', 'mall_arab'],
+        menu: [
+          {
+            section: '🔥 العروض والوجبات العربي',
+            items: [
+              { id: 'am_1', name: 'وجبة شاورما فراخ عربي دبل', desc: '12 قطعة شاورما فراخ على الفحم مع تومية، مخلل، بطاطس محمرة وكول سلو', price: 145, badge: 'الأكثر مبيعاً', emoji: '🥙', sizes: [{ name: 'عادي (12 قطعة)', extra: 0 }, { name: 'سوبر (18 قطعة)', extra: 55 }] },
+              { id: 'am_2', name: 'بوكس لمة الصحاب السوري', desc: '4 سندوتشات شاورما (2 فراخ + 2 لحمة) + 2 بطاطس + 4 تومية + لتر بيبسي', price: 320, badge: 'توفير 65 ج', emoji: '🍱', sizes: [{ name: '4 أفراد', extra: 0 }, { name: '6 أفراد', extra: 130 }] },
+              { id: 'am_3', name: 'فتة شاورما فراخ بالمكسرات', desc: 'أرز بسمتي أصفر، عيش سوري محمص، شاورما فراخ، صوص تومية ومكسرات محمصة', price: 130, emoji: '🍲', sizes: [{ name: 'وسط', extra: 0 }, { name: 'كبير', extra: 35 }] }
+            ]
+          },
+          {
+            section: '🌯 سندوتشات الشاورما السوري',
+            items: [
+              { id: 'am_4', name: 'شاورما فراخ سوري صاج', desc: 'عيش صاج سوري محمص مع شاورما فراخ متبلة وتومية وخيار مخلل', price: 65, emoji: '🌯', sizes: [{ name: 'صاج عادي', extra: 0 }, { name: 'صاج دبل + موتزاريلا', extra: 25 }] },
+              { id: 'am_5', name: 'شاورما لحمة سوري بالطحينة', desc: 'شرائح لحم بتلو مشوي على السيخ مع بقدونس، بصل بالسماق وطحينة', price: 80, emoji: '🥩', sizes: [{ name: 'صاج عادي', extra: 0 }, { name: 'صاج دبل', extra: 30 }] },
+              { id: 'am_6', name: 'سندوتش بطاطس سوري بالموتزاريلا', desc: 'بطاطس مقرمشة مع جبنة موتزاريلا سايحة وتومية وكاتشب في عيش صاج', price: 45, emoji: '🍟' }
+            ]
+          },
+          {
+            section: '🥗 مقبلات وإضافات',
+            items: [
+              { id: 'am_7', name: 'علبة تومية سوري أصلية', desc: 'تومية كريمي غنية بالثوم', price: 15, emoji: '🥣' },
+              { id: 'am_8', name: 'حمص بالطحينة وزيت الزيتون', desc: 'حمص سوري ناعم مع زيت زيتون بكر', price: 35, emoji: '🧆' }
+            ]
+          }
+        ]
+      },
+
+      hadramout_antar: {
+        id: 'hadramout_antar',
+        folderName: '02_Hadramout_Antar_Wahat',
+        name: 'حضرموت عنتر',
+        branch: 'فرع طريق الواحات - أمام دريم لاند',
+        category: 'grills',
+        categoryLabel: 'مشويات • مندي ومظبي • طواجن',
+        rating: 4.9,
+        reviewsCount: 5180,
+        deliveryTime: '35 - 45 دقيقة',
+        deliveryFee: 22,
+        minOrder: 100,
+        freeDeliveryOver: 400,
+        promoBadge: 'توصيل مجاني للطلبات فوق 400 ج',
+        isOpen: true,
+        accentColor: '#b91c1c',
+        heroEmoji: '🍖',
+        image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd3', 'd4', 'd5', 'd6', 'd7', 'hadayek', 'dreamland', 'somid', 'central', 'palm_hills', 'zayed'],
+        menu: [
+          {
+            section: '👑 صواني عنتر الملكية',
+            items: [
+              { id: 'ha_1', name: 'صينية عنتر للمشويات (فردين)', desc: 'نصف فرخة شيش + ربع كفتة + ربع طرب + أرز بسمتي + سلطات وعيش', price: 420, badge: 'الأكثر طلباً', emoji: '🍖', sizes: [{ name: 'صينية فردين', extra: 0 }, { name: 'صينية 4 أفراد', extra: 360 }] },
+              { id: 'ha_2', name: 'تيس مندي حضرمي على الحطب', desc: 'قطعة لحم ضاني مندي مطهوة ببطء في حفرة المندي مع أرز مندي مدخن وصوص دقوس', price: 360, emoji: '🍗', sizes: [{ name: 'ربع تيس مندي', extra: 0 }, { name: 'نصف تيس مندي', extra: 340 }] }
+            ]
+          },
+          {
+            section: '🔥 المشويات بالوزن والوجبات',
+            items: [
+              { id: 'ha_3', name: 'نصف فرخة مندي مع أرز بسمتي', desc: 'نصف دجاجة متبلة بالبهارات الحضرمية مع أرز بسمتي وسلطة دقوس وطحينة', price: 195, emoji: '🍗' },
+              { id: 'ha_4', name: 'كيلو كفتة ضاني مشوية على الفحم', desc: 'كفتة لحم ضاني بلدي مشوية طازة تقدم مع طحينة وسلطة خضراء وعيش بلدي', price: 480, emoji: '🍢', sizes: [{ name: 'نصف كيلو', extra: -230 }, { name: 'كيلو كامل', extra: 0 }] },
+              { id: 'ha_5', name: 'طاجن ورق عنب بالكوارع', desc: 'ورق عنب مطهو بالشوربة مع قطع كوارع مخلية في الفرن', price: 240, emoji: '🍲' }
+            ]
+          }
+        ]
+      },
+
+      koshary_tahrir: {
+        id: 'koshary_tahrir',
+        folderName: '03_Koshary_El_Tahrir_Central',
+        name: 'كشري التحرير',
+        branch: 'فرع المحور المركزي - ميدان النجدة',
+        category: 'koshary',
+        categoryLabel: 'كشري مصري • طواجن • حلو',
+        rating: 4.7,
+        reviewsCount: 4120,
+        deliveryTime: '20 - 30 دقيقة',
+        deliveryFee: 15,
+        minOrder: 40,
+        freeDeliveryOver: 180,
+        promoBadge: 'توصيل سريع في 25 دقيقة',
+        isOpen: true,
+        accentColor: '#ea580c',
+        heroEmoji: '🍲',
+        image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd11', 'central', 'somid', 'hadayek'],
+        menu: [
+          {
+            section: '🍲 أطباق الكشري',
+            items: [
+              { id: 'kt_1', name: 'علبة كشري التحرير سوبر', desc: 'أرز، مكرونة، عدس بجبة، حمص، بصل مقرمش، صلصة طماطم، دقة وشطة زيت', price: 55, badge: 'الأشهر في أكتوبر', emoji: '🍲', sizes: [{ name: 'وسط', extra: -10 }, { name: 'كبير (سوبر)', extra: 0 }, { name: 'جامبو عائلي', extra: 25 }] },
+              { id: 'kt_2', name: 'كشري كينج بالبصل المقرمش الإضافي', desc: 'حجم كبير جداً لعشاق الكشري مع علبة بصل مقرمش زيادة ودقة', price: 75, emoji: '👑' }
+            ]
+          },
+          {
+            section: '🥘 الطواجن والسلطات',
+            items: [
+              { id: 'kt_3', name: 'طاجن مكرونة باللحمة المفرومة', desc: 'مكرونة قلم بالصلصة الحمراء واللحمة المفرومة المتبلة في الفرن', price: 65, emoji: '🥘' },
+              { id: 'kt_4', name: 'طاجن مكرونة بالفراخ والموتزاريلا', desc: 'قطع صدور فراخ متبلة مع مكرونة وطبقة جبنة موتزاريلا سايحة', price: 80, emoji: '🧀' },
+              { id: 'kt_5', name: 'سلطة طماطم مخللة بالدقة', desc: 'طماطم متبلة بالثوم والكمون والخل', price: 15, emoji: '🍅' }
+            ]
+          },
+          {
+            section: '🍮 الحلو',
+            items: [
+              { id: 'kt_6', name: 'أرز بلبن فرن بالقشطة', desc: 'أرز بلبن كريمي وش محمر في الفرن', price: 30, emoji: '🍮' }
+            ]
+          }
+        ]
+      },
+
+      bazooka: {
+        id: 'bazooka',
+        folderName: '04_Bazooka_Fried_Chicken_Hosary',
+        name: 'بازوكا فرايد تشيكن',
+        branch: 'فرع الحصري - أبراج الأمريكية',
+        category: 'burger',
+        categoryLabel: 'فرايد تشيكن • برجر • وجبات سريعة',
+        rating: 4.6,
+        reviewsCount: 2890,
+        deliveryTime: '30 - 40 دقيقة',
+        deliveryFee: 18,
+        minOrder: 80,
+        freeDeliveryOver: 300,
+        promoBadge: 'وجبة السعادة بـ 165 ج بدلاً من 210 ج',
+        isOpen: true,
+        accentColor: '#dc2626',
+        heroEmoji: '🍗',
+        image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd7', 'd8', 'd11', 'd12', 'central', 'somid', 'mall_arab', 'zayed'],
+        menu: [
+          {
+            section: '🔥 بوكسات بازوكا التوفير',
+            items: [
+              { id: 'bz_1', name: 'بوكس السعادة (3 قطع بروستد)', desc: '3 قطع دجاج مقرمش (عادي أو سبايسي) + أرز ريزو + بطاطس + كول سلو + عيش', price: 165, badge: 'عرض طيران', emoji: '🍗', sizes: [{ name: 'عادي', extra: 0 }, { name: 'سبايسي حار', extra: 0 }] },
+              { id: 'bz_2', name: 'بوكس العائلة (9 قطع دجاج)', desc: '9 قطع بروستد + بطاطس عائلي + 3 كول سلو + 4 عيش + لتر بيبسي', price: 440, emoji: 'buckets' }
+            ]
+          },
+          {
+            section: '🍔 سندوتشات تشيكن برجر',
+            items: [
+              { id: 'bz_3', name: 'سندوتش بازوكا فاير تشيكن', desc: 'قطعة صدر دجاج مقرمش عملاقة مع صوص شيدر، هالبينو، خس ومايونيز', price: 115, emoji: '🍔', sizes: [{ name: 'سنجل', extra: 0 }, { name: 'دبل تشيكن', extra: 45 }] },
+              { id: 'bz_4', name: 'تشيكن راب تورتيلا', desc: 'استربس مقرمش مع صوص رانش وخس وجبنة شيدر في خبز تورتيلا', price: 85, emoji: '🌯' }
+            ]
+          }
+        ]
+      },
+
+      wahmy_burger: {
+        id: 'wahmy_burger',
+        folderName: '05_Wahmy_Burger_District7',
+        name: 'وهمي برجر (Wahmy)',
+        branch: 'فرع الحي السابع - سنتر الأردنية',
+        category: 'burger',
+        categoryLabel: 'سماش برجر • هوت دوج • بطاطس',
+        rating: 4.8,
+        reviewsCount: 1950,
+        deliveryTime: '25 - 35 دقيقة',
+        deliveryFee: 15,
+        minOrder: 70,
+        freeDeliveryOver: 250,
+        promoBadge: 'خصم 15% على كومبو الدبل',
+        isOpen: true,
+        accentColor: '#f59e0b',
+        heroEmoji: '🍔',
+        image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd6', 'd7', 'd8', 'central', 'hadayek', 'somid', 'industrial'],
+        menu: [
+          {
+            section: '🍔 سماش برجر لحم صافي',
+            items: [
+              { id: 'wb_1', name: 'وهمي كلاسيك سماش برجر', desc: 'برجر لحم بقري مشوي على الجريل مع جبنة شيدر أمريكي، صوص وهمي السري، بصل مكرمل وخس', price: 110, badge: 'الأكثر مبيعاً', emoji: '🍔', sizes: [{ name: '150 جرام', extra: 0 }, { name: '300 جرام دبل', extra: 55 }] },
+              { id: 'wb_2', name: 'مشروم سويس برجر', desc: 'برجر لحم مع صوص المشروم البني الكريمي وجبنة سويسرية سايحة', price: 135, emoji: '🍄', sizes: [{ name: '150 جرام', extra: 0 }, { name: '300 جرام دبل', extra: 55 }] },
+              { id: 'wb_3', name: 'تشيلي بيكون برجر', desc: 'برجر لحم مدخن مع بيف بيكون مقرمش وصوص شيدر وهالبينو', price: 145, emoji: '🥓' }
+            ]
+          },
+          {
+            section: '🍟 البطاطس والإضافات',
+            items: [
+              { id: 'wb_4', name: 'تشيلي تشيز فرايز', desc: 'بطاطس مقرمشة مغطاة بصوص الجبنة الشيدر واللحم المفروم المتبل', price: 70, emoji: '🍟' }
+            ]
+          }
+        ]
+      },
+
+      papa_johns: {
+        id: 'papa_johns',
+        folderName: '06_Papa_Johns_Pizza_MallOfArabia',
+        name: 'بابا جونز بيتزا',
+        branch: 'فرع مول العرب - بوابة 4',
+        category: 'pizza',
+        categoryLabel: 'بيتزا أمريكي • باستا • مقبلات',
+        rating: 4.7,
+        reviewsCount: 2310,
+        deliveryTime: '30 - 45 دقيقة',
+        deliveryFee: 20,
+        minOrder: 90,
+        freeDeliveryOver: 320,
+        promoBadge: 'اشترِ بيتزا كبيرة واحصل على وسط مجاناً',
+        isOpen: true,
+        accentColor: '#15803d',
+        heroEmoji: '🍕',
+        image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd7', 'd8', 'd11', 'somid', 'mall_arab', 'northern', 'zayed', 'palm_hills'],
+        menu: [
+          {
+            section: '🍕 بيتزا بابا جونز المميزة',
+            items: [
+              { id: 'pj_1', name: 'بيتزا سوبر باباز (Super Papas)', desc: 'بيبروني، سجق إيطالي، لحم بقري، مشروم، فلفل أخضر، زيتون أسود وموتزاريلا', price: 210, badge: 'الأشهر', emoji: '🍕', sizes: [{ name: 'وسط', extra: 0 }, { name: 'كبير', extra: 65 }, { name: 'عائلي XL', extra: 115 }] },
+              { id: 'pj_2', name: 'بيتزا تشيكن باربكيو رانش', desc: 'قطع دجاج مشوية، صوص باربكيو مدخن، صوص رانش، بصل وموتزاريلا', price: 205, emoji: '🍗', sizes: [{ name: 'وسط', extra: 0 }, { name: 'كبير', extra: 65 }] },
+              { id: 'pj_3', name: 'بيتزا مارجريتا كلاسيك', desc: 'صلصة طماطم بابا جونز الطازجة مع طبقة غنية من جبنة الموتزاريلا', price: 145, emoji: '🧀', sizes: [{ name: 'وسط', extra: 0 }, { name: 'كبير', extra: 50 }] }
+            ]
+          },
+          {
+            section: '🥖 مقبلات جانبية',
+            items: [
+              { id: 'pj_4', name: 'تشيز ستيكس بالثوم (10 قطع)', desc: 'عجينة طازجة مخبوزة بالثوم والجبنة الموتزاريلا مع صوص المارينارا', price: 85, emoji: '🥖' }
+            ]
+          }
+        ]
+      },
+
+      kaddoura_seafood: {
+        id: 'kaddoura_seafood',
+        folderName: '07_Asmak_Kaddoura_West_Somid',
+        name: 'أسماك قدورة',
+        branch: 'فرع غرب سوميد - المحور المركزي',
+        category: 'seafood',
+        categoryLabel: 'مأكولات بحرية • طواجن سي فود • مشويات',
+        rating: 4.8,
+        reviewsCount: 1640,
+        deliveryTime: '35 - 50 دقيقة',
+        deliveryFee: 25,
+        minOrder: 120,
+        freeDeliveryOver: 450,
+        promoBadge: 'شوربة سي فود هدية مع الطلبات فوق 350 ج',
+        isOpen: true,
+        accentColor: '#0284c7',
+        heroEmoji: '🦐',
+        image: 'https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd7', 'somid', 'mall_arab', 'central', 'zayed', 'palm_hills', 'dreamland'],
+        menu: [
+          {
+            section: '🦐 وجبات وطواجن السي فود',
+            items: [
+              { id: 'kd_1', name: 'وجبة جمبري جامبو مشوي بترفلاي', desc: 'نصف كيلو جمبري جامبو مشوي بالزبدة والثوم والليمون + أرز صيادية + طحينة وسلطة', price: 390, badge: 'طازة يومياً', emoji: '🦐' },
+              { id: 'kd_2', name: 'طاجن سي فود بالكريمة والموتزاريلا', desc: 'جمبري، كاليماري، فيليه قشر بياض بصوص الكريمة والجبنة في الفرن', price: 240, emoji: '🍲' },
+              { id: 'kd_3', name: 'شوربة سي فود كريمة مخلي', desc: 'شوربة غنية بالجمبري والكاليماري والكابوريا المخلية', price: 115, emoji: '🥣' }
+            ]
+          },
+          {
+            section: '🐟 الأسماك الطازجة',
+            items: [
+              { id: 'kd_4', name: 'سمك بوري سنجاري مشوي بالخلطة', desc: 'سمكة بوري كبيرة مفتوحة سنجاري بالخضار والتتبيلة الإسكندراني + أرز صيادية', price: 185, emoji: '🐟' }
+            ]
+          }
+        ]
+      },
+
+      gad_hosary: {
+        id: 'gad_hosary',
+        folderName: '08_Gad_Restaurants_Hosary',
+        name: 'مطاعم جاد (Gad)',
+        branch: 'فرع ميدان الحصري الرئيسي',
+        category: 'oriental',
+        categoryLabel: 'فول وطعمية • فطير مشلتت • كبدة ومشويات',
+        rating: 4.5,
+        reviewsCount: 4890,
+        deliveryTime: '20 - 30 دقيقة',
+        deliveryFee: 15,
+        minOrder: 45,
+        freeDeliveryOver: 200,
+        promoBadge: 'فطار أكتوبر الأصلي 24 ساعة',
+        isOpen: true,
+        accentColor: '#059669',
+        heroEmoji: '🧆',
+        image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd11', 'd12', 'central', 'somid', 'hadayek'],
+        menu: [
+          {
+            section: '🧆 سندوتشات الفطار المصري',
+            items: [
+              { id: 'gd_1', name: 'بوكس فطار جاد للملوك', desc: 'علبة فول إسكندراني + 6 طعمية محشية + بطاطس محمرة + باذنجان مخلل + 4 عيش بلدي', price: 85, badge: 'أشهر فطار', emoji: '🧆' },
+              { id: 'gd_2', name: 'سندوتش طعمية إسكندراني بالطحينة', desc: 'طعمية سخنة مقرمشة مع سلطة بلدي وطحينة في عيش شامي أو بلدي', price: 18, emoji: '🥙' },
+              { id: 'gd_3', name: 'سندوتش كبدة إسكندراني على الجريل', desc: 'كبدة بلدي متبلة بالثوم والفلفل الأخضر والليمون', price: 42, emoji: '🥖' }
+            ]
+          },
+          {
+            section: '🥧 الفطير الشرقي والمشلتت',
+            items: [
+              { id: 'gd_4', name: 'فطيرة سجق شرقي وشيدر (وش بيتزا)', desc: 'فطير مورق بالسمنة البلدي محشو سجق وخلطة جبن وموتزاريلا', price: 135, emoji: '🥧', sizes: [{ name: 'وسط', extra: 0 }, { name: 'كبير', extra: 45 }] },
+              { id: 'gd_5', name: 'فطيرة مشلتت فلاحي بالسمن البلدي', desc: 'تقدم مع عسل أبيض، عسل أسود بالطحينة، وجبنة قديمة', price: 110, emoji: '🍯' }
+            ]
+          }
+        ]
+      },
+
+      blaban: {
+        id: 'blaban',
+        folderName: '09_BLaban_Desserts_District1',
+        name: 'بـ لبن (B.Laban)',
+        branch: 'فرع الحي الأول - محور الكفراوي',
+        category: 'desserts',
+        categoryLabel: 'حلويات شرقية • قشطوطة • أرز بلبن • آيس كريم',
+        rating: 4.9,
+        reviewsCount: 6200,
+        deliveryTime: '20 - 30 دقيقة',
+        deliveryFee: 15,
+        minOrder: 50,
+        freeDeliveryOver: 200,
+        promoBadge: 'جرب الكشري الحلو والقشطوطة الجديدة!',
+        isOpen: true,
+        accentColor: '#2563eb',
+        heroEmoji: '🍨',
+        image: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['hosary', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd11', 'central', 'somid', 'hadayek', 'mall_arab', 'zayed'],
+        menu: [
+          {
+            section: '🍨 ترندات بـ لبن 2026',
+            items: [
+              { id: 'bl_1', name: 'قشطوطة مانجو وقشطة بلدي', desc: 'كيكة الحليب الغرقانة باللبن والقشطة البلدي وقطع المانجو الفريش', price: 75, badge: 'ترند #1', emoji: '🥭' },
+              { id: 'bl_2', name: 'كشري بـ لبن (لوتس وبستاشيو)', desc: 'طبقات أرز بلبن، كنافة محمصة، جلاش، كريمة باستري، صوص بستاشيو ولوتس', price: 85, badge: 'الأكثر طلباً', emoji: '🍨' },
+              { id: 'bl_3', name: 'أم علي بالمكسرات والقشطة في الفرن', desc: 'ملفيه مقرمش بالحليب الساخن والمكسرات وطبقة قشطة محمرة', price: 65, emoji: '🍮' },
+              { id: 'bl_4', name: 'أرز بلبن نوتيلا وبندق', desc: 'أرز بلبن كريمي مغطى بصوص النوتيلا الأصلي وبندق محمص', price: 55, emoji: '🍫' }
+            ]
+          }
+        ]
+      },
+
+      sharkawy_liver: {
+        id: 'sharkawy_liver',
+        folderName: '10_El_Sharkawy_District6',
+        name: 'كبدة ومخ الشرقاوي',
+        branch: 'فرع الحي السادس - السوق التجاري',
+        category: 'oriental',
+        categoryLabel: 'كبدة ومخ • حواوشي • مشويات بلدي',
+        rating: 4.6,
+        reviewsCount: 1420,
+        deliveryTime: '25 - 35 دقيقة',
+        deliveryFee: 18,
+        minOrder: 60,
+        freeDeliveryOver: 220,
+        promoBadge: 'خصم 15% على وجبات الكبدة والمخ',
+        isOpen: true,
+        accentColor: '#991b1b',
+        heroEmoji: '🥪',
+        image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=80',
+        coveredAreas: ['d5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd11', 'd12', 'hosary', 'central', 'hadayek', 'industrial'],
+        menu: [
+          {
+            section: '🔥 وجبات وسندوتشات الشرقاوي',
+            items: [
+              { id: 'sh_1', name: 'بوكس الكبدة والمخ البانيه', desc: 'نصف كيلو كبدة ومخ بانيه مقرمش بالردة + مخلل بلدي + طحينة + 6 رغيف بلدي', price: 210, badge: 'أكلة مزاج', emoji: '🥩' },
+              { id: 'sh_2', name: 'حواوشي لحمة بلدي على الفحم', desc: 'رغيف حواوشي بلدي محشو لحم مفروم متبل باللية والبهارات مشوي على الفحم', price: 55, emoji: '🫓', sizes: [{ name: 'عادي', extra: 0 }, { name: 'بالجبنة الموتزاريلا', extra: 20 }] },
+              { id: 'sh_3', name: 'سندوتش مخ بانيه بالطحينة', desc: 'مخ طازج مقلي بالبقسماط مع طحينة وجرجير', price: 50, emoji: '🥖' }
+            ]
+          }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 4. APPLICATION STATE (WITH LOCAL STORAGE PERSISTENCE)
+    // =========================================================================
+    let state = {
+      view: 'home', // 'home' | 'restaurant' | 'tracking'
+      selectedAreaId: 'hosary',
+      tempSelectedAreaId: 'hosary',
+      addressDetails: {
+        street: 'ميدان الحصري - برج اللؤلؤة',
+        landmark: 'أمام مسجد الحصري',
+        building: '12',
+        floor: '4',
+        apt: '8',
+        phone: ''
+      },
+      selectedCategory: 'all',
+      searchQuery: '',
+      quickFilter: 'all', // 'all' | 'free_delivery' | 'top_rated' | 'fast' | 'promos'
+      activeRestaurantId: null,
+      menuSearchQuery: '',
+      cart: [], // [{ uid, restaurantId, itemId, name, price, sizeName, qty, notes, emoji }]
+      promoCode: null, // { code: 'TAYARAN20', discountPercent: 20 }
+      paymentMethod: 'cash', // 'cash' | 'card' | 'wallet'
+      activeOrder: null,
+      selectedFolderId: 'abou_mazen'
+    };
+
+    // Load persisted data if available
+    function loadSavedState() {
+      try {
+        const savedArea = localStorage.getItem('tayaran_area');
+        const savedAddr = localStorage.getItem('tayaran_addr');
+        const savedCart = localStorage.getItem('tayaran_cart');
+        const savedOrder = localStorage.getItem('tayaran_order');
+        if (savedArea && OCTOBER_AREAS.find(a => a.id === savedArea)) {
+          state.selectedAreaId = savedArea;
+          state.tempSelectedAreaId = savedArea;
+        }
+        if (savedAddr) state.addressDetails = { ...state.addressDetails, ...JSON.parse(savedAddr) };
+        if (savedCart) state.cart = JSON.parse(savedCart);
+        if (savedOrder) state.activeOrder = JSON.parse(savedOrder);
+      } catch (e) {
+        console.warn('Storage load skipped:', e);
+      }
+    }
+
+    function persistState() {
+      try {
+        localStorage.setItem('tayaran_area', state.selectedAreaId);
+        localStorage.setItem('tayaran_addr', JSON.stringify(state.addressDetails));
+        localStorage.setItem('tayaran_cart', JSON.stringify(state.cart));
+        if (state.activeOrder) {
+          localStorage.setItem('tayaran_order', JSON.stringify(state.activeOrder));
+        } else {
+          localStorage.removeItem('tayaran_order');
+        }
+      } catch (e) {
+        console.warn('Storage save skipped:', e);
+      }
+    }
+
+    // Helper: Get current Area Object
+    function getCurrentArea() {
+      return OCTOBER_AREAS.find(a => a.id === state.selectedAreaId) || OCTOBER_AREAS[0];
+    }
+
+    // Helper: Calculate dynamic delivery fee for a restaurant in the user's selected October area
+    function getDeliveryFeeForRestaurant(rest) {
+      const area = getCurrentArea();
+      const coversDirectly = rest.coveredAreas.includes(area.id);
+      if (!coversDirectly) {
+        return rest.deliveryFee + 12; // Extended October delivery fee
+      }
+      return Math.max(rest.deliveryFee, area.baseFee);
+    }
+
+    // =========================================================================
+    // 5. TOAST NOTIFICATIONS (NO ALERT() USED EVER)
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const id = 'toast-' + Date.now();
+      const styles = {
+        success: 'bg-gray-900 text-white border-brand-500',
+        error: 'bg-red-600 text-white border-red-300',
+        info: 'bg-brand-500 text-white border-white'
+      };
+      const icons = {
+        success: 'fa-circle-check text-brand-400',
+        error: 'fa-circle-exclamation text-white',
+        info: 'fa-paper-plane text-white'
+      };
+
+      const toast = document.createElement('div');
+      toast.id = id;
+      toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-xl border-r-4 text-xs sm:text-sm font-bold transition-all duration-300 transform translate-y-2 opacity-0 ${styles[type] || styles.success}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.success} text-base shrink-0"></i>
+        <span class="flex-1 leading-snug">${message}</span>
+      `;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    // Clipboard helper using execCommand fallback for iframe compatibility
+    function copyPromoCode(code) {
+      const tempInput = document.createElement('input');
+      tempInput.value = code;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(`تم نسخ كود الخصم (${code})! استخدمه في السلة 🎉`, 'success');
+      } catch (err) {
+        showToast(`كود الخصم هو: ${code}`, 'info');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // =========================================================================
+    // 6. NAVIGATION & HEADER SYNC
+    // =========================================================================
+    function updateHeaderUI() {
+      const area = getCurrentArea();
+      const areaEl = document.getElementById('header-selected-area');
+      if (areaEl) areaEl.textContent = area.name;
+
+      const totalQty = state.cart.reduce((sum, item) => sum + item.qty, 0);
+      const countEl = document.getElementById('header-cart-count');
+      if (countEl) countEl.textContent = totalQty;
+
+      const trackBtn = document.getElementById('header-track-btn');
+      if (trackBtn) {
+        if (state.activeOrder) {
+          trackBtn.classList.remove('hidden');
+          trackBtn.classList.add('flex');
+        } else {
+          trackBtn.classList.add('hidden');
+          trackBtn.classList.remove('flex');
+        }
+      }
+    }
+
+    function navigateTo(viewName, restaurantId = null) {
+      state.view = viewName;
+      if (restaurantId) {
+        state.activeRestaurantId = restaurantId;
+        state.menuSearchQuery = '';
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      renderApp();
+    }
+
+    function openRestaurant(restaurantId) {
+      if (!RESTAURANTS_DATA[restaurantId]) return;
+      navigateTo('restaurant', restaurantId);
+    }
+
+    // =========================================================================
+    // 7. RENDERING VIEWS (HOME, RESTAURANT STOREFRONT, LIVE TRACKING)
+    // =========================================================================
+    function renderApp() {
+      updateHeaderUI();
+      const root = document.getElementById('app-root');
+      if (state.view === 'home') {
+        root.innerHTML = renderHomeView();
+      } else if (state.view === 'restaurant') {
+        root.innerHTML = renderRestaurantView();
+      } else if (state.view === 'tracking') {
+        root.innerHTML = renderTrackingView();
+      }
+    }
+
+    // --- VIEW A: HOME & DISCOVERY ---
+    function renderHomeView() {
+      const area = getCurrentArea();
+      const allRestaurants = Object.values(RESTAURANTS_DATA);
+
+      // Filter restaurants
+      const filteredRestaurants = allRestaurants.filter(r => {
+        // Category filter
+        if (state.selectedCategory !== 'all' && r.category !== state.selectedCategory) return false;
+
+        // Search filter (matches restaurant name, category, branch, or menu item name)
+        if (state.searchQuery.trim() !== '') {
+          const q = state.searchQuery.trim().toLowerCase();
+          const inName = r.name.toLowerCase().includes(q);
+          const inBranch = r.branch.toLowerCase().includes(q);
+          const inCat = r.categoryLabel.toLowerCase().includes(q);
+          const inMenu = r.menu.some(sec => sec.items.some(it => it.name.toLowerCase().includes(q)));
+          if (!inName && !inBranch && !inCat && !inMenu) return false;
+        }
+
+        // Quick filters
+        if (state.quickFilter === 'free_delivery' && r.freeDeliveryOver > 250) return false;
+        if (state.quickFilter === 'top_rated' && r.rating < 4.8) return false;
+        if (state.quickFilter === 'fast' && !r.deliveryTime.includes('20')) return false;
+        if (state.quickFilter === 'promos' && !r.promoBadge) return false;
+
+        return true;
+      });
+
+      return `
+        <!-- HERO BANNER -->
+        <section class="hero-pattern text-white relative overflow-hidden">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div class="lg:col-span-8 space-y-5">
+                <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-xs border border-white/25 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold">
+                  <span>🚀</span>
+                  <span>توصيل صاروخي لكل أحياء وكمبوندات مدينة 6 أكتوبر</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight">
+                  جعان في <span class="underline decoration-amber-300 decoration-4 underline-offset-8">${area.name}</span>؟
+                  <br class="hidden sm:inline" />
+                  أكلك هيطير لعندك في <span class="text-amber-200">${area.deliveryTime}</span>
+                </h1>
+
+                <p class="text-orange-100 text-sm sm:text-base max-w-2xl font-medium">
+                  اطلب من أشهر مطاعم الحصري، المحور المركزي، الحي الأول، السابع، حدائق أكتوبر وغرب سوميد بضغطة واحدة.
+                </p>
+
+                <!-- Unified Search & Area Selector Box -->
+                <div class="bg-white p-2 sm:p-2.5 rounded-3xl shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-3xl">
+                  <!-- Location Button -->
+                  <button onclick="openAddressModal()" class="flex items-center justify-between sm:justify-start gap-2.5 px-4 py-3 rounded-2xl bg-brand-50 hover:bg-brand-100 text-gray-800 transition shrink-0">
+                    <div class="flex items-center gap-2">
+                      <i class="fa-solid fa-location-crosshairs text-brand-500 text-base"></i>
+                      <div class="text-right">
+                        <div class="text-[10px] text-gray-500 font-bold">المنطقة المختارة</div>
+                        <div class="text-xs sm:text-sm font-black text-gray-900">${area.name}</div>
+                      </div>
+                    </div>
+                    <i class="fa-solid fa-angle-down text-brand-500 text-xs mr-2"></i>
+                  </button>
+
+                  <!-- Search Input -->
+                  <div class="flex-1 relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3"></i>
+                    <input
+                      type="text"
+                      value="${state.searchQuery}"
+                      oninput="handleSearchInput(this.value)"
+                      placeholder="ابحث عن مطعم (أبو مازن، حضرموت، بـ لبن) أو أكلة (شاورما، كشري)..."
+                      class="w-full px-3 py-2.5 text-gray-800 placeholder-gray-400 text-xs sm:text-sm font-bold outline-none bg-transparent"
+                    />
+                    ${state.searchQuery ? `<button onclick="handleSearchInput('')" class="text-gray-400 hover:text-gray-600 px-2"><i class="fa-solid fa-circle-xmark"></i></button>` : ''}
+                  </div>
+
+                  <!-- CTA Button -->
+                  <button onclick="document.getElementById('restaurants-section').scrollIntoView({behavior:'smooth'})" class="bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm px-6 py-3.5 rounded-2xl transition shrink-0 shadow-sm">
+                    يلا نطلب
+                  </button>
+                </div>
+
+                <!-- Popular October Quick Chips -->
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                  <span class="text-orange-100 font-bold">مناطق سريعة:</span>
+                  ${OCTOBER_AREAS.filter(a => a.popular).slice(0, 6).map(a => `
+                    <button onclick="quickSelectArea('${a.id}')" class="px-3 py-1 rounded-full font-bold transition ${a.id === state.selectedAreaId ? 'bg-white text-brand-600 shadow-xs' : 'bg-white/15 hover:bg-white/25 text-white'}">
+                      ${a.name}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Decorative Delivery Card Illustration -->
+              <div class="hidden lg:flex lg:col-span-4 justify-center">
+                <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl p-6 w-full max-w-xs text-center animate-float shadow-2xl">
+                  <div class="w-20 h-20 mx-auto rounded-3xl bg-white text-brand-500 flex items-center justify-center text-4xl shadow-lg mb-4">
+                    🛵
+                  </div>
+                  <div class="text-lg font-black mb-1">كابتن طيران جاهز!</div>
+                  <p class="text-xs text-orange-100 mb-4">متوسط وقت التوصيل الآن في <strong class="text-white">${area.name}</strong> هو <strong class="text-amber-300">${area.deliveryTime}</strong></p>
+                  <div class="bg-white/20 rounded-2xl p-3 text-xs font-extrabold flex items-center justify-between">
+                    <span>كود خصم 20%:</span>
+                    <button onclick="copyPromoCode('TAYARAN20')" class="bg-amber-300 text-gray-900 px-2.5 py-1 rounded-lg font-black hover:bg-amber-200 transition">TAYARAN20</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROMO BANNERS CAROUSEL -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 relative z-20">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div onclick="openRestaurant('abou_mazen')" class="cursor-pointer bg-gradient-to-l from-amber-500 to-orange-600 rounded-3xl p-5 text-white shadow-card hover:shadow-card-hover transition-all flex items-center justify-between group">
+              <div>
+                <span class="bg-white/20 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">عرض الحصري</span>
+                <h3 class="text-lg font-black mt-2">خصم 20% من أبو مازن السوري</h3>
+                <p class="text-xs text-amber-100 mt-0.5">على كل وجبات الشاورما العربي والبوكسات</p>
+              </div>
+              <div class="text-4xl group-hover:scale-110 transition-transform">🌯</div>
+            </div>
+
+            <div onclick="openRestaurant('blaban')" class="cursor-pointer bg-gradient-to-l from-blue-600 to-indigo-700 rounded-3xl p-5 text-white shadow-card hover:shadow-card-hover transition-all flex items-center justify-between group">
+              <div>
+                <span class="bg-white/20 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">وصل حديثاً</span>
+                <h3 class="text-lg font-black mt-2">قشطوطة وكشري بـ لبن</h3>
+                <p class="text-xs text-blue-100 mt-0.5">توصيل مبرد وسريع لكل أحياء 6 أكتوبر</p>
+              </div>
+              <div class="text-4xl group-hover:scale-110 transition-transform">🍨</div>
+            </div>
+
+            <div onclick="openFoldersModal()" class="cursor-pointer bg-gradient-to-l from-gray-800 to-gray-950 rounded-3xl p-5 text-white shadow-card hover:shadow-card-hover transition-all flex items-center justify-between group border border-gray-700">
+              <div>
+                <span class="bg-brand-500 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full">دليل شامل</span>
+                <h3 class="text-lg font-black mt-2">فولدرات ومنيوهات أكتوبر</h3>
+                <p class="text-xs text-gray-300 mt-0.5">تصفح كل مطعم بملفه والمنيو الكامل بالأسعار</p>
+              </div>
+              <div class="text-4xl group-hover:scale-110 transition-transform">📁</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CUISINE CATEGORIES BAR -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg sm:text-xl font-black text-gray-900">نفسك في إيه النهاردة؟</h2>
+            <span class="text-xs font-bold text-gray-500">${CATEGORIES.length} تصنيفات</span>
+          </div>
+          <div class="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
+            ${CATEGORIES.map(cat => {
+              const active = state.selectedCategory === cat.id;
+              return `
+                <button onclick="selectCategory('${cat.id}')" class="flex flex-col items-center justify-center min-w-[96px] sm:min-w-[110px] p-3.5 rounded-3xl border transition-all shrink-0 ${active ? 'bg-brand-500 text-white border-brand-500 shadow-md scale-[1.02]' : 'bg-white hover:bg-brand-50 text-gray-700 border-gray-100 shadow-xs'}">
+                  <span class="text-2xl sm:text-3xl mb-1.5">${cat.icon}</span>
+                  <span class="text-xs font-extrabold whitespace-nowrap">${cat.name}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- RESTAURANTS GRID SECTION -->
+        <section id="restaurants-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <!-- Header & Quick Filters -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-black text-gray-900">
+                مطاعم توصل إلى <span class="text-brand-500">${area.name}</span>
+                <span class="text-sm font-bold text-gray-400 mr-1">(${filteredRestaurants.length} مطعم)</span>
+              </h2>
+              <p class="text-xs text-gray-500 mt-0.5">اضغط على أي مطعم لفتح المنيو الكامل والطلب فوراً</p>
+            </div>
+
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+              ${[
+                { id: 'all', label: 'الكل', icon: 'fa-border-all' },
+                { id: 'top_rated', label: 'الأعلى تقييماً (4.8+)', icon: 'fa-star' },
+                { id: 'fast', label: 'توصيل سريع', icon: 'fa-bolt' },
+                { id: 'free_delivery', label: 'توصيل مجاني', icon: 'fa-truck-fast' },
+                { id: 'promos', label: 'عروض وخصومات', icon: 'fa-tag' }
+              ].map(f => `
+                <button onclick="selectQuickFilter('${f.id}')" class="flex items-center gap-1.5 px-3.5 py-2 rounded-2xl text-xs font-extrabold whitespace-nowrap border transition ${state.quickFilter === f.id ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-700 border-gray-200 hover:border-brand-400'}">
+                  <i class="fa-solid ${f.icon} ${state.quickFilter === f.id ? 'text-brand-400' : 'text-brand-500'}"></i>
+                  <span>${f.label}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Grid of Restaurant Cards -->
+          ${filteredRestaurants.length === 0 ? `
+            <div class="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-card">
+              <div class="text-5xl mb-3">🔍</div>
+              <h3 class="text-lg font-black text-gray-800 mb-1">مفيش مطاعم مطابقة لبحثك حالياً</h3>
+              <p class="text-xs text-gray-500 mb-4">جرب تمسح الفلتر أو تبحث باسم أكلة تانية</p>
+              <button onclick="resetFilters()" class="bg-brand-500 text-white font-bold text-xs px-5 py-2.5 rounded-2xl">عرض كل مطاعم 6 أكتوبر</button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${filteredRestaurants.map(rest => renderRestaurantCard(rest)).join('')}
+            </div>
+          `}
+        </section>
+      `;
+    }
+
+    function renderRestaurantCard(rest) {
+      const area = getCurrentArea();
+      const dynamicFee = getDeliveryFeeForRestaurant(rest);
+      const isDirectArea = rest.coveredAreas.includes(area.id);
+      const totalItemsCount = rest.menu.reduce((sum, s) => sum + s.items.length, 0);
+
+      return `
+        <article onclick="openRestaurant('${rest.id}')" class="group bg-white rounded-3xl border border-gray-100 shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden cursor-pointer flex flex-col">
+          <!-- Cover Image with Fallback -->
+          <div class="relative h-44 bg-gray-100 overflow-hidden">
+            <img
+              src="${rest.image}"
+              alt="${rest.name}"
+              onerror="this.onerror=null; this.src='https://placehold.co/600x320/ff5a00/ffffff?text=${encodeURIComponent(rest.name)}';"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"></div>
+
+            <!-- Top Badges -->
+            <div class="absolute top-3 right-3 left-3 flex items-center justify-between gap-2">
+              ${rest.promoBadge ? `
+                <span class="bg-brand-500 text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow-md truncate">
+                  <i class="fa-solid fa-fire-flame-curved ml-1"></i>${rest.promoBadge}
+                </span>
+              ` : '<span></span>'}
+
+              <span class="bg-white/95 backdrop-blur-xs text-gray-900 text-xs font-black px-2.5 py-1 rounded-xl shadow-xs flex items-center gap-1 shrink-0">
+                <i class="fa-solid fa-star text-amber-400"></i>
+                <span>${rest.rating}</span>
+                <span class="text-[10px] text-gray-400 font-semibold">(${rest.reviewsCount})</span>
+              </span>
+            </div>
+
+            <!-- Bottom Overlay Info -->
+            <div class="absolute bottom-3 right-3 left-3 flex items-end justify-between text-white">
+              <div>
+                <span class="inline-block text-[10px] font-bold bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-lg mb-1">
+                  <i class="fa-solid fa-location-dot text-brand-400 ml-1"></i>${rest.branch}
+                </span>
+                <h3 class="text-lg font-black leading-tight">${rest.name}</h3>
+              </div>
+              <div class="w-11 h-11 rounded-2xl bg-white text-2xl flex items-center justify-center shadow-md shrink-0">
+                ${rest.heroEmoji}
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between text-xs text-gray-500 font-bold mb-2">
+                <span>${rest.categoryLabel}</span>
+                <span class="text-brand-600 bg-brand-50 px-2 py-0.5 rounded-lg">${totalItemsCount} صنف بالمنيو</span>
+              </div>
+
+              <!-- Coverage Status Pill for Selected Area -->
+              <div class="flex items-center gap-1.5 text-[11px] font-bold ${isDirectArea ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'} px-2.5 py-1.5 rounded-xl">
+                <i class="fa-solid ${isDirectArea ? 'fa-circle-check' : 'fa-truck-fast'}"></i>
+                <span>${isDirectArea ? `توصيل مباشر إلى ${area.name}` : `توصيل ممتد إلى ${area.name}`}</span>
+              </div>
+            </div>
+
+            <!-- Delivery Meta Footer -->
+            <div class="pt-3 border-t border-gray-100 flex items-center justify-between text-xs font-extrabold text-gray-700">
+              <div class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-brand-500"></i>
+                <span>${rest.deliveryTime}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <i class="fa-solid fa-motorcycle text-brand-500"></i>
+                <span>التوصيل: ${dynamicFee} ج.م</span>
+              </div>
+              <div class="text-gray-400 font-bold">
+                أقل طلب ${rest.minOrder} ج
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    // --- VIEW B: SINGLE RESTAURANT STOREFRONT & MENU ---
+    function renderRestaurantView() {
+      const rest = RESTAURANTS_DATA[state.activeRestaurantId] || Object.values(RESTAURANTS_DATA)[0];
+      const area = getCurrentArea();
+      const dynamicFee = getDeliveryFeeForRestaurant(rest);
+
+      // Filter menu items if search query exists
+      const q = state.menuSearchQuery.trim().toLowerCase();
+      const filteredSections = rest.menu.map(sec => ({
+        ...sec,
+        items: sec.items.filter(it =>
+          !q || it.name.toLowerCase().includes(q) || it.desc.toLowerCase().includes(q)
+        )
+      })).filter(sec => sec.items.length > 0);
+
+      return `
+        <!-- Breadcrumb & Back Bar -->
+        <div class="bg-white border-b border-gray-100">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <button onclick="navigateTo('home')" class="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-gray-600 hover:text-brand-500 transition">
+              <i class="fa-solid fa-arrow-right"></i>
+              <span>العودة لكل مطاعم 6 أكتوبر</span>
+            </button>
+
+            <button onclick="openFoldersModal('${rest.id}')" class="inline-flex items-center gap-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-xl transition">
+              <i class="fa-solid fa-folder-open text-brand-500"></i>
+              <span>عرض كفولدر بيانات</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Restaurant Hero Banner -->
+        <section class="relative bg-gray-900 text-white">
+          <div class="h-52 sm:h-64 w-full overflow-hidden relative">
+            <img
+              src="${rest.image}"
+              alt="${rest.name}"
+              onerror="this.onerror=null; this.src='https://placehold.co/1200x400/ff5a00/ffffff?text=${encodeURIComponent(rest.name)}';"
+              class="w-full h-full object-cover opacity-55"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/50 to-transparent"></div>
+          </div>
+
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 sm:-mt-28 pb-6 relative z-10">
+            <div class="bg-white text-gray-900 rounded-3xl p-5 sm:p-7 shadow-xl border border-gray-100">
+              <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div class="flex items-start sm:items-center gap-4">
+                  <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-brand-50 border-2 border-brand-200 flex items-center justify-center text-4xl sm:text-5xl shrink-0 shadow-xs">
+                    ${rest.heroEmoji}
+                  </div>
+                  <div>
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                      <h1 class="text-2xl sm:text-3xl font-black text-gray-900">${rest.name}</h1>
+                      <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-2.5 py-0.5 rounded-full">مفتوح الآن</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-gray-500 font-bold mb-2">
+                      <i class="fa-solid fa-location-dot text-brand-500 ml-1"></i>${rest.branch} • ${rest.categoryLabel}
+                    </p>
+                    ${rest.promoBadge ? `
+                      <div class="inline-flex items-center gap-1.5 bg-brand-50 text-brand-700 border border-brand-200 text-xs font-extrabold px-3 py-1 rounded-xl">
+                        <i class="fa-solid fa-tag"></i>
+                        <span>${rest.promoBadge}</span>
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+
+                <!-- Stats Boxes -->
+                <div class="grid grid-cols-3 gap-2.5 sm:gap-4 bg-gray-50 p-3.5 rounded-2xl border border-gray-200/70 shrink-0">
+                  <div class="text-center px-2">
+                    <div class="text-xs text-gray-400 font-bold">التقييم</div>
+                    <div class="text-sm sm:text-base font-black text-gray-900 mt-0.5">
+                      <i class="fa-solid fa-star text-amber-400"></i> ${rest.rating}
+                    </div>
+                    <div class="text-[10px] text-gray-400">(${rest.reviewsCount})</div>
+                  </div>
+                  <div class="text-center px-2 border-x border-gray-200">
+                    <div class="text-xs text-gray-400 font-bold">وقت التوصيل</div>
+                    <div class="text-sm sm:text-base font-black text-gray-900 mt-0.5">${rest.deliveryTime}</div>
+                    <div class="text-[10px] text-brand-600 font-bold">إلى ${area.name}</div>
+                  </div>
+                  <div class="text-center px-2">
+                    <div class="text-xs text-gray-400 font-bold">رسوم التوصيل</div>
+                    <div class="text-sm sm:text-base font-black text-gray-900 mt-0.5">${dynamicFee} ج.م</div>
+                    <div class="text-[10px] text-gray-400">أقل طلب ${rest.minOrder} ج</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Covered Areas Strip -->
+              <div class="mt-5 pt-4 border-t border-gray-100 flex flex-wrap items-center gap-1.5 text-[11px]">
+                <span class="font-extrabold text-gray-600 ml-1"><i class="fa-solid fa-map-pin text-brand-500 ml-1"></i>المناطق المغطاة في أكتوبر:</span>
+                ${rest.coveredAreas.map(aid => {
+                  const aObj = OCTOBER_AREAS.find(x => x.id === aid);
+                  if (!aObj) return '';
+                  const isCurrent = aid === area.id;
+                  return `<span class="px-2.5 py-0.5 rounded-full font-bold ${isCurrent ? 'bg-brand-500 text-white' : 'bg-gray-100 text-gray-600'}">${aObj.name}</span>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MENU SEARCH & STICKY SECTION TABS -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-100 mb-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <!-- Section Jump Links -->
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+              ${rest.menu.map((sec, idx) => `
+                <a href="#menu-sec-${idx}" class="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-brand-50 hover:text-brand-600 text-xs font-extrabold text-gray-700 whitespace-nowrap transition">
+                  ${sec.section}
+                </a>
+              `).join('')}
+            </div>
+
+            <!-- In-Menu Search -->
+            <div class="relative sm:w-72">
+              <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+              <input
+                type="text"
+                value="${state.menuSearchQuery}"
+                oninput="handleMenuSearch(this.value)"
+                placeholder="ابحث داخل منيو ${rest.name}..."
+                class="w-full pr-8 pl-3 py-2 rounded-xl border border-gray-200 text-xs font-bold focus:border-brand-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <!-- Menu Sections & Items -->
+          <div class="space-y-8">
+            ${filteredSections.map((sec, idx) => `
+              <div id="menu-sec-${idx}" class="scroll-mt-24">
+                <h2 class="text-lg sm:text-xl font-black text-gray-900 mb-4 flex items-center gap-2">
+                  <span>${sec.section}</span>
+                  <span class="text-xs font-bold text-gray-400 bg-gray-100 px-2.5 py-0.5 rounded-full">${sec.items.length}</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  ${sec.items.map(item => `
+                    <div onclick="openItemModal('${rest.id}', '${item.id}')" class="bg-white rounded-2xl p-4 border border-gray-100 shadow-xs hover:shadow-card-hover hover:border-brand-200 transition-all cursor-pointer flex items-center justify-between gap-4 group">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <h3 class="font-extrabold text-gray-900 text-sm sm:text-base group-hover:text-brand-600 transition truncate">${item.name}</h3>
+                          ${item.badge ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full shrink-0">${item.badge}</span>` : ''}
+                        </div>
+                        <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-3">${item.desc}</p>
+                        <div class="flex items-center gap-3">
+                          <span class="text-base font-black text-brand-600">${item.price} ج.م</span>
+                          ${item.sizes ? `<span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-md">متوفر أحجام</span>` : ''}
+                        </div>
+                      </div>
+
+                      <div class="flex flex-col items-center gap-2 shrink-0">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-brand-50/70 flex items-center justify-center text-3xl sm:text-4xl group-hover:scale-105 transition-transform">
+                          ${item.emoji || rest.heroEmoji}
+                        </div>
+                        <button class="bg-brand-500 group-hover:bg-brand-600 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-xl shadow-xs transition flex items-center gap-1">
+                          <i class="fa-solid fa-plus"></i>
+                          <span>أضف</span>
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    // --- VIEW C: LIVE ORDER TRACKING ---
+    function renderTrackingView() {
+      if (!state.activeOrder) {
+        return `
+          <div class="max-w-xl mx-auto px-4 py-16 text-center">
+            <div class="text-6xl mb-4">🛵</div>
+            <h2 class="text-2xl font-black text-gray-900 mb-2">مفيش طلبات نشطة حالياً</h2>
+            <p class="text-sm text-gray-500 mb-6">اطلب أكلتك المفضلة من مطاعم 6 أكتوبر وتابع الطيار لحظة بلحظة!</p>
+            <button onclick="navigateTo('home')" class="bg-brand-500 text-white font-extrabold px-6 py-3 rounded-2xl">استكشف المطاعم</button>
+          </div>
+        `;
+      }
+
+      const ord = state.activeOrder;
+      const steps = [
+        { title: 'تم استلام طلبك بنجاح', desc: `رقم الطلب #${ord.orderNumber} وصل لمطعم ${ord.restaurantName}`, icon: 'fa-receipt' },
+        { title: 'المطعم بيحضر أكلك طازة', desc: 'الشيف بيجهز طلبك بأعلى جودة وسخونة', icon: 'fa-fire-burner' },
+        { title: 'كابتن طيران استلم الطلب وفي الطريق!', desc: `الكابتن متجه الآن إلى ${ord.areaName} (${ord.address.street || 'العنوان المحدد'})`, icon: 'fa-motorcycle' },
+        { title: 'تم التوصيل بالهنا والشفا!', desc: 'نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
+      ];
+
+      const currentStep = ord.step || 1;
+
+      return `
+        <section class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+          <div class="bg-white rounded-3xl shadow-card border border-gray-100 overflow-hidden">
+            <!-- Top Status Banner -->
+            <div class="bg-gradient-to-l from-brand-500 to-orange-600 text-white p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-extrabold mb-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+                  <span>تتبع مباشر • أوردر #${ord.orderNumber}</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black">${steps[currentStep].title}</h1>
+                <p class="text-xs sm:text-sm text-orange-100 mt-1">${steps[currentStep].desc}</p>
+              </div>
+              <div class="bg-white text-gray-900 rounded-2xl px-5 py-3 text-center shrink-0 shadow-md">
+                <div class="text-[11px] font-bold text-gray-400">الوصول المتوقع</div>
+                <div class="text-xl font-black text-brand-600">${currentStep === 3 ? 'وصل الآن!' : ord.eta}</div>
+              </div>
+            </div>
+
+            <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <!-- Timeline Steps -->
+              <div class="lg:col-span-7 space-y-6">
+                <h3 class="font-black text-gray-800 text-base">مراحل توصيل الطلب</h3>
+                <div class="space-y-5 relative before:content-[''] before:absolute before:right-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
+                  ${steps.map((st, idx) => {
+                    const done = idx <= currentStep;
+                    const active = idx === currentStep;
+                    return `
+                      <div class="relative flex items-start gap-4 pr-1">
+                        <div class="w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 z-10 transition-all ${done ? 'bg-brand-500 text-white shadow-md' : 'bg-gray-100 text-gray-400'} ${active ? 'ring-4 ring-brand-100 scale-110' : ''}">
+                          <i class="fa-solid ${st.icon} text-sm"></i>
+                        </div>
+                        <div class="pt-0.5">
+                          <h4 class="text-sm font-extrabold ${done ? 'text-gray-900' : 'text-gray-400'}">${st.title}</h4>
+                          <p class="text-xs text-gray-500 mt-0.5">${st.desc}</p>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+
+                <!-- Simulation Control for Demo -->
+                <div class="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
+                  ${currentStep < 3 ? `
+                    <button onclick="advanceOrderStep()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
+                      <i class="fa-solid fa-forward-step ml-1 text-brand-400"></i> محاكاة المرحلة التالية للتوصيل
+                    </button>
+                  ` : `
+                    <button onclick="completeAndClearOrder()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition">
+                      <i class="fa-solid fa-check ml-1"></i> إنهاء وطلب أوردر جديد
+                    </button>
+                  `}
+                  <button onclick="navigateTo('home')" class="text-xs font-bold text-gray-500 hover:text-brand-600 px-3 py-2">
+                    العودة للرئيسية
+                  </button>
+                </div>
+              </div>
+
+              <!-- Rider & Order Summary Card -->
+              <div class="lg:col-span-5 space-y-4">
+                <!-- Rider Info -->
+                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl font-black">
+                      🛵
+                    </div>
+                    <div>
+                      <div class="text-[11px] font-bold text-gray-400">كابتن طيران المسؤول</div>
+                      <div class="text-sm font-black text-gray-900">كابتن / محمود السيد</div>
+                      <div class="text-xs text-amber-500 font-bold">★ 4.95 • موتوسيكل 6 أكتوبر</div>
+                    </div>
+                  </div>
+                  <button onclick="showToast('جاري الاتصال بكابتن محمود السيد...', 'info')" class="w-10 h-10 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center shadow-xs transition">
+                    <i class="fa-solid fa-phone"></i>
+                  </button>
+                </div>
+
+                <!-- Delivery Address Summary -->
+                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-1.5 text-xs">
+                  <div class="font-extrabold text-gray-800 flex items-center gap-1.5">
+                    <i class="fa-solid fa-location-dot text-brand-500"></i>
+                    <span>عنوان التوصيل في 6 أكتوبر</span>
+                  </div>
+                  <p class="font-bold text-gray-700">${ord.areaName}</p>
+                  <p class="text-gray-500">${ord.address.street || ''} ${ord.address.building ? `- عمارة ${ord.address.building}` : ''} ${ord.address.floor ? `- دور ${ord.address.floor}` : ''} ${ord.address.apt ? `- شقة ${ord.address.apt}` : ''}</p>
+                  ${ord.address.landmark ? `<p class="text-gray-400">علامة مميزة: ${ord.address.landmark}</p>` : ''}
+                </div>
+
+                <!-- Items Receipt -->
+                <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 space-y-2 text-xs">
+                  <div class="font-extrabold text-gray-800 border-b border-gray-200 pb-2 flex justify-between">
+                    <span>تفاصيل الفاتورة (${ord.restaurantName})</span>
+                    <span class="text-brand-600">${ord.paymentLabel}</span>
+                  </div>
+                  ${ord.items.map(it => `
+                    <div class="flex justify-between text-gray-700 font-semibold">
+                      <span>${it.qty}× ${it.name} ${it.sizeName ? `(${it.sizeName})` : ''}</span>
+                      <span>${it.price * it.qty} ج.م</span>
+                    </div>
+                  `).join('')}
+                  <div class="border-t border-gray-200 pt-2 flex justify-between font-black text-sm text-gray-900">
+                    <span>الإجمالي المدفوع</span>
+                    <span class="text-brand-600">${ord.total} ج.م</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    // =========================================================================
+    // 8. FILTER & SEARCH HANDLERS
+    // =========================================================================
+    function handleSearchInput(val) {
+      state.searchQuery = val;
+      renderApp();
+    }
+
+    function handleMenuSearch(val) {
+      state.menuSearchQuery = val;
+      renderApp();
+    }
+
+    function selectCategory(catId) {
+      state.selectedCategory = catId;
+      renderApp();
+    }
+
+    function selectQuickFilter(filterId) {
+      state.quickFilter = filterId;
+      renderApp();
+    }
+
+    function resetFilters() {
+      state.selectedCategory = 'all';
+      state.searchQuery = '';
+      state.quickFilter = 'all';
+      renderApp();
+    }
+
+    // =========================================================================
+    // 9. 6TH OF OCTOBER AREA SELECTOR MODAL LOGIC
+    // =========================================================================
+    function openAddressModal() {
+      state.tempSelectedAreaId = state.selectedAreaId;
+      document.getElementById('area-search-input').value = '';
+      document.getElementById('addr-street').value = state.addressDetails.street || '';
+      document.getElementById('addr-landmark').value = state.addressDetails.landmark || '';
+      document.getElementById('addr-building').value = state.addressDetails.building || '';
+      document.getElementById('addr-floor').value = state.addressDetails.floor || '';
+      document.getElementById('addr-apt').value = state.addressDetails.apt || '';
+
+      renderAreasGrid('');
+      document.getElementById('address-modal').classList.remove('hidden');
+    }
+
+    function closeAddressModal() {
+      document.getElementById('address-modal').classList.add('hidden');
+    }
+
+    function filterAreasList(query) {
+      renderAreasGrid(query);
+    }
+
+    function renderAreasGrid(query) {
+      const q = query.trim().toLowerCase();
+      const list = OCTOBER_AREAS.filter(a =>
+        !q || a.name.toLowerCase().includes(q) || a.zone.toLowerCase().includes(q)
+      );
+
+      const container = document.getElementById('areas-grid-list');
+      container.innerHTML = list.map(a => {
+        const selected = a.id === state.tempSelectedAreaId;
+        return `
+          <button type="button" onclick="pickTempArea('${a.id}')" class="text-right p-3 rounded-2xl border transition-all flex items-center justify-between ${selected ? 'bg-brand-50 border-brand-500 ring-2 ring-brand-500/20' : 'bg-white border-gray-200 hover:border-brand-300'}">
+            <div>
+              <div class="text-xs sm:text-sm font-extrabold ${selected ? 'text-brand-700' : 'text-gray-800'}">${a.name}</div>
+              <div class="text-[10px] text-gray-500 font-semibold">${a.zone} • ${a.deliveryTime}</div>
+            </div>
+            <div class="text-left shrink-0">
+              <span class="text-[11px] font-extrabold ${selected ? 'text-brand-600' : 'text-gray-500'}">${a.baseFee} ج</span>
+              ${selected ? '<i class="fa-solid fa-circle-check text-brand-500 mr-1"></i>' : ''}
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      const activeObj = OCTOBER_AREAS.find(a => a.id === state.tempSelectedAreaId);
+      if (activeObj) {
+        document.getElementById('modal-preview-area').textContent = activeObj.name;
+      }
+    }
+
+    function pickTempArea(areaId) {
+      state.tempSelectedAreaId = areaId;
+      renderAreasGrid(document.getElementById('area-search-input').value);
+    }
+
+    function saveAddressSelection() {
+      state.selectedAreaId = state.tempSelectedAreaId;
+      state.addressDetails = {
+        ...state.addressDetails,
+        street: document.getElementById('addr-street').value.trim(),
+        landmark: document.getElementById('addr-landmark').value.trim(),
+        building: document.getElementById('addr-building').value.trim(),
+        floor: document.getElementById('addr-floor').value.trim(),
+        apt: document.getElementById('addr-apt').value.trim()
+      };
+      persistState();
+      closeAddressModal();
+      renderApp();
+      renderCartDrawer();
+      const area = getCurrentArea();
+      showToast(`تم تحديد منطقة التوصيل: ${area.name} (${area.deliveryTime})`, 'success');
+    }
+
+    function quickSelectArea(areaId) {
+      state.selectedAreaId = areaId;
+      state.tempSelectedAreaId = areaId;
+      persistState();
+      renderApp();
+      renderCartDrawer();
+      const area = getCurrentArea();
+      showToast(`تم تغيير المنطقة إلى ${area.name}`, 'info');
+    }
+
+    // =========================================================================
+    // 10. ITEM CUSTOMIZATION & ADD TO CART LOGIC
+    // =========================================================================
+    let modalItemState = {
+      restaurantId: null,
+      itemId: null,
+      selectedSizeIdx: 0,
+      qty: 1,
+      notes: ''
+    };
+
+    function openItemModal(restaurantId, itemId) {
+      const rest = RESTAURANTS_DATA[restaurantId];
+      if (!rest) return;
+      let foundItem = null;
+      for (const sec of rest.menu) {
+        const match = sec.items.find(i => i.id === itemId);
+        if (match) { foundItem = match; break; }
+      }
+      if (!foundItem) return;
+
+      modalItemState = {
+        restaurantId,
+        itemId,
+        selectedSizeIdx: 0,
+        qty: 1,
+        notes: ''
+      };
+
+      renderItemModalContent(rest, foundItem);
+      document.getElementById('item-modal').classList.remove('hidden');
+    }
+
+    function closeItemModal() {
+      document.getElementById('item-modal').classList.add('hidden');
+    }
+
+    function renderItemModalContent(rest, item) {
+      const sizes = item.sizes || [];
+      const currentSize = sizes[modalItemState.selectedSizeIdx] || null;
+      const unitPrice = item.price + (currentSize ? currentSize.extra : 0);
+      const totalPrice = unitPrice * modalItemState.qty;
+
+      const container = document.getElementById('item-modal-content');
+      container.innerHTML = `
+        <!-- Top Banner -->
+        <div class="bg-brand-50 p-6 flex items-center justify-between border-b border-brand-100">
+          <div class="flex items-center gap-3.5">
+            <div class="w-16 h-16 rounded-2xl bg-white shadow-xs flex items-center justify-center text-4xl shrink-0">
+              ${item.emoji || rest.heroEmoji}
+            </div>
+            <div>
+              <span class="text-[11px] font-extrabold text-brand-600">${rest.name}</span>
+              <h3 class="text-lg font-black text-gray-900">${item.name}</h3>
+              <p class="text-xs text-gray-500 mt-0.5">${item.desc}</p>
+            </div>
+          </div>
+          <button onclick="closeItemModal()" class="w-9 h-9 rounded-xl bg-white hover:bg-gray-100 text-gray-600 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Customization Options -->
+        <div class="p-6 overflow-y-auto space-y-5 flex-1">
+          ${sizes.length > 0 ? `
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-extrabold text-gray-800">اختر الحجم / النوع</span>
+                <span class="text-[11px] font-bold bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">مطلوب</span>
+              </div>
+              <div class="space-y-2">
+                ${sizes.map((sz, idx) => {
+                  const checked = idx === modalItemState.selectedSizeIdx;
+                  const szPrice = item.price + sz.extra;
+                  return `
+                    <label onclick="selectModalItemSize(${idx})" class="flex items-center justify-between p-3.5 rounded-2xl border cursor-pointer transition ${checked ? 'border-brand-500 bg-brand-50/60' : 'border-gray-200 hover:border-brand-300'}">
+                      <div class="flex items-center gap-2.5">
+                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center ${checked ? 'border-brand-500' : 'border-gray-300'}">
+                          ${checked ? '<div class="w-2.5 h-2.5 rounded-full bg-brand-500"></div>' : ''}
+                        </div>
+                        <span class="text-xs sm:text-sm font-extrabold text-gray-800">${sz.name}</span>
+                      </div>
+                      <span class="text-xs sm:text-sm font-black text-brand-600">${szPrice} ج.م</span>
+                    </label>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Special Instructions -->
+          <div>
+            <label class="block text-xs font-extrabold text-gray-700 mb-1.5">ملاحظات خاصة للمطعم (اختياري)</label>
+            <input type="text" id="item-notes-input" value="${modalItemState.notes}" oninput="modalItemState.notes = this.value" placeholder="مثال: بدون بصل، زود تومية، سبايسي خفيف..." class="w-full px-3.5 py-2.5 rounded-2xl border border-gray-200 text-xs font-semibold focus:border-brand-500 outline-none" />
+          </div>
+        </div>
+
+        <!-- Bottom Add to Cart Bar -->
+        <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-4">
+          <!-- Quantity Stepper -->
+          <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-2xl px-3 py-2">
+            <button onclick="changeModalItemQty(1)" class="w-7 h-7 rounded-xl bg-brand-50 text-brand-600 hover:bg-brand-100 font-black flex items-center justify-center">+</button>
+            <span class="text-sm font-black w-5 text-center">${modalItemState.qty}</span>
+            <button onclick="changeModalItemQty(-1)" class="w-7 h-7 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 font-black flex items-center justify-center">-</button>
+          </div>
+
+          <button onclick="confirmAddItemToCart()" class="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-extrabold text-sm py-3.5 px-5 rounded-2xl shadow-md flex items-center justify-between transition">
+            <span>أضف إلى السلة</span>
+            <span>${totalPrice} ج.م</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function selectModalItemSize(idx) {
+      modalItemState.selectedSizeIdx = idx;
+      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
+      let foundItem = null;
+      for (const sec of rest.menu) {
+        const m = sec.items.find(i => i.id === modalItemState.itemId);
+        if (m) { foundItem = m; break; }
+      }
+      renderItemModalContent(rest, foundItem);
+    }
+
+    function changeModalItemQty(delta) {
+      modalItemState.qty = Math.max(1, modalItemState.qty + delta);
+      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
+      let foundItem = null;
+      for (const sec of rest.menu) {
+        const m = sec.items.find(i => i.id === modalItemState.itemId);
+        if (m) { foundItem = m; break; }
+      }
+      renderItemModalContent(rest, foundItem);
+    }
+
+    function confirmAddItemToCart() {
+      const rest = RESTAURANTS_DATA[modalItemState.restaurantId];
+      let foundItem = null;
+      for (const sec of rest.menu) {
+        const m = sec.items.find(i => i.id === modalItemState.itemId);
+        if (m) { foundItem = m; break; }
+      }
+      if (!rest || !foundItem) return;
+
+      // Check if cart already has items from another restaurant
+      if (state.cart.length > 0 && state.cart[0].restaurantId !== rest.id) {
+        // Replace cart smoothly and inform user via toast (never using confirm/alert)
+        const prevRestName = RESTAURANTS_DATA[state.cart[0].restaurantId]?.name || 'مطعم آخر';
+        state.cart = [];
+        showToast(`تم بدء سلة جديدة من ${rest.name} بدلاً من ${prevRestName}`, 'info');
+      }
+
+      const sizes = foundItem.sizes || [];
+      const currentSize = sizes[modalItemState.selectedSizeIdx] || null;
+      const unitPrice = foundItem.price + (currentSize ? currentSize.extra : 0);
+      const sizeName = currentSize ? currentSize.name : '';
+
+      // Merge if identical item + size + notes exists
+      const existingIdx = state.cart.findIndex(c =>
+        c.restaurantId === rest.id &&
+        c.itemId === foundItem.id &&
+        c.sizeName === sizeName &&
+        c.notes === modalItemState.notes.trim()
+      );
+
+      if (existingIdx > -1) {
+        state.cart[existingIdx].qty += modalItemState.qty;
+      } else {
+        state.cart.push({
+          uid: 'ci_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          restaurantId: rest.id,
+          itemId: foundItem.id,
+          name: foundItem.name,
+          price: unitPrice,
+          sizeName,
+          qty: modalItemState.qty,
+          notes: modalItemState.notes.trim(),
+          emoji: foundItem.emoji || rest.heroEmoji
+        });
+      }
+
+      persistState();
+      updateHeaderUI();
+      closeItemModal();
+      showToast(`تمت إضافة "${foundItem.name}" إلى السلة 🛒`, 'success');
+    }
+
+    // =========================================================================
+    // 11. CART DRAWER & CHECKOUT LOGIC
+    // =========================================================================
+    function toggleCartDrawer(open) {
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      const drawer = document.getElementById('cart-drawer');
+      if (open) {
+        renderCartDrawer();
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('hidden');
+        drawer.classList.add('flex', 'drawer-enter');
+      } else {
+        backdrop.classList.add('hidden');
+        drawer.classList.add('hidden');
+        drawer.classList.remove('flex', 'drawer-enter');
+      }
+    }
+
+    function updateCartItemQty(uid, delta) {
+      const idx = state.cart.findIndex(i => i.uid === uid);
+      if (idx === -1) return;
+      state.cart[idx].qty += delta;
+      if (state.cart[idx].qty <= 0) {
+        state.cart.splice(idx, 1);
+      }
+      persistState();
+      updateHeaderUI();
+      renderCartDrawer();
+    }
+
+    function applyPromoInCart() {
+      const input = document.getElementById('cart-promo-input');
+      if (!input) return;
+      const code = input.value.trim().toUpperCase();
+      if (code === 'TAYARAN20' || code === 'OCTOBER20') {
+        state.promoCode = { code, discountPercent: 20 };
+        showToast(`مبروك! تم تفعيل خصم 20% بكود ${code} 🎉`, 'success');
+        renderCartDrawer();
+      } else {
+        showToast('كود الخصم غير صحيح. جرب TAYARAN20', 'error');
+      }
+    }
+
+    function setPaymentMethod(method) {
+      state.paymentMethod = method;
+      renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+      const body = document.getElementById('cart-body');
+      const footer = document.getElementById('cart-footer');
+      const restLabel = document.getElementById('cart-restaurant-label');
+
+      if (state.cart.length === 0) {
+        restLabel.textContent = 'السلة فارغة حالياً';
+        body.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-12">
+            <div class="w-24 h-24 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center text-5xl mb-4">
+              🛍️
+            </div>
+            <h4 class="text-lg font-black text-gray-800 mb-1">سلتك لسه فاضية!</h4>
+            <p class="text-xs text-gray-500 max-w-xs mb-6">اختار مطعمك المفضل في 6 أكتوبر وأضف وجباتك اللذيذة عشان نطير بيها لعندك.</p>
+            <button onclick="toggleCartDrawer(false); navigateTo('home')" class="bg-brand-500 text-white font-extrabold text-xs px-6 py-3 rounded-2xl shadow-sm">
+              تصفح مطاعم 6 أكتوبر
+            </button>
+          </div>
+        `;
+        footer.classList.add('hidden');
+        return;
+      }
+
+      const rest = RESTAURANTS_DATA[state.cart[0].restaurantId];
+      const area = getCurrentArea();
+      restLabel.textContent = `من ${rest.name} • إلى ${area.name}`;
+
+      // Calculate totals
+      const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const rawDeliveryFee = getDeliveryFeeForRestaurant(rest);
+      const isFreeDelivery = subtotal >= rest.freeDeliveryOver;
+      const deliveryFee = isFreeDelivery ? 0 : rawDeliveryFee;
+      const serviceFee = 7;
+      const discountAmount = state.promoCode ? Math.round((subtotal * state.promoCode.discountPercent) / 100) : 0;
+      const grandTotal = Math.max(0, subtotal + deliveryFee + serviceFee - discountAmount);
+
+      body.innerHTML = `
+        <!-- Delivery Destination Mini Box -->
+        <div class="bg-brand-50/80 border border-brand-200 rounded-2xl p-3.5 flex items-center justify-between gap-2">
+          <div class="text-xs">
+            <div class="font-extrabold text-gray-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-location-dot text-brand-500"></i>
+              <span>${area.name}</span>
+            </div>
+            <div class="text-gray-600 mt-0.5 truncate max-w-[230px]">${state.addressDetails.street || 'يرجى تأكيد اسم الشارع والعمارة'}</div>
+          </div>
+          <button onclick="toggleCartDrawer(false); openAddressModal()" class="text-[11px] font-extrabold text-brand-600 bg-white px-2.5 py-1.5 rounded-xl border border-brand-200 shrink-0">
+            تعديل
+          </button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div class="space-y-3">
+          ${state.cart.map(item => `
+            <div class="bg-white border border-gray-100 rounded-2xl p-3 shadow-2xs flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-2xl shrink-0">${item.emoji}</span>
+                <div class="min-w-0">
+                  <h4 class="text-xs sm:text-sm font-extrabold text-gray-900 truncate">${item.name}</h4>
+                  ${item.sizeName ? `<span class="text-[10px] font-bold text-gray-400 block">${item.sizeName}</span>` : ''}
+                  ${item.notes ? `<span class="text-[10px] text-brand-600 block truncate">ملاحظة: ${item.notes}</span>` : ''}
+                  <span class="text-xs font-black text-brand-600 mt-0.5 block">${item.price * item.qty} ج.م</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-2 py-1 shrink-0">
+                <button onclick="updateCartItemQty('${item.uid}', 1)" class="w-6 h-6 rounded-lg bg-white text-brand-600 font-black text-xs shadow-2xs">+</button>
+                <span class="text-xs font-black w-4 text-center">${item.qty}</span>
+                <button onclick="updateCartItemQty('${item.uid}', -1)" class="w-6 h-6 rounded-lg bg-white text-gray-600 font-black text-xs shadow-2xs">-</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Promo Code Box -->
+        <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200/80">
+          <label class="block text-[11px] font-extrabold text-gray-700 mb-1.5">عندك كود خصم؟ (جرب TAYARAN20)</label>
+          <div class="flex gap-2">
+            <input type="text" id="cart-promo-input" value="${state.promoCode ? state.promoCode.code : ''}" placeholder="أدخل كود الخصم هنا" class="flex-1 px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold uppercase outline-none focus:border-brand-500" />
+            <button onclick="applyPromoInCart()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2 rounded-xl transition">تطبيق</button>
+          </div>
+        </div>
+
+        <!-- Phone & Quick Address Confirmation -->
+        <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200/80 space-y-2.5">
+          <div class="text-xs font-extrabold text-gray-800">بيانات التواصل للتوصيل في 6 أكتوبر</div>
+          <input type="tel" id="checkout-phone" value="${state.addressDetails.phone || ''}" oninput="state.addressDetails.phone = this.value" placeholder="رقم الموبايل للتواصل (مثال: 010xxxxxxxx) *" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
+          <input type="text" id="checkout-street" value="${state.addressDetails.street || ''}" oninput="state.addressDetails.street = this.value" placeholder="الشارع / المجاورة / رقم العمارة والشقة *" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
+        </div>
+
+        <!-- Payment Method -->
+        <div class="space-y-2">
+          <div class="text-xs font-extrabold text-gray-800">طريقة الدفع</div>
+          <div class="grid grid-cols-3 gap-2">
+            ${[
+              { id: 'cash', label: 'كاش عند الاستلام', icon: 'fa-money-bill-wave' },
+              { id: 'card', label: 'فيزا / ماستر', icon: 'fa-credit-card' },
+              { id: 'wallet', label: 'محفظة إلكترونية', icon: 'fa-wallet' }
+            ].map(pm => `
+              <button type="button" onclick="setPaymentMethod('${pm.id}')" class="p-2.5 rounded-2xl border text-center transition ${state.paymentMethod === pm.id ? 'bg-brand-50 border-brand-500 text-brand-700' : 'bg-white border-gray-200 text-gray-600'}">
+                <i class="fa-solid ${pm.icon} text-sm mb-1 block"></i>
+                <span class="text-[10px] font-extrabold block leading-tight">${pm.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Bill Breakdown -->
+        <div class="border-t border-gray-200 pt-3 space-y-1.5 text-xs">
+          <div class="flex justify-between text-gray-600 font-semibold">
+            <span>المجموع الفرعي</span>
+            <span>${subtotal} ج.م</span>
+          </div>
+          <div class="flex justify-between text-gray-600 font-semibold">
+            <span>رسوم التوصيل إلى ${area.name}</span>
+            <span>${isFreeDelivery ? '<span class="text-emerald-600 font-extrabold">مجاناً</span>' : `${deliveryFee} ج.م`}</span>
+          </div>
+          <div class="flex justify-between text-gray-600 font-semibold">
+            <span>رسوم الخدمة</span>
+            <span>${serviceFee} ج.م</span>
+          </div>
+          ${discountAmount > 0 ? `
+            <div class="flex justify-between text-emerald-600 font-extrabold">
+              <span>خصم البروموكود (${state.promoCode.code})</span>
+              <span>- ${discountAmount} ج.م</span>
+            </div>
+          ` : ''}
+          <div class="flex justify-between text-base font-black text-gray-900 pt-2 border-t border-gray-200">
+            <span>الإجمالي النهائي</span>
+            <span class="text-brand-600">${grandTotal} ج.م</span>
+          </div>
+        </div>
+      `;
+
+      footer.classList.remove('hidden');
+      footer.innerHTML = `
+        <button onclick="placeOrderNow(${grandTotal})" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-black text-sm py-3.5 px-5 rounded-2xl shadow-lg flex items-center justify-between transition">
+          <span>تأكيد وإرسال الطلب الآن 🚀</span>
+          <span>${grandTotal} ج.م</span>
+        </button>
+      `;
+    }
+
+    function placeOrderNow(totalAmount) {
+      if (state.cart.length === 0) return;
+
+      const phone = (state.addressDetails.phone || '').trim();
+      const street = (state.addressDetails.street || '').trim();
+
+      if (!phone || phone.length < 10) {
+        showToast('من فضلك أدخل رقم موبايل صحيح عشان كابتن طيران يكلمك!', 'error');
+        document.getElementById('checkout-phone')?.focus();
+        return;
+      }
+      if (!street) {
+        showToast('من فضلك اكتب اسم الشارع ورقم العمارة في 6 أكتوبر', 'error');
+        document.getElementById('checkout-street')?.focus();
+        return;
+      }
+
+      const rest = RESTAURANTS_DATA[state.cart[0].restaurantId];
+      const area = getCurrentArea();
+      const paymentLabels = {
+        cash: 'كاش عند الاستلام',
+        card: 'بطاقة بنكية',
+        wallet: 'محفظة إلكترونية'
+      };
+
+      state.activeOrder = {
+        orderNumber: Math.floor(100000 + Math.random() * 900000),
+        restaurantId: rest.id,
+        restaurantName: rest.name,
+        areaName: area.name,
+        eta: rest.deliveryTime,
+        address: { ...state.addressDetails },
+        paymentLabel: paymentLabels[state.paymentMethod] || 'كاش',
+        items: [...state.cart],
+        total: totalAmount,
+        step: 0,
+        createdAt: new Date().toISOString()
+      };
+
+      // Clear cart after placing order
+      state.cart = [];
+      persistState();
+      toggleCartDrawer(false);
+      showToast('تم إرسال طلبك بنجاح! كابتن طيران في الطريق 🚀', 'success');
+      navigateTo('tracking');
+
+      // Start automatic progress simulation
+      startOrderProgressSimulation();
+    }
+
+    let orderTimer = null;
+    function startOrderProgressSimulation() {
+      if (orderTimer) clearInterval(orderTimer);
+      orderTimer = setInterval(() => {
+        if (!state.activeOrder) {
+          clearInterval(orderTimer);
+          return;
+        }
+        if (state.activeOrder.step < 3) {
+          state.activeOrder.step += 1;
+          persistState();
+          if (state.view === 'tracking') renderApp();
+        } else {
+          clearInterval(orderTimer);
+        }
+      }, 9000);
+    }
+
+    function advanceOrderStep() {
+      if (!state.activeOrder) return;
+      if (state.activeOrder.step < 3) {
+        state.activeOrder.step += 1;
+        persistState();
+        renderApp();
+        showToast('تم تحديث حالة الطلب!', 'info');
+      }
+    }
+
+    function completeAndClearOrder() {
+      state.activeOrder = null;
+      persistState();
+      navigateTo('home');
+      showToast('شكراً لاستخدامك طيران! مستنيين طلبك الجاي 🧡', 'success');
+    }
+
+    // =========================================================================
+    // 12. RESTAURANT FOLDERS & FULL MENUS EXPLORER MODAL
+    // =========================================================================
+    function openFoldersModal(initialRestId = null) {
+      if (initialRestId && RESTAURANTS_DATA[initialRestId]) {
+        state.selectedFolderId = initialRestId;
+      }
+      renderFoldersModal();
+      document.getElementById('folders-modal').classList.remove('hidden');
+    }
+
+    function closeFoldersModal() {
+      document.getElementById('folders-modal').classList.add('hidden');
+    }
+
+    function selectFolderInExplorer(restId) {
+      state.selectedFolderId = restId;
+      renderFoldersModal();
+    }
+
+    function renderFoldersModal() {
+      const restaurants = Object.values(RESTAURANTS_DATA);
+      document.getElementById('folders-count').textContent = restaurants.length;
+
+      const sidebar = document.getElementById('folders-sidebar-list');
+      sidebar.innerHTML = restaurants.map(r => {
+        const active = r.id === state.selectedFolderId;
+        return `
+          <button onclick="selectFolderInExplorer('${r.id}')" class="w-full text-right px-3 py-2.5 rounded-2xl flex items-center gap-2.5 transition ${active ? 'bg-brand-500 text-white shadow-sm' : 'hover:bg-gray-200/70 text-gray-800'}">
+            <i class="fa-solid ${active ? 'fa-folder-open text-amber-200' : 'fa-folder text-brand-500'} text-base shrink-0"></i>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-black truncate">${r.name}</div>
+              <div class="text-[10px] ${active ? 'text-orange-100' : 'text-gray-400'} font-mono truncate">${r.folderName}/</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      const activeRest = RESTAURANTS_DATA[state.selectedFolderId] || restaurants[0];
+      const pane = document.getElementById('folder-detail-pane');
+      pane.innerHTML = `
+        <div class="space-y-5">
+          <!-- Folder Breadcrumb Header -->
+          <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="text-[11px] font-mono text-gray-500 mb-1">
+                /6th_of_October_Restaurants/<strong class="text-brand-600">${activeRest.folderName}</strong>/menu.json
+              </div>
+              <h4 class="text-xl font-black text-gray-900 flex items-center gap-2">
+                <span>${activeRest.heroEmoji}</span>
+                <span>${activeRest.name}</span>
+              </h4>
+              <p class="text-xs text-gray-500 font-bold mt-0.5">${activeRest.branch} • تقييم ${activeRest.rating} ★</p>
+            </div>
+            <button onclick="closeFoldersModal(); openRestaurant('${activeRest.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shrink-0 shadow-xs transition">
+              افتح صفحة المطعم للطلب <i class="fa-solid fa-arrow-left mr-1"></i>
+            </button>
+          </div>
+
+          <!-- Covered Areas Inside Folder -->
+          <div>
+            <div class="text-xs font-extrabold text-gray-700 mb-2">
+              <i class="fa-solid fa-file-lines text-brand-500 ml-1"></i> ملف مناطق التغطية في 6 أكتوبر (covered_areas.txt):
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              ${activeRest.coveredAreas.map(aid => {
+                const aObj = OCTOBER_AREAS.find(a => a.id === aid);
+                return aObj ? `<span class="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-xl">${aObj.name}</span>` : '';
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Full Menu Table Inside Folder -->
+          <div>
+            <div class="text-xs font-extrabold text-gray-700 mb-2">
+              <i class="fa-solid fa-utensils text-brand-500 ml-1"></i> المنيو الكامل بالأسعار (full_menu.csv):
+            </div>
+            <div class="space-y-4">
+              ${activeRest.menu.map(sec => `
+                <div class="border border-gray-200 rounded-2xl overflow-hidden">
+                  <div class="bg-gray-100 px-4 py-2 text-xs font-black text-gray-800">${sec.section}</div>
+                  <div class="divide-y divide-gray-100">
+                    ${sec.items.map(it => `
+                      <div class="p-3 flex items-center justify-between gap-3 hover:bg-brand-50/40">
+                        <div>
+                          <div class="text-xs sm:text-sm font-extrabold text-gray-900">${it.emoji || '🍽️'} ${it.name}</div>
+                          <div class="text-[11px] text-gray-500">${it.desc}</div>
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0">
+                          <span class="text-xs sm:text-sm font-black text-brand-600">${it.price} ج.م</span>
+                          <button onclick="closeFoldersModal(); openItemModal('${activeRest.id}', '${it.id}')" class="bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">
+                            + أضف
+                          </button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 13. INITIALIZE APPLICATION ON LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedState();
+      renderApp();
+      if (state.activeOrder && state.activeOrder.step < 3) {
+        startOrderProgressSimulation();
+      }
+    });
+  </script>
+</body>
+</html>
