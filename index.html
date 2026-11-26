@@ -165,6 +165,13 @@
           <span>فولدرات المنيو</span>
         </button>
 
+        <!-- Live Active Orders Counter Pill (shown when active orders exist in system) -->
+        <button id="header-live-orders-btn" onclick="handleLiveOrdersCounterClick()" title="عدد الطلبات الجارية الآن في النظام" class="hidden items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-extrabold text-xs transition-all">
+          <i class="fa-solid fa-bell text-brand-500"></i>
+          <span class="hidden lg:inline">الأوردرات</span>
+          <span id="header-live-orders-count" class="bg-brand-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+        </button>
+
         <!-- Staff / Admin / Rider Portal Button -->
         <button id="header-staff-btn" onclick="handleStaffHeaderClick()" class="flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs">
           <i class="fa-solid fa-shield-halved text-brand-400"></i>
@@ -533,11 +540,7 @@
   <!-- =========================================================
        JAVASCRIPT DATA LAYER, ONLINE REAL-TIME SYNC & SLA ENGINE
   ========================================================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+  <script>
     // =========================================================================
     // 1. 6TH OF OCTOBER CITY AREAS & DISTRICTS DATABASE (22 AREAS + GPS COORDS)
     // =========================================================================
@@ -566,8 +569,6 @@
       { id: 'industrial', name: 'المنطقة الصناعية بأكتوبر', zone: 'جنوب أكتوبر', deliveryTime: '35 - 45 دقيقة', baseFee: 25, popular: false, coords: { x: 36, y: 74 } }
     ];
 
-    window.OCTOBER_AREAS = OCTOBER_AREAS;
-
     // =========================================================================
     // 2. CUISINE CATEGORIES
     // =========================================================================
@@ -582,8 +583,6 @@
       { id: 'oriental', name: 'فول وطعمية وكبدة', icon: '🧆' },
       { id: 'desserts', name: 'حلويات وكافيهات', icon: '🍨' }
     ];
-
-    window.CATEGORIES = CATEGORIES;
 
     // =========================================================================
     // 3. STRUCTURED RESTAURANT FOLDERS & COMPLETE MENUS (6TH OF OCTOBER)
@@ -962,11 +961,10 @@
               { id: 'sh_2', name: 'حواوشي لحمة بلدي على الفحم', desc: 'رغيف حواوشي بلدي محشو لحم مفروم متبل باللية والبهارات مشوي على الفحم', price: 55, emoji: '🫓', sizes: [{ name: 'عادي', extra: 0 }, { name: 'بالجبنة الموتزاريلا', extra: 20 }] },
               { id: 'sh_3', name: 'سندوتش مخ بانيه بالطحينة', desc: 'مخ طازج مقلي بالبقسماط مع طحينة وجرجير', price: 50, emoji: '🥖' }
             ]
-        }
-      ]
+          }
+        ]
+      }
     };
-
-    window.RESTAURANTS_DATA = RESTAURANTS_DATA;
 
     const RESTAURANT_COORDS = {
       abou_mazen: { x: 52, y: 47 },
@@ -981,17 +979,15 @@
       sharkawy_liver: { x: 25, y: 62 }
     };
 
-    window.RESTAURANT_COORDS = RESTAURANT_COORDS;
-
     // =========================================================================
-    // 4. FIREBASE REAL-TIME SYNC ENGINE + SAFE FALLBACK
+    // 4. REAL STATE ENGINE (ZERO FAKE READY, EXACT TIMESTAMPS, SLA & ONLINE SYNC)
     // =========================================================================
     const DEFAULT_ADMINS = [
       { id: 'adm_1', name: 'المدير العام - طيران أكتوبر', username: 'admin', password: '123456', role: 'Super Admin', isTemp: false, mustChangeCredentials: false },
       { id: 'adm_temp_2026', name: 'أدمن مؤقت - طيران أكتوبر', username: 'temp_admin', password: 'Temp@2026', role: 'Temporary Admin', isTemp: true, mustChangeCredentials: true }
     ];
 
-    // Riders always start logged out and NOT ready until they explicitly sign in and toggle READY
+    // NOTE: Riders start with isLoggedIn: false and isReady: false so NO rider is falsely "READY" before logging in!
     const DEFAULT_RIDERS = [
       { id: 'rid_1', name: 'محمود السيد أحمد حسن', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل', age: 25, photo: '', zone: 'ميدان الحصري والأحياء 1-4', isLoggedIn: false, isReady: false, activeOrderId: null, completedCount: 0, gps: { x: 51, y: 47 } },
       { id: 'rid_2', name: 'كريم عادل محمد إبراهيم', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل', age: 27, photo: '', zone: 'الحي السابع وحدائق أكتوبر', isLoggedIn: false, isReady: false, activeOrderId: null, completedCount: 0, gps: { x: 58, y: 55 } },
@@ -1005,8 +1001,9 @@
     ];
 
     const ACTIVE_ORDER_STATUSES = ['pending', 'preparing', 'picked_up', 'on_the_way'];
+    const IN_TRANSIT_RIDER_STATUSES = ['preparing', 'picked_up', 'on_the_way'];
 
-    const state = {
+    let state = {
       view: 'home', // 'home' | 'restaurant' | 'tracking' | 'admin' | 'rider'
       adminTab: 'ccpulse', // 'ccpulse' | 'orders' | 'products' | 'promos' | 'riders' | 'admins'
       adminSelectedRestId: 'abou_mazen',
@@ -1040,29 +1037,13 @@
       newProductImageData: '',
       newRiderPhotoData: '',
       syncHealthy: true,
-      syncMode: 'local', // 'firebase' | 'local'
       lastSyncAt: Date.now(),
-      mutationLock: false,
-      applyingRemoteSnapshot: false
+      mutationLock: false
     };
 
-    window.state = state;
-
-    const appId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'tayaran-october-live';
-    let db = null;
-    let auth = null;
-    let fbUser = null;
-    let sharedDocRef = null;
-    let unsubscribeSharedDoc = null;
-    let lastRemoteUpdatedAt = 0;
-
-    function getSharedDocRef() {
-      if (!db || !fbUser) return null;
-      return doc(db, 'artifacts', appId, 'public', 'data', 'tayaran_live_state');
-    }
-
+    // Cross-Tab BroadcastChannel for multi-tab live sync
     const syncChannel = typeof BroadcastChannel !== 'undefined'
-      ? new BroadcastChannel('tayaran_october_realtime_v5')
+      ? new BroadcastChannel('tayaran_october_realtime_v4')
       : null;
 
     if (syncChannel) {
@@ -1096,7 +1077,7 @@
     window.addEventListener('offline', () => {
       state.syncHealthy = false;
       updateConnectionBadge();
-      showToast('انقطع الاتصال بالشبكة، يتم حفظ التغييرات محلياً حتى عودة الاتصال', 'error');
+      showToast('تنبيه: انقطع الاتصال بالشبكة مؤقتاً، يتم حفظ التغييرات محلياً حتى عودة الاتصال', 'error');
     });
 
     function updateConnectionBadge() {
@@ -1106,11 +1087,7 @@
       if (!badge || !dot || !text) return;
 
       const online = navigator.onLine !== false && state.syncHealthy;
-      if (online && state.syncMode === 'firebase') {
-        badge.className = 'hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
-        text.textContent = 'متصل سحابياً (Firebase)';
-      } else if (online) {
+      if (online) {
         badge.className = 'hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full';
         dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
         text.textContent = 'متصل أونلاين';
@@ -1121,6 +1098,9 @@
       }
     }
 
+    // Strict Integrity Check:
+    // 1) A rider who is NOT logged in (isLoggedIn !== true) can NEVER be READY.
+    // 2) activeOrderId on rider & order must always match real active/non-closed orders.
     function reconcileRiderAndOrderIntegrity() {
       for (const r of state.riders) {
         if (!r.isLoggedIn) {
@@ -1137,9 +1117,6 @@
       for (const ord of state.orders) {
         if (!ord.createdAt) {
           ord.createdAt = Date.now();
-        }
-        if (!Array.isArray(ord.messages)) {
-          ord.messages = [];
         }
         if (ord.riderId) {
           const rObj = state.riders.find(r => r.id === ord.riderId);
@@ -1158,62 +1135,6 @@
       }
     }
 
-    function applySharedPayload(payload) {
-      if (!payload || typeof payload !== 'object') return;
-      state.applyingRemoteSnapshot = true;
-      try {
-        if (Array.isArray(payload.orders)) {
-          state.orders = payload.orders;
-        }
-        if (Array.isArray(payload.admins) && payload.admins.length > 0) {
-          const hasTemp = payload.admins.some(a => a.id === 'adm_temp_2026' || a.username === 'temp_admin');
-          state.admins = hasTemp ? payload.admins : [...payload.admins, DEFAULT_ADMINS[1]];
-        }
-        if (Array.isArray(payload.riders) && payload.riders.length > 0) {
-          state.riders = payload.riders;
-        }
-        if (Array.isArray(payload.promoCodes)) {
-          state.promoCodes = payload.promoCodes;
-        }
-        if (payload.restaurantsMenus && typeof payload.restaurantsMenus === 'object') {
-          Object.keys(payload.restaurantsMenus).forEach(rId => {
-            if (RESTAURANTS_DATA[rId] && Array.isArray(payload.restaurantsMenus[rId])) {
-              RESTAURANTS_DATA[rId].menu = payload.restaurantsMenus[rId];
-            }
-          });
-        }
-
-        // Keep logged-in rider session consistent if rider record was updated remotely
-        if (state.currentUser && state.currentUser.role === 'rider') {
-          const me = state.riders.find(r => r.id === state.currentUser.id);
-          if (me) {
-            me.isLoggedIn = true;
-          }
-        }
-
-        reconcileRiderAndOrderIntegrity();
-        state.syncHealthy = true;
-        state.lastSyncAt = Date.now();
-      } finally {
-        state.applyingRemoteSnapshot = false;
-      }
-    }
-
-    function buildSharedPayload() {
-      const menusMap = {};
-      Object.keys(RESTAURANTS_DATA).forEach(rId => {
-        menusMap[rId] = RESTAURANTS_DATA[rId].menu;
-      });
-      return {
-        orders: state.orders,
-        admins: state.admins,
-        riders: state.riders,
-        promoCodes: state.promoCodes,
-        restaurantsMenus: menusMap,
-        updatedAt: Date.now()
-      };
-    }
-
     function loadSharedDatabaseOnly() {
       try {
         const orders = localStorage.getItem('tayaran_db_orders');
@@ -1222,104 +1143,47 @@
         const promos = localStorage.getItem('tayaran_db_promos');
         const customMenus = localStorage.getItem('tayaran_db_restaurants_menus');
 
-        const payload = {
-          orders: orders ? JSON.parse(orders) : [],
-          admins: admins ? JSON.parse(admins) : DEFAULT_ADMINS.map(a => ({ ...a })),
-          riders: riders ? JSON.parse(riders) : DEFAULT_RIDERS.map(r => ({ ...r })),
-          promoCodes: promos ? JSON.parse(promos) : DEFAULT_PROMOS.map(p => ({ ...p })),
-          restaurantsMenus: customMenus ? JSON.parse(customMenus) : null
-        };
+        if (orders) {
+          state.orders = JSON.parse(orders);
+        } else {
+          state.orders = [];
+        }
 
-        applySharedPayload(payload);
+        if (admins) {
+          const parsedAdmins = JSON.parse(admins);
+          const hasTemp = parsedAdmins.some(a => a.id === 'adm_temp_2026' || a.username === 'temp_admin');
+          state.admins = hasTemp ? parsedAdmins : [...parsedAdmins, DEFAULT_ADMINS[1]];
+        } else {
+          state.admins = DEFAULT_ADMINS.map(a => ({ ...a }));
+        }
+
+        if (riders) {
+          state.riders = JSON.parse(riders);
+        } else {
+          state.riders = DEFAULT_RIDERS.map(r => ({ ...r }));
+        }
+
+        if (promos) {
+          state.promoCodes = JSON.parse(promos);
+        } else {
+          state.promoCodes = DEFAULT_PROMOS.map(p => ({ ...p }));
+        }
+
+        if (customMenus) {
+          const parsedMenus = JSON.parse(customMenus);
+          Object.keys(parsedMenus).forEach(rId => {
+            if (RESTAURANTS_DATA[rId]) {
+              RESTAURANTS_DATA[rId].menu = parsedMenus[rId];
+            }
+          });
+        }
+
+        state.syncHealthy = true;
+        state.lastSyncAt = Date.now();
       } catch (err) {
         console.error('Sync read error:', err);
         state.syncHealthy = false;
       }
-    }
-
-    async function initFirebaseRealtimeSync() {
-      try {
-        if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-          state.syncMode = 'local';
-          updateConnectionBadge();
-          return;
-        }
-
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const fbApp = initializeApp(firebaseConfig);
-        auth = getAuth(fbApp);
-        db = getFirestore(fbApp);
-
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token);
-        } else {
-          await signInAnonymously(auth);
-        }
-
-        fbUser = auth.currentUser;
-        if (!fbUser) {
-          state.syncMode = 'local';
-          updateConnectionBadge();
-          return;
-        }
-
-        sharedDocRef = getSharedDocRef();
-        state.syncMode = 'firebase';
-        updateConnectionBadge();
-
-        // Check if shared document already exists across devices
-        const snap = await getDoc(sharedDocRef);
-        if (snap.exists()) {
-          const remoteData = snap.data();
-          lastRemoteUpdatedAt = Number(remoteData.updatedAt || 0);
-          applySharedPayload(remoteData);
-          writeLocalMirror(buildSharedPayload());
-          runAutoDispatchQueue();
-          renderApp();
-        } else {
-          // Seed initial shared state once if cloud doc doesn't exist yet
-          const initialPayload = buildSharedPayload();
-          lastRemoteUpdatedAt = initialPayload.updatedAt;
-          await setDoc(sharedDocRef, initialPayload);
-          writeLocalMirror(initialPayload);
-        }
-
-        if (unsubscribeSharedDoc) unsubscribeSharedDoc();
-        unsubscribeSharedDoc = onSnapshot(
-          sharedDocRef,
-          (snapshot) => {
-            if (!snapshot.exists() || state.applyingRemoteSnapshot) return;
-            const remoteData = snapshot.data();
-            const remoteTs = Number(remoteData.updatedAt || 0);
-            if (remoteTs <= lastRemoteUpdatedAt) return;
-
-            lastRemoteUpdatedAt = remoteTs;
-            applySharedPayload(remoteData);
-            writeLocalMirror(buildSharedPayload());
-            renderApp();
-            if (!document.getElementById('cart-drawer').classList.contains('hidden')) {
-              renderCartDrawer();
-            }
-          },
-          (err) => {
-            console.error('Firestore onSnapshot error:', err);
-            state.syncHealthy = false;
-            updateConnectionBadge();
-          }
-        );
-      } catch (err) {
-        console.warn('Firebase initialization fallback to local/broadcast sync:', err);
-        state.syncMode = 'local';
-        updateConnectionBadge();
-      }
-    }
-
-    function writeLocalMirror(payload) {
-      localStorage.setItem('tayaran_db_orders', JSON.stringify(payload.orders));
-      localStorage.setItem('tayaran_db_admins', JSON.stringify(payload.admins));
-      localStorage.setItem('tayaran_db_riders', JSON.stringify(payload.riders));
-      localStorage.setItem('tayaran_db_promos', JSON.stringify(payload.promoCodes));
-      localStorage.setItem('tayaran_db_restaurants_menus', JSON.stringify(payload.restaurantsMenus));
     }
 
     function loadSavedState() {
@@ -1366,12 +1230,19 @@
     function persistState(broadcast = true) {
       reconcileRiderAndOrderIntegrity();
       try {
-        const payload = buildSharedPayload();
-        writeLocalMirror(payload);
+        const menusMap = {};
+        Object.keys(RESTAURANTS_DATA).forEach(rId => {
+          menusMap[rId] = RESTAURANTS_DATA[rId].menu;
+        });
 
         localStorage.setItem('tayaran_area', state.selectedAreaId);
         localStorage.setItem('tayaran_addr', JSON.stringify(state.addressDetails));
         localStorage.setItem('tayaran_cart', JSON.stringify(state.cart));
+        localStorage.setItem('tayaran_db_orders', JSON.stringify(state.orders));
+        localStorage.setItem('tayaran_db_admins', JSON.stringify(state.admins));
+        localStorage.setItem('tayaran_db_riders', JSON.stringify(state.riders));
+        localStorage.setItem('tayaran_db_promos', JSON.stringify(state.promoCodes));
+        localStorage.setItem('tayaran_db_restaurants_menus', JSON.stringify(menusMap));
 
         if (state.activeCustomerOrderId) {
           localStorage.setItem('tayaran_active_order_id', state.activeCustomerOrderId);
@@ -1388,14 +1259,6 @@
         state.syncHealthy = true;
         state.lastSyncAt = Date.now();
         updateConnectionBadge();
-
-        // Sync across all connected devices via Firestore when available
-        if (broadcast && sharedDocRef && fbUser) {
-          lastRemoteUpdatedAt = payload.updatedAt;
-          setDoc(sharedDocRef, payload, { merge: true }).catch((fbErr) => {
-            console.error('Firestore write error:', fbErr);
-          });
-        }
 
         if (broadcast && syncChannel) {
           clearTimeout(saveDebounceTimer);
@@ -1416,8 +1279,6 @@
         return false;
       }
     }
-
-    window.persistState = persistState;
 
     // =========================================================================
     // 5. EXACT ORDER TIMESTAMPS, LIVE ELAPSED TIME & SERVICE LEVEL (SLA %)
@@ -1573,7 +1434,222 @@
     }
 
     // =========================================================================
-    // 7. HEADER UI (NO PUBLIC ORDER COUNTERS) & STAFF AUTH
+    // SMART ONE-BY-ONE RIDER DISPATCH ENGINE (ONLY LOGGED-IN + READY + FREE RIDER)
+    // =========================================================================
+    function runAutoDispatchQueue() {
+      if (state.mutationLock) return false;
+      state.mutationLock = true;
+      let changed = false;
+
+      try {
+        reconcileRiderAndOrderIntegrity();
+
+        const unassignedOrders = state.orders
+          .filter(o => !o.riderId && ACTIVE_ORDER_STATUSES.includes(o.status))
+          .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+        for (const order of unassignedOrders) {
+          // Strict Rule: Rider MUST be logged in (isLoggedIn === true), READY (isReady === true),
+          // and must NOT already have an active order assigned!
+          const availableRider = state.riders.find(r =>
+            r.isLoggedIn === true &&
+            r.isReady === true &&
+            !getRiderCurrentOrder(r)
+          );
+
+          if (!availableRider) {
+            break;
+          }
+
+          order.riderId = availableRider.id;
+          order.riderName = availableRider.name;
+          order.riderPhone = availableRider.phone;
+          order.riderVehicle = availableRider.vehicle;
+          order.riderPhoto = availableRider.photo || '';
+          if (order.status === 'pending') {
+            order.status = 'preparing';
+          }
+
+          const restCoords = RESTAURANT_COORDS[order.restaurantId] || { x: 52, y: 48 };
+          availableRider.activeOrderId = order.id;
+          availableRider.gps = { ...restCoords };
+          order.riderGps = { ...restCoords };
+
+          if (!Array.isArray(order.messages)) order.messages = [];
+          order.messages.push({
+            id: 'msg_sys_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+            senderRole: 'system',
+            senderName: 'نظام طيران',
+            text: `تم إسناد الطلب #${order.orderNumber} للكابتن (${availableRider.name} - ${availableRider.vehicle}). يمكنك مراسلته مباشرة هنا!`,
+            time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+          });
+          changed = true;
+        }
+      } finally {
+        state.mutationLock = false;
+      }
+
+      if (changed) {
+        persistState(true);
+      }
+      return changed;
+    }
+
+    // =========================================================================
+    // LIVE CHAT BETWEEN RIDER AND CUSTOMER
+    // =========================================================================
+    function sendOrderChatMessage(orderId, senderRole, customText = null) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) {
+        showToast('تعذر العثور على الطلب لإرسال الرسالة', 'error');
+        return;
+      }
+
+      const inputId = senderRole === 'customer' ? 'customer-chat-input' : 'rider-chat-input';
+      const inputEl = document.getElementById(inputId);
+      const text = (customText !== null ? customText : (inputEl ? inputEl.value : '')).trim();
+      if (!text) return;
+
+      if (!Array.isArray(ord.messages)) ord.messages = [];
+      const senderName = senderRole === 'customer'
+        ? 'العميل'
+        : (ord.riderName || 'كابتن طيران');
+
+      ord.messages.push({
+        id: 'msg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        senderRole,
+        senderName,
+        text,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      if (inputEl && customText === null) inputEl.value = '';
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم إرسال الرسالة لحظياً 💬', 'info');
+      }
+    }
+
+    function renderOrderChatBox(ord, viewerRole) {
+      const msgs = Array.isArray(ord.messages) ? ord.messages : [];
+      const quickPresets = viewerRole === 'rider'
+        ? ['أنا تحت العمارة في انتظارك 🛵', 'استلمت الأوردر من المطعم ومتجه ليك', 'ممكن تأكيد رقم الدور والشقة؟']
+        : ['أنا مستنيك تحت / على الباب 👍', 'كلمني لما توصل عند العمارة لو سمحت', 'الطلب مستعجل بالهنا والشفا'];
+
+      return `
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden flex flex-col">
+          <div class="bg-gray-900 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-comments text-brand-400"></i>
+              <span class="text-xs sm:text-sm font-black">
+                ${viewerRole === 'rider' ? 'شات مباشر مع العميل' : `شات مباشر مع الكابتن (${ord.riderName || 'طيار طيران'})`}
+              </span>
+            </div>
+            <span class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">● متصل الآن</span>
+          </div>
+
+          <div id="chat-messages-${ord.id}" class="p-3.5 space-y-2.5 max-h-56 overflow-y-auto bg-gray-50/70">
+            ${msgs.length === 0 ? `
+              <div class="text-center text-xs text-gray-400 py-6">لا توجد رسائل بعد. ابدأ المحادثة الآن!</div>
+            ` : msgs.map(m => {
+              if (m.senderRole === 'system') {
+                return `
+                  <div class="text-center">
+                    <span class="inline-block bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold px-3 py-1 rounded-full">${m.text}</span>
+                  </div>
+                `;
+              }
+              const isMine = m.senderRole === viewerRole;
+              return `
+                <div class="flex flex-col ${isMine ? 'items-start' : 'items-end'}">
+                  <div class="max-w-[82%] rounded-2xl px-3.5 py-2 text-xs font-bold shadow-2xs ${isMine ? 'bg-brand-500 text-white rounded-br-xs' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-xs'}">
+                    <div class="text-[10px] opacity-80 mb-0.5 flex items-center justify-between gap-2">
+                      <span>${m.senderName}</span>
+                      <span>${m.time}</span>
+                    </div>
+                    <p class="leading-relaxed">${m.text}</p>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            ${quickPresets.map(qText => `
+              <button type="button" onclick="sendOrderChatMessage('${ord.id}', '${viewerRole}', '${qText.replace(/'/g, "\\'")}')" class="text-[10px] font-extrabold bg-white hover:bg-brand-50 text-gray-700 hover:text-brand-600 border border-gray-200 px-2.5 py-1 rounded-full whitespace-nowrap transition shrink-0">
+                ${qText}
+              </button>
+            `).join('')}
+          </div>
+
+          <form onsubmit="event.preventDefault(); sendOrderChatMessage('${ord.id}', '${viewerRole}');" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
+            <input
+              type="text"
+              id="${viewerRole === 'customer' ? 'customer-chat-input' : 'rider-chat-input'}"
+              placeholder="${viewerRole === 'rider' ? 'اكتب رسالة للعميل...' : 'اكتب رسالة للكابتن...'}"
+              class="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500"
+            />
+            <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1 shrink-0">
+              <span>إرسال</span>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 6. TOAST NOTIFICATIONS (NO ALERT() USED EVER)
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const id = 'toast-' + Date.now();
+      const styles = {
+        success: 'bg-gray-900 text-white border-brand-500',
+        error: 'bg-red-600 text-white border-red-300',
+        info: 'bg-brand-500 text-white border-white'
+      };
+      const icons = {
+        success: 'fa-circle-check text-brand-400',
+        error: 'fa-circle-exclamation text-white',
+        info: 'fa-paper-plane text-white'
+      };
+
+      const toast = document.createElement('div');
+      toast.id = id;
+      toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3.5 rounded-2xl shadow-xl border-r-4 text-xs sm:text-sm font-bold transition-all duration-300 transform translate-y-2 opacity-0 ${styles[type] || styles.success}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.success} text-base shrink-0"></i>
+        <span class="flex-1 leading-snug">${message}</span>
+      `;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    function copyPromoCode(code) {
+      const tempInput = document.createElement('input');
+      tempInput.value = code;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(`تم نسخ كود الخصم (${code})! استخدمه في السلة 🎉`, 'success');
+      } catch (err) {
+        showToast(`كود الخصم هو: ${code}`, 'info');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // =========================================================================
+    // 7. HEADER UI, LIVE ORDERS COUNTER & STAFF AUTH
     // =========================================================================
     function updateHeaderUI() {
       updateConnectionBadge();
@@ -1585,6 +1661,21 @@
       const totalQty = state.cart.reduce((sum, item) => sum + item.qty, 0);
       const countEl = document.getElementById('header-cart-count');
       if (countEl) countEl.textContent = totalQty;
+
+      // Live active orders numeric badge next to orders icon/button
+      const liveOrdersCount = getActiveOrdersCount();
+      const liveOrdersBtn = document.getElementById('header-live-orders-btn');
+      const liveOrdersCountEl = document.getElementById('header-live-orders-count');
+      if (liveOrdersBtn && liveOrdersCountEl) {
+        liveOrdersCountEl.textContent = liveOrdersCount;
+        if (liveOrdersCount > 0) {
+          liveOrdersBtn.classList.remove('hidden');
+          liveOrdersBtn.classList.add('flex');
+        } else {
+          liveOrdersBtn.classList.add('hidden');
+          liveOrdersBtn.classList.remove('flex');
+        }
+      }
 
       const activeOrd = getCustomerActiveOrder();
       const trackBtn = document.getElementById('header-track-btn');
@@ -1610,6 +1701,20 @@
           staffLabel.textContent = 'دخول الإدارة / الطيارين';
           staffBtn.className = 'flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs';
         }
+      }
+    }
+
+    function handleLiveOrdersCounterClick() {
+      if (state.currentUser && state.currentUser.role === 'admin') {
+        state.view = 'admin';
+        state.adminTab = 'orders';
+        renderApp();
+      } else if (state.currentUser && state.currentUser.role === 'rider') {
+        navigateTo('rider');
+      } else if (getCustomerActiveOrder()) {
+        navigateTo('tracking');
+      } else {
+        openLoginModal();
       }
     }
 
@@ -1837,6 +1942,7 @@
       });
 
       const activePromos = state.promoCodes.filter(p => p.active);
+      const genuineReadyCount = state.riders.filter(r => r.isLoggedIn === true && r.isReady === true).length;
 
       return `
         <!-- HERO BANNER -->
@@ -1900,14 +2006,14 @@
                 </div>
               </div>
 
-              <!-- Promo Card for Public Customers (No Internal Rider/Order Counts) -->
+              <!-- Real Ready Riders & Promo Card -->
               <div class="hidden lg:flex lg:col-span-4 justify-center">
                 <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl p-6 w-full max-w-xs text-center animate-float shadow-2xl">
                   <div class="w-20 h-20 mx-auto rounded-3xl bg-white text-brand-500 flex items-center justify-center text-4xl shadow-lg mb-4">
                     🛵
                   </div>
                   <div class="text-lg font-black mb-1">
-                    توصيل سريع داخل 6 أكتوبر
+                    ${genuineReadyCount > 0 ? `${genuineReadyCount} كباتن طيران READY الآن!` : 'بانتظار دخول الكباتن (READY)'}
                   </div>
                   <p class="text-xs text-orange-100 mb-4">متوسط وقت التوصيل الآن في <strong class="text-white">${area.name}</strong> هو <strong class="text-amber-300">${area.deliveryTime}</strong></p>
                   ${activePromos[0] ? `
@@ -4619,13 +4725,10 @@
     // =========================================================================
     // 15. INITIALIZE APPLICATION ON LOAD
     // =========================================================================
-    // 15. INITIALIZE APPLICATION ON LOAD + REALTIME SYNC
-    // =========================================================================
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded', () => {
       loadSavedState();
       runAutoDispatchQueue();
       renderApp();
-      await initFirebaseRealtimeSync();
     });
   </script>
 </body>
