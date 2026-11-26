@@ -180,6 +180,7 @@
           <span class="hidden md:inline">تتبع طلبك</span>
         </button>
 
+        <button id="header-account-btn" onclick="openCustomerAuth('login')" class="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs"><i class="fa-solid fa-user"></i><span id="header-account-label" class="hidden sm:inline">دخول / حساب جديد</span></button>
         <!-- Cart Trigger Button -->
         <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white px-3.5 sm:px-4 py-2.5 rounded-2xl font-bold text-xs sm:text-sm shadow-sm hover:shadow transition-all">
           <i class="fa-solid fa-bag-shopping text-base"></i>
@@ -214,9 +215,7 @@
             <span class="px-3 py-1.5 rounded-xl bg-gray-800 text-xs font-bold text-brand-400 border border-gray-700">
               <i class="fa-solid fa-bolt ml-1"></i> توصيل 25 - 40 دقيقة
             </span>
-            <button onclick="openLoginModal()" class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-bold text-emerald-400 border border-gray-700 transition">
-              <i class="fa-solid fa-motorcycle ml-1"></i> بوابة الطيارين والإدارة
-            </button>
+            
           </div>
         </div>
 
@@ -1027,7 +1026,7 @@ window.RESTAURANTS_DATA = RESTAURANTS_DATA;
 
     const appId = typeof __app_id !== 'undefined' && __app_id ? __app_id : 'tayaran-october-live';
     let db = null;
-let signInAnonymously, doc, getDoc, setDoc, onSnapshot, deleteField;
+let signInAnonymously, doc, getDoc, setDoc, onSnapshot, deleteField, runTransaction;
 const FIREBASE_CONFIG = {"apiKey": "AIzaSyAaznB1mmCI1m7ad-c_7yQKuIyhiW0lBWU", "authDomain": "tayaran-abfd6.firebaseapp.com", "projectId": "tayaran-abfd6", "storageBucket": "tayaran-abfd6.firebasestorage.app", "messagingSenderId": "461504337405", "appId": "1:461504337405:web:6042bf24c0867fd8cf7594"};
 const cloudCache = {orders:{},riders:{},menus:null};
     let auth = null;
@@ -1142,6 +1141,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
       if (!payload || typeof payload !== 'object') return;
       if (payload.orders && !Array.isArray(payload.orders)) payload = {...payload, orders: Object.values(payload.orders).sort((a,b)=>a.createdAt-b.createdAt)};
       if (payload.riders && !Array.isArray(payload.riders)) payload = {...payload, riders: Object.values(payload.riders)};
+      if (payload.orders && state.syncMode === 'firebase') { const ids = new Set(payload.orders.map(o => o.id)); const keep = state.orders.filter(o => !ids.has(o.id) && !(o.id in cloudCache.orders)); payload = {...payload, orders: [...payload.orders, ...keep]}; }
       state.applyingRemoteSnapshot = true;
       try {
         if (Array.isArray(payload.orders)) {
@@ -1196,6 +1196,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
     }
 
     function loadSharedDatabaseOnly() {
+      if (state.syncMode === 'firebase') return;
       try {
         const orders = localStorage.getItem('tayaran_db_orders');
         const admins = localStorage.getItem('tayaran_db_admins');
@@ -1228,17 +1229,17 @@ const cloudCache = {orders:{},riders:{},menus:null};
 
         const B='https://www.gstatic.com/firebasejs/11.6.1/';
         const [A,Au,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
-        signInAnonymously=Au.signInAnonymously;({doc,getDoc,setDoc,onSnapshot,deleteField}=F);
+        window.AU=Au;signInAnonymously=Au.signInAnonymously;({doc,getDoc,setDoc,onSnapshot,deleteField,runTransaction}=F);
         const fbApp=A.initializeApp(FIREBASE_CONFIG);
         auth=Au.getAuth(fbApp);db=F.initializeFirestore(fbApp,{ignoreUndefinedProperties:true});
 
         if (false) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
-          await signInAnonymously(auth);
+          await auth.authStateReady(); if (!auth.currentUser) await signInAnonymously(auth);
         }
 
-        fbUser = auth.currentUser;
+        fbUser = auth.currentUser; applyCustomerFromAuth();
         if (!fbUser) {
           state.syncMode = 'local';
           updateConnectionBadge();
@@ -1543,9 +1544,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
     }
 
     function getCustomerActiveOrder() {
-      if (!state.activeCustomerOrderId) {
-        return null;
-      }
+      if (!state.activeCustomerOrderId) { const uid = auth && auth.currentUser && auth.currentUser.uid; const m = uid && [...state.orders].reverse().find(o => o.customerUid === uid && !['delivered','cancelled'].includes(o.status)); if (m) { state.activeCustomerOrderId = m.id; return m; } return null; }
       return state.orders.find(o => o.id === state.activeCustomerOrderId) || null;
     }
 
@@ -1931,6 +1930,19 @@ const cloudCache = {orders:{},riders:{},menus:null};
           </div>
         </section>
 
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div class="bg-white rounded-3xl border-2 border-dashed border-brand-300 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-card">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-brand-50 text-3xl flex items-center justify-center shrink-0">🛍️</div>
+              <div>
+                <h3 class="font-black text-base sm:text-lg text-gray-900">عايز حاجة مش في القايمة؟ اطلب أي حاجة من أي مكان</h3>
+                <p class="text-xs text-gray-500 font-bold mt-0.5">اكتب اللي عايزه (أكل، صيدلية، سوبر ماركت...) والطيار يشتريه ويوصّله لحد باب بيتك</p>
+              </div>
+            </div>
+            <button onclick="openCustomOrder()" class="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white font-black text-sm px-6 py-3 rounded-2xl shadow-md shrink-0">اطلب أي حاجة</button>
+          </div>
+        </section>
+
         <!-- CUISINE CATEGORIES BAR -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
           <div class="flex items-center justify-between mb-4">
@@ -2247,8 +2259,8 @@ const cloudCache = {orders:{},riders:{},menus:null};
 
       const steps = [
         { key: 'pending', title: 'تم استلام طلبك بنجاح', desc: `رقم الطلب #${ord.orderNumber} وصل لنظام طيران والمطعم`, icon: 'fa-receipt' },
-        { key: 'preparing', title: 'جاري تجهيز الأوردر في المطعم', desc: `شيف ${ord.restaurantName} بيحضر أكلك طازة وسخن`, icon: 'fa-fire-burner' },
-        { key: 'picked_up', title: 'الطيار استلم الأوردر من المطعم', desc: ord.riderName ? `${ord.riderName} استلم الفاتورة والأوردر جاهز للانطلاق` : 'جاري استلام الطلب من المطعم', icon: 'fa-box-open' },
+        { key: 'preparing', title: 'جاري تجهيز الأوردر في المطعم', desc: `${ord.type==='custom' ? 'الطيار رايح يشتري طلبك من '+ord.restaurantName : 'شيف '+ord.restaurantName+' بيحضر أكلك طازة وسخن'}`, icon: 'fa-fire-burner' },
+        { key: 'picked_up', title: 'الطيار استلم طلبك', desc: ord.riderName ? `${ord.riderName} استلم الفاتورة والأوردر جاهز للانطلاق` : 'جاري استلام الطلب من المطعم', icon: 'fa-box-open' },
         { key: 'on_the_way', title: 'الطيار في الطريق إليك الآن!', desc: ord.riderName ? `${ord.riderName} متجه الآن إلى ${ord.areaName}` : 'جاري تحرك الكابتن نحو عنوانك', icon: 'fa-motorcycle' },
         { key: 'delivered', title: 'تم التوصيل بالهنا والشفا!', desc: 'وصل طلبك بنجاح! نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
       ];
@@ -2340,9 +2352,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
                       <i class="fa-solid fa-check ml-1"></i> طلب أوردر جديد
                     </button>
                   ` : `
-                    <button onclick="openLoginModal()" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
-                      <i class="fa-solid fa-motorcycle ml-1 text-brand-400"></i> افتح لوحة الطيار / الأدمن للتحكم الحي
-                    </button>
+                    
                   `}
                   <button onclick="navigateTo('home')" class="text-xs font-bold text-gray-500 hover:text-brand-600 px-3 py-2">
                     العودة للرئيسية
@@ -2398,7 +2408,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
                   ${ord.items.map(it => `
                     <div class="flex justify-between text-gray-700 font-semibold">
                       <span>${it.qty}× ${it.name} ${it.sizeName ? `(${it.sizeName})` : ''}</span>
-                      <span>${it.price * it.qty} ج.م</span>
+                      <span>${it.price ? (it.price * it.qty) + ' ج.م' : 'يُحدد بعد الشراء'}</span>
                     </div>
                   `).join('')}
                   ${ord.discount > 0 ? `
@@ -2531,12 +2541,13 @@ const cloudCache = {orders:{},riders:{},menus:null};
                     ${activeOrder.items.map(it => `
                       <div class="flex justify-between">
                         <span>${it.qty}× ${it.name} ${it.sizeName ? `(${it.sizeName})` : ''}</span>
-                        <span>${it.price * it.qty} ج.م</span>
+                        <span>${it.price ? (it.price * it.qty) + ' ج.م' : 'يُحدد بعد الشراء'}</span>
                       </div>
                     `).join('')}
                   </div>
                 </div>
 
+                ${activeOrder.type === 'custom' ? `<div class="bg-amber-50 border border-amber-300 rounded-2xl p-4 space-y-2"><div class="text-xs font-black text-amber-800">🛍️ طلب مخصص — اشتري الطلب بنفسك من أي مكان</div><div class="text-xs font-bold text-gray-800">${activeOrder.items[0] ? activeOrder.items[0].name : ''}</div>${activeOrder.customPlace ? `<div class="text-[11px] font-bold text-gray-600">المكان: ${activeOrder.customPlace}</div>` : ''}${activeOrder.budget ? `<div class="text-[11px] font-bold text-gray-600">أقصى ميزانية: ${activeOrder.budget} ج.م</div>` : ''}<button onclick="riderSetPurchase('${activeOrder.id}')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-black text-xs py-2.5 rounded-xl">${activeOrder.itemsTotal ? 'تعديل سعر المشتريات (' + activeOrder.itemsTotal + ' ج)' : 'تسجيل سعر المشتريات بعد الشراء'}</button></div>` : ''}
                 ${renderOrderChatBox(activeOrder, 'rider')}
 
                 <div class="bg-gray-900 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -4415,7 +4426,7 @@ const cloudCache = {orders:{},riders:{},menus:null};
           riderVehicle: null,
           riderGps: RESTAURANT_COORDS[rest.id] || { x: 52, y: 48 },
           messages: [],
-          createdAt: nowTs,
+          createdAt: nowTs, customerUid: (auth && auth.currentUser ? auth.currentUser.uid : null), customerName: state.customer ? state.customer.name : '',
           orderedTimeFormatted: formatOrderClockTime(nowTs)
         };
 
@@ -4559,14 +4570,17 @@ function showToast(msg,type){const c=document.getElementById('toast-container');
 function copyPromoCode(code){try{navigator.clipboard.writeText(code).then(()=>showToast('تم نسخ الكود '+code,'success'),()=>showToast('الكود: '+code,'info'));}catch(e){showToast('الكود: '+code,'info');}}
 
 /* ===== cloud sync (per-order / per-rider diff writes) ===== */
-function syncCloudCache(){cloudCache.orders={};cloudCache.riders={};state.orders.forEach(x=>cloudCache.orders[x.id]=JSON.stringify(x));state.riders.forEach(x=>cloudCache.riders[x.id]=JSON.stringify(x));cloudCache.menus=JSON.stringify(buildSharedPayload().restaurantsMenus);}
+function snapObj(o){const r={};Object.keys(o).forEach(k=>r[k]=JSON.stringify(o[k]));return r;}
+function syncCloudCache(){cloudCache.orders={};cloudCache.riders={};state.orders.forEach(x=>cloudCache.orders[x.id]=snapObj(x));state.riders.forEach(x=>cloudCache.riders[x.id]=snapObj(x));cloudCache.menus=JSON.stringify(buildSharedPayload().restaurantsMenus);}
 function buildCloudPayload(force){
   const p=buildSharedPayload();
-  const diff=(list,cache)=>{const o={},ids=new Set(list.map(x=>x.id));list.forEach(x=>{if(cache[x.id]!==JSON.stringify(x))o[x.id]=x;});Object.keys(cache).forEach(id=>{if(!ids.has(id))o[id]=deleteField();});return o;};
-  p.orders=diff(state.orders,cloudCache.orders);p.riders=diff(state.riders,cloudCache.riders);
+  const diff=(list,cache,canDelete)=>{const o={},ids=new Set(list.map(x=>x.id));
+    list.forEach(x=>{const c=cache[x.id]||{},ch={};Object.keys(x).forEach(k=>{if(c[k]!==JSON.stringify(x[k]))ch[k]=x[k];});if(Object.keys(ch).length)o[x.id]=ch;});
+    if(canDelete)Object.keys(cache).forEach(id=>{if(!ids.has(id))o[id]=deleteField();});return o;};
+  p.orders=diff(state.orders,cloudCache.orders,false);p.riders=diff(state.riders,cloudCache.riders,true);
   const mj=JSON.stringify(p.restaurantsMenus);
   if(!force&&(cloudCache.menus===null||mj===cloudCache.menus))delete p.restaurantsMenus;else cloudCache.menus=mj;
-  cloudCache.orders={};cloudCache.riders={};state.orders.forEach(x=>cloudCache.orders[x.id]=JSON.stringify(x));state.riders.forEach(x=>cloudCache.riders[x.id]=JSON.stringify(x));
+  cloudCache.orders={};cloudCache.riders={};state.orders.forEach(x=>cloudCache.orders[x.id]=snapObj(x));state.riders.forEach(x=>cloudCache.riders[x.id]=snapObj(x));
   return p;
 }
 function remoteRender(){if(state.view==='admin'&&['products','promos','riders','admins'].includes(state.adminTab))return;renderApp();}
@@ -4575,23 +4589,97 @@ function remoteRender(){if(state.view==='admin'&&['products','promos','riders','
 function captureFocus(){const r=document.getElementById('app-root'),a=document.activeElement;if(!r||!a||!r.contains(a)||!/^(INPUT|TEXTAREA)$/.test(a.tagName)||a.type==='file')return null;return{i:[...r.querySelectorAll('input,textarea')].indexOf(a),s:a.selectionStart,e:a.selectionEnd,v:a.value};}
 function restoreFocus(f){if(!f)return;const el=document.getElementById('app-root').querySelectorAll('input,textarea')[f.i];if(el){if(el.value!==f.v)el.value=f.v;el.focus();try{el.setSelectionRange(f.s,f.e);}catch(e){}}}
 function renderApp(){const f=captureFocus();renderAppCore();restoreFocus(f);afterRender();}
-function afterRender(){document.querySelectorAll('[data-chat-box]').forEach(e=>e.scrollTop=e.scrollHeight);initLiveMap();syncRiderGpsWatcher();riderHeartbeat();}
+function afterRender(){document.querySelectorAll('[data-chat-box]').forEach(e=>e.scrollTop=e.scrollHeight);initLiveMap();syncRiderGpsWatcher();riderHeartbeat();runAutoDispatchQueue();
+  const sb=document.getElementById('header-staff-btn');if(sb)sb.style.display=state.currentUser?'':'none';
+  const al=document.getElementById('header-account-label');if(al)al.textContent=state.customer?state.customer.name.split(' ')[0]:'دخول / حساب جديد';}
+function closeCustomOrder(){const m=document.getElementById('cust-order-modal');if(m)m.remove();}
+function openCustomOrder(){
+  closeCustomOrder();const a=state.addressDetails,ar=getCurrentArea();
+  const f='class="w-full px-3 py-3 rounded-xl border border-gray-200 text-sm font-bold outline-none focus:border-brand-500"';
+  const w=document.createElement('div');w.id='cust-order-modal';w.className='fixed inset-0 z-[80] bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4';
+  w.innerHTML='<div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full max-h-[92dvh] overflow-y-auto p-5 relative space-y-3"><button onclick="closeCustomOrder()" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-gray-100">✕</button>'
+   +'<h3 class="font-black text-lg">🛍️ اطلب أي حاجة من أي مكان</h3><p class="text-xs text-gray-500 font-bold">اكتب اللي عايزه بالتفصيل والطيار يشتريه ويوصّله. هتكلمه في الشات وهو بيشتري.</p>'
+   +'<textarea id="co-what" rows="4" placeholder="مثال: 2 كيلو فراخ + علبة لبن جهينة 1 لتر من سوبر ماركت قريب" '+f+'></textarea>'
+   +'<input id="co-place" placeholder="اسم المكان أو عنوانه (اختياري)" '+f+'>'
+   +'<input id="co-budget" type="number" inputmode="numeric" placeholder="أقصى ميزانية للمشتريات بالجنيه (اختياري)" '+f+'>'
+   +'<input id="co-phone" type="tel" value="'+cleanStr(a.phone||'')+'" placeholder="رقم الموبايل *" '+f+'>'
+   +'<input id="co-street" value="'+cleanStr(a.street||'')+'" placeholder="العنوان بالتفصيل *" '+f+'>'
+   +'<div class="text-[11px] font-bold text-gray-500 bg-gray-50 rounded-xl p-3">التوصيل إلى: '+ar.name+' • رسوم التوصيل '+ar.baseFee+' ج.م • سعر المشتريات بيتحدد بعد الشراء ويظهرلك في الشات والفاتورة • الدفع كاش عند الاستلام <button onclick="closeCustomOrder();openAddressModal()" class="text-brand-600 font-black mr-1">تغيير المنطقة</button></div>'
+   +'<div id="co-err" class="text-xs text-red-600 font-bold"></div><button onclick="placeCustomOrder()" class="w-full bg-brand-500 text-white font-black text-sm py-3.5 rounded-2xl">إرسال الطلب 🚀</button></div>';
+  document.body.appendChild(w);
+}
+function placeCustomOrder(){
+  const g=id=>(document.getElementById(id).value||'').trim(),err=m=>{document.getElementById('co-err').textContent=m;};
+  const what=cleanStr(g('co-what')).slice(0,600),place=cleanStr(g('co-place')).slice(0,120),phone=g('co-phone').replace(/\D/g,''),street=cleanStr(g('co-street')),budget=Math.round(Number(g('co-budget')))||0;
+  if(what.length<3)return err('اكتب اللي عايزه');
+  if(phone.length<10)return err('اكتب رقم موبايل صحيح');
+  if(!street)return err('اكتب العنوان بالتفصيل');
+  const area=getCurrentArea(),now=Date.now(),id='ord_'+now+'_'+Math.random().toString(36).slice(2,5);
+  state.addressDetails={...state.addressDetails,phone,street};
+  state.orders.push({id,orderNumber:Math.floor(100000+Math.random()*900000),type:'custom',restaurantId:'custom',restaurantName:'🛍️ '+(place||'طلب مخصص'),customPlace:place,budget,
+    areaId:area.id,areaName:area.name,eta:'30 - 60 دقيقة',address:cleanObj(state.addressDetails),paymentLabel:'كاش عند الاستلام',
+    items:[{uid:id,itemId:'custom',name:what,emoji:'🛍️',sizeName:'',notes:'',price:0,qty:1}],discount:0,promoCode:'',deliveryFee:area.baseFee,total:area.baseFee,
+    status:'pending',riderId:null,riderName:null,riderPhone:null,riderVehicle:null,messages:[],createdAt:now,
+    customerUid:(auth&&auth.currentUser?auth.currentUser.uid:null),customerName:state.customer?state.customer.name:''});
+  state.activeCustomerOrderId=id;persistState(true);closeCustomOrder();
+  showToast('تم إرسال طلبك! هنوصله لأقرب طيار متاح 🛍️','success');navigateTo('tracking');
+}
+function riderSetPurchase(id){
+  const o=state.orders.find(x=>x.id===id);if(!o)return;
+  const v=prompt('اكتب سعر المشتريات بالجنيه (من غير التوصيل):',o.itemsTotal||'');if(v===null)return;
+  const n=Math.round(Number(String(v).replace(/[^\d.]/g,'')));if(!n||n<=0){showToast('اكتب رقم صحيح','error');return;}
+  o.itemsTotal=n;o.total=n+(o.deliveryFee||0);o.items.forEach(i=>{if(i.itemId==='custom')i.price=n;});
+  (o.messages=o.messages||[]).push({from:'rider',text:'سعر المشتريات '+n+' ج + التوصيل '+(o.deliveryFee||0)+' ج = الإجمالي '+o.total+' ج',ts:Date.now()});
+  persistState(true);renderApp();showToast('تم تسجيل السعر وظهر للعميل','success');
+}
+function closeCustomerAuth(){const m=document.getElementById('cust-modal');if(m)m.remove();}
+function openCustomerAuth(mode){
+  closeCustomerAuth();const c=state.customer,reg=mode==='register';
+  const inp='class="w-full px-3 py-3 rounded-xl border border-gray-200 text-sm font-bold outline-none focus:border-brand-500"';
+  const box=c?'<div class="text-center space-y-3"><div class="text-4xl">👤</div><div class="font-black text-lg">'+c.name+'</div><div class="text-xs text-gray-500">'+c.phone+'</div><button onclick="custLogout()" class="w-full bg-red-50 text-red-600 font-black text-sm py-3 rounded-2xl">تسجيل الخروج</button></div>'
+   :'<h3 class="font-black text-lg mb-3">'+(reg?'إنشاء حساب جديد':'تسجيل الدخول')+'</h3><div class="space-y-3">'+(reg?'<input id="ca-name" placeholder="الاسم" '+inp+'>':'')+'<input id="ca-phone" type="tel" placeholder="رقم الموبايل 01xxxxxxxxx" '+inp+'><input id="ca-pass" type="password" placeholder="الباسوورد (6 أحرف على الأقل)" '+inp+'><div id="ca-err" class="text-xs text-red-600 font-bold"></div><button onclick="custAuthSubmit(\''+(reg?'register':'login')+'\')" class="w-full bg-brand-500 text-white font-black text-sm py-3 rounded-2xl">'+(reg?'إنشاء الحساب':'دخول')+'</button><button onclick="openCustomerAuth(\''+(reg?'login':'register')+'\')" class="w-full text-xs font-bold text-brand-600">'+(reg?'عندي حساب بالفعل':'معنديش حساب؟ اعمل حساب جديد')+'</button></div>';
+  const w=document.createElement('div');w.id='cust-modal';w.className='fixed inset-0 z-[80] bg-black/60 flex items-center justify-center p-4';
+  w.innerHTML='<div class="bg-white rounded-3xl max-w-sm w-full p-6 relative"><button onclick="closeCustomerAuth()" class="absolute top-3 left-3 w-8 h-8 rounded-xl bg-gray-100">✕</button>'+box+'</div>';document.body.appendChild(w);
+}
+async function custAuthSubmit(mode){
+  const err=m=>{document.getElementById('ca-err').textContent=m;};
+  if(!window.AU||!auth)return err('الحسابات محتاجة اتصال بالإنترنت، حاول تاني');
+  const phone=(document.getElementById('ca-phone').value||'').replace(/\D/g,''),pass=document.getElementById('ca-pass').value||'',nm=document.getElementById('ca-name'),name=cleanStr((nm&&nm.value||'').trim());
+  if(!/^01\d{9}$/.test(phone))return err('اكتب رقم موبايل صحيح (11 رقم)');
+  if(pass.length<6)return err('الباسوورد 6 أحرف على الأقل');
+  if(mode==='register'&&!name)return err('اكتب اسمك');
+  try{
+    const email=phone+'@tayaran.app';
+    if(mode==='register'){const r=await AU.createUserWithEmailAndPassword(auth,email,pass);await AU.updateProfile(r.user,{displayName:name});}
+    else await AU.signInWithEmailAndPassword(auth,email,pass);
+    closeCustomerAuth();applyCustomerFromAuth();showToast('أهلاً بيك 👋','success');
+  }catch(e){const c=e.code||'';err(c.includes('email-already')?'الرقم ده مسجل قبل كده، سجّل دخول':c.includes('operation-not-allowed')?'لازم تفعّل Email/Password في Firebase':'الرقم أو الباسوورد غلط');}
+}
+function applyCustomerFromAuth(){const u=auth&&auth.currentUser;if(u&&!u.isAnonymous){state.customer={uid:u.uid,name:cleanStr(u.displayName||'عميل'),phone:(u.email||'').split('@')[0]};state.addressDetails.phone=state.customer.phone;}else state.customer=null;persistState(false);renderApp();}
+async function custLogout(){try{await AU.signOut(auth);await AU.signInAnonymously(auth);}catch(e){}state.customer=null;state.activeCustomerOrderId=null;state.cart=[];persistState(false);closeCustomerAuth();renderApp();showToast('تم تسجيل الخروج','info');}
+function checkStaffHash(){if(location.hash==='#staff'&&!state.currentUser)openLoginModal();}
+window.addEventListener('hashchange',checkStaffHash);
 
 /* ===== dispatch ===== */
-function runAutoDispatchQueue(){
-  const waiting=state.orders.filter(o=>!o.riderId&&['pending','preparing'].includes(o.status)).sort((a,b)=>a.createdAt-b.createdAt);
-  let changed=false;
-  for(const o of waiting){
-    const r=state.riders.find(x=>x.isLoggedIn&&x.isReady&&Date.now()-(x.lastSeen||0)<75000&&!getRiderCurrentOrder(x));
-    if(!r)break;
-    o.riderId=r.id;o.riderName=r.name;o.riderPhone=r.phone;o.riderVehicle=r.vehicle;o.riderPhoto=r.photo||'';
-    o.status='preparing';o.assignedAt=Date.now();r.activeOrderId=o.id;changed=true;
+let _claiming=false;
+function runAutoDispatchQueue(){if(_claiming)return false;_claiming=true;claimNextOrder().then(c=>{_claiming=false;if(c)renderApp();},()=>{_claiming=false;});return false;}
+async function claimNextOrder(){
+  const me=state.currentUser&&state.currentUser.role==='rider'&&state.riders.find(r=>r.id===state.currentUser.id);
+  if(!me||!me.isLoggedIn||!me.isReady||getRiderCurrentOrder(me))return false;
+  const o=state.orders.filter(x=>!x.riderId&&['pending','preparing'].includes(x.status)).sort((a,b)=>a.createdAt-b.createdAt)[0];
+  if(!o)return false;
+  const now=Date.now();
+  if(sharedDocRef&&runTransaction){
+    const k='orders.'+o.id+'.';
+    const ok=await runTransaction(db,async tx=>{const sn=await tx.get(sharedDocRef);const cur=((sn.data()||{}).orders||{})[o.id];if(!cur||cur.riderId)return false;
+      tx.update(sharedDocRef,{[k+'riderId']:me.id,[k+'riderName']:me.name,[k+'riderPhone']:me.phone,[k+'riderVehicle']:me.vehicle||'',[k+'status']:'preparing',[k+'assignedAt']:now});return true;}).catch(()=>false);
+    if(!ok)return false;
   }
-  if(changed)persistState(true);
-  return changed;
+  Object.assign(o,{riderId:me.id,riderName:me.name,riderPhone:me.phone,riderVehicle:me.vehicle||'',riderPhoto:me.photo||'',status:'preparing',assignedAt:now});
+  me.activeOrderId=o.id;persistState(true);return true;
 }
 function riderHeartbeat(){const me=state.currentUser&&state.currentUser.role==='rider'&&state.riders.find(r=>r.id===state.currentUser.id);if(me&&Date.now()-(me.lastSeen||0)>20000){me.lastSeen=Date.now();persistState(true);}}
-setInterval(riderHeartbeat,20000);
+setInterval(riderHeartbeat,20000);setInterval(runAutoDispatchQueue,4000);
 
 /* ===== real chat ===== */
 function renderOrderChatBox(ord,role){
@@ -4632,20 +4720,21 @@ function initLiveMap(){
   const ar=OCTOBER_AREAS.find(a=>a.id===ord.areaId)||getCurrentArea();const cc=xyToLatLng(ar.coords);
   _map=L.map(el).setView([cc.lat,cc.lng],13);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
-  const pts=[[rc.lat,rc.lng],[cc.lat,cc.lng]];
-  L.marker(pts[0]).addTo(_map).bindPopup('🏪 '+ord.restaurantName);
-  L.marker(pts[1]).addTo(_map).bindPopup('🏠 موقعك (تقريبي)');
+  const pts=ord.type==='custom'?[[cc.lat,cc.lng]]:[[rc.lat,rc.lng],[cc.lat,cc.lng]];
+  if(ord.type!=='custom')L.marker(pts[0]).addTo(_map).bindPopup('🏪 '+ord.restaurantName);
+  L.marker([cc.lat,cc.lng]).addTo(_map).bindPopup('🏠 موقعك (تقريبي)');
   if(ord.riderLoc&&['picked_up','on_the_way'].includes(ord.status)){
     L.marker([ord.riderLoc.lat,ord.riderLoc.lng],{icon:L.divIcon({html:'<div style="font-size:26px">🛵</div>',className:'',iconSize:[30,30]})}).addTo(_map).bindPopup('🛵 '+(ord.riderName||'الطيار'));
     pts.push([ord.riderLoc.lat,ord.riderLoc.lng]);
   }
-  _map.fitBounds(pts,{padding:[30,30]});
+  if(pts.length>1)_map.fitBounds(pts,{padding:[30,30]});
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
       loadSavedState();
       runAutoDispatchQueue();
       renderApp();
+      checkStaffHash();
       await initFirebaseRealtimeSync();
     });
   </script>
