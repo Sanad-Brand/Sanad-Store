@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>طيران | أسرع توصيل أكل في 6 أكتوبر</title>
+  <titleأسرع توصيل أكل في 6 أكت>طيران |وبر</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Cairo & Tajawal -->
@@ -27,7 +27,7 @@
               200: '#ffcab0',
               300: '#ffa57d',
               400: '#ff773d',
-              500: '#ff5a00', // Talabat-inspired vibrant orange
+              500: '#ff5a00',
               600: '#e64a00',
               700: '#bf3900',
               800: '#992e00',
@@ -121,7 +121,7 @@
   <!-- Top Sticky Navigation Bar -->
   <header class="sticky top-0 z-40 bg-white shadow-nav border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
-      
+
       <!-- Brand Logo & Area Selector -->
       <div class="flex items-center gap-2.5 sm:gap-5">
         <!-- Tayaran Logo -->
@@ -132,8 +132,9 @@
           <div class="text-right">
             <div class="flex items-center gap-1.5">
               <span class="text-2xl sm:text-3xl font-black tracking-tight text-brand-500 leading-none block">طيران</span>
-              <span id="server-status-badge" title="خادم طيران عالي السرعة يعمل بكفاءة 99.99%" class="hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-600 border border-emerald-200 px-1.5 py-0.5 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>LIVE
+              <span id="server-status-badge" title="حالة الاتصال والمزامنة اللحظية" class="hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                <span id="server-status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="server-status-text">متصل أونلاين</span>
               </span>
             </div>
             <span class="text-[10px] sm:text-[11px] font-bold text-gray-400 tracking-wide block">أكتوبر في ثواني</span>
@@ -164,6 +165,13 @@
           <span>فولدرات المنيو</span>
         </button>
 
+        <!-- Live Active Orders Counter Pill (shown when active orders exist in system) -->
+        <button id="header-live-orders-btn" onclick="handleLiveOrdersCounterClick()" title="عدد الطلبات الجارية الآن في النظام" class="hidden items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-extrabold text-xs transition-all">
+          <i class="fa-solid fa-bell text-brand-500"></i>
+          <span class="hidden lg:inline">الأوردرات</span>
+          <span id="header-live-orders-count" class="bg-brand-500 text-white text-[11px] font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">0</span>
+        </button>
+
         <!-- Staff / Admin / Rider Portal Button -->
         <button id="header-staff-btn" onclick="handleStaffHeaderClick()" class="flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs">
           <i class="fa-solid fa-shield-halved text-brand-400"></i>
@@ -171,7 +179,7 @@
           <span class="sm:hidden">الدخول</span>
         </button>
 
-        <!-- Active Order Tracker Pill (shown if an active order exists) -->
+        <!-- Active Customer Order Tracker Pill -->
         <button id="header-track-btn" onclick="navigateTo('tracking')" class="hidden items-center gap-2 px-3 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs transition-all">
           <span class="relative flex h-2.5 w-2.5">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -208,7 +216,7 @@
             <span class="text-2xl font-black text-white">طيران</span>
           </div>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">
-            منصة توصيل الطعام الأولى المتخصصة في كل أحياء ومناطق مدينة 6 أكتوبر والشيخ زايد. بنية تحتية فائقة السرعة ومزامنة لحظية بين العميل والمطعم وكابتن التوصيل.
+            منصة توصيل الطعام الأولى المتخصصة في كل أحياء ومناطق مدينة 6 أكتوبر والشيخ زايد. مزامنة لحظية دقيقة بين العميل والمطعم وكابتن التوصيل.
           </p>
           <div class="flex items-center gap-2 flex-wrap">
             <span class="px-3 py-1.5 rounded-xl bg-gray-800 text-xs font-bold text-brand-400 border border-gray-700">
@@ -271,8 +279,7 @@
        MODAL 1: 6TH OF OCTOBER AREA & DETAILED ADDRESS SELECTOR
   ========================================================== -->
   <div id="address-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-      <!-- Modal Header -->
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="px-6 py-4 bg-gradient-to-l from-brand-500 to-orange-600 text-white flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
@@ -288,9 +295,7 @@
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="p-6 overflow-y-auto space-y-5">
-        <!-- Search Area Input -->
         <div>
           <label class="block text-xs font-extrabold text-gray-700 mb-1.5">ابحث عن الحي أو الكمبوند في 6 أكتوبر</label>
           <div class="relative">
@@ -299,18 +304,14 @@
           </div>
         </div>
 
-        <!-- Areas Grid -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-extrabold text-gray-500">مناطق وأحياء مدينة 6 أكتوبر (22 منطقة مغطاة)</span>
             <span class="text-[11px] font-bold text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-full">تغطية شاملة</span>
           </div>
-          <div id="areas-grid-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto p-1">
-            <!-- Rendered by JS -->
-          </div>
+          <div id="areas-grid-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto p-1"></div>
         </div>
 
-        <!-- Detailed Street & Building Form -->
         <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200/80 space-y-3">
           <h4 class="text-sm font-extrabold text-gray-800 flex items-center gap-2">
             <i class="fa-solid fa-house-chimney text-brand-500"></i>
@@ -343,7 +344,6 @@
         </div>
       </div>
 
-      <!-- Modal Footer -->
       <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
         <div class="text-xs text-gray-600">
           المنطقة المختارة: <strong id="modal-preview-area" class="text-brand-600">الحصري</strong>
@@ -360,9 +360,7 @@
   ========================================================== -->
   <div id="item-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      <div id="item-modal-content" class="flex flex-col max-h-[90vh]">
-        <!-- Rendered dynamically -->
-      </div>
+      <div id="item-modal-content" class="flex flex-col max-h-[90vh]"></div>
     </div>
   </div>
 
@@ -371,7 +369,6 @@
   ========================================================== -->
   <div id="folders-modal" class="fixed inset-0 z-50 hidden bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
     <div class="bg-white rounded-3xl max-w-5xl w-full h-[88vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Header -->
       <div class="px-6 py-4 bg-gray-900 text-white flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center">
@@ -387,23 +384,16 @@
         </button>
       </div>
 
-      <!-- Body: Split Folder Tree & Folder Content -->
       <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
-        <!-- Left Sidebar: Restaurant Folders List -->
         <div class="w-full md:w-80 bg-gray-50 border-b md:border-b-0 md:border-l border-gray-200 p-3 overflow-y-auto shrink-0 max-h-48 md:max-h-none">
           <div class="text-[11px] font-extrabold text-gray-400 uppercase px-2 mb-2 flex items-center justify-between">
             <span>مجلدات المطاعم (<span id="folders-count">0</span>)</span>
             <i class="fa-solid fa-hard-drive text-brand-500"></i>
           </div>
-          <div id="folders-sidebar-list" class="space-y-1.5">
-            <!-- Rendered by JS -->
-          </div>
+          <div id="folders-sidebar-list" class="space-y-1.5"></div>
         </div>
 
-        <!-- Right Panel: Selected Restaurant Folder Contents -->
-        <div id="folder-detail-pane" class="flex-1 p-5 overflow-y-auto bg-white">
-          <!-- Rendered by JS -->
-        </div>
+        <div id="folder-detail-pane" class="flex-1 p-5 overflow-y-auto bg-white"></div>
       </div>
     </div>
   </div>
@@ -413,7 +403,6 @@
   ========================================================== -->
   <div id="login-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-gray-100">
-      <!-- Header -->
       <div class="bg-gradient-to-l from-gray-900 via-gray-800 to-gray-950 text-white p-6 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-brand-500 text-white flex items-center justify-center shadow-lg">
@@ -429,7 +418,6 @@
         </button>
       </div>
 
-      <!-- Login Form -->
       <form onsubmit="handleStaffLogin(event)" class="p-6 space-y-4">
         <div>
           <label class="block text-xs font-extrabold text-gray-700 mb-1.5">اسم المستخدم (Username)</label>
@@ -452,7 +440,6 @@
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
-        <!-- Quick Demo Login Helpers -->
         <div class="pt-3 border-t border-gray-100">
           <div class="text-[11px] font-extrabold text-gray-400 mb-2 text-center">دخول سريع للتجربة الفورية:</div>
           <div class="grid grid-cols-3 gap-2">
@@ -475,9 +462,7 @@
        MODAL 5: ADMIN ORDER EDITOR MODAL
   ========================================================== -->
   <div id="admin-order-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div id="admin-order-modal-content" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Rendered dynamically -->
-    </div>
+    <div id="admin-order-modal-content" class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"></div>
   </div>
 
   <!-- =========================================================
@@ -488,7 +473,7 @@
       <div class="bg-gradient-to-l from-purple-800 via-purple-700 to-indigo-900 text-white p-6">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl">
-            <i class="fa-solid fa-shield-keyhole"></i>
+            <i class="fa-solid fa-key"></i>
           </div>
           <div>
             <span class="bg-amber-300 text-gray-900 text-[10px] font-black px-2.5 py-0.5 rounded-full">حساب أدمن مؤقت</span>
@@ -511,7 +496,7 @@
         </div>
         <div>
           <label class="block text-xs font-extrabold text-gray-700 mb-1">الباسوورد الجديد (Password) *</label>
-          <input type="text" id="force-admin-password" required placeholder="اكتب كلمة مرور قوية (6 أحرف فأكثر)" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-purple-600" />
+          <input type="text" id="force-admin-password" required placeholder="اكتب كلمة مرور قوية (4 أحرف فأكثر)" class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-black outline-none focus:border-purple-600" />
         </div>
         <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-black text-sm py-3.5 rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
           <i class="fa-solid fa-check-double"></i>
@@ -525,9 +510,7 @@
        MODAL 7: ADMIN EDIT PRODUCT / CHANGE IMAGE MODAL
   ========================================================== -->
   <div id="edit-product-modal" class="fixed inset-0 z-[60] hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div id="edit-product-modal-content" class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Rendered dynamically -->
-    </div>
+    <div id="edit-product-modal-content" class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"></div>
   </div>
 
   <!-- =========================================================
@@ -535,7 +518,6 @@
   ========================================================== -->
   <div id="cart-drawer-backdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs transition-opacity"></div>
   <aside id="cart-drawer" class="fixed top-0 left-0 bottom-0 z-50 w-full max-w-md bg-white shadow-2xl hidden flex-col">
-    <!-- Cart Header -->
     <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-white">
       <div class="flex items-center gap-2.5">
         <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold">
@@ -551,19 +533,12 @@
       </button>
     </div>
 
-    <!-- Cart Body -->
-    <div id="cart-body" class="flex-1 overflow-y-auto p-5 space-y-4">
-      <!-- Rendered dynamically -->
-    </div>
-
-    <!-- Cart Footer / Checkout Action -->
-    <div id="cart-footer" class="p-5 bg-gray-50 border-t border-gray-200 hidden">
-      <!-- Rendered dynamically -->
-    </div>
+    <div id="cart-body" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+    <div id="cart-footer" class="p-5 bg-gray-50 border-t border-gray-200 hidden"></div>
   </aside>
 
   <!-- =========================================================
-       JAVASCRIPT DATA LAYER & APPLICATION LOGIC
+       JAVASCRIPT DATA LAYER, ONLINE REAL-TIME SYNC & SLA ENGINE
   ========================================================== -->
   <script>
     // =========================================================================
@@ -765,7 +740,7 @@
             section: '🔥 بوكسات بازوكا التوفير',
             items: [
               { id: 'bz_1', name: 'بوكس السعادة (3 قطع بروستد)', desc: '3 قطع دجاج مقرمش (عادي أو سبايسي) + أرز ريزو + بطاطس + كول سلو + عيش', price: 165, badge: 'عرض طيران', emoji: '🍗', sizes: [{ name: 'عادي', extra: 0 }, { name: 'سبايسي حار', extra: 0 }] },
-              { id: 'bz_2', name: 'بوكس العائلة (9 قطع دجاج)', desc: '9 قطع بروستد + بطاطس عائلي + 3 كول سلو + 4 عيش + لتر بيبسي', price: 440, emoji: 'buckets' }
+              { id: 'bz_2', name: 'بوكس العائلة (9 قطع دجاج)', desc: '9 قطع بروستد + بطاطس عائلي + 3 كول سلو + 4 عيش + لتر بيبسي', price: 440, emoji: '🍱' }
             ]
           },
           {
@@ -991,7 +966,6 @@
       }
     };
 
-    // Restaurant map coordinates in 6th of October
     const RESTAURANT_COORDS = {
       abou_mazen: { x: 52, y: 47 },
       hadramout_antar: { x: 76, y: 60 },
@@ -1006,17 +980,18 @@
     };
 
     // =========================================================================
-    // 4. HIGH-CONCURRENCY STATE ENGINE (LOCALSTORAGE + BROADCASTCHANNEL SYNC)
+    // 4. REAL STATE ENGINE (ZERO FAKE READY, EXACT TIMESTAMPS, SLA & ONLINE SYNC)
     // =========================================================================
     const DEFAULT_ADMINS = [
       { id: 'adm_1', name: 'المدير العام - طيران أكتوبر', username: 'admin', password: '123456', role: 'Super Admin', isTemp: false, mustChangeCredentials: false },
       { id: 'adm_temp_2026', name: 'أدمن مؤقت - طيران أكتوبر', username: 'temp_admin', password: 'Temp@2026', role: 'Temporary Admin', isTemp: true, mustChangeCredentials: true }
     ];
 
+    // NOTE: Riders start with isLoggedIn: false and isReady: false so NO rider is falsely "READY" before logging in!
     const DEFAULT_RIDERS = [
-      { id: 'rid_1', name: 'محمود السيد أحمد حسن', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل', age: 25, photo: '', zone: 'ميدان الحصري والأحياء 1-4', isReady: true, activeOrderId: null, completedCount: 42, gps: { x: 51, y: 47 } },
-      { id: 'rid_2', name: 'كريم عادل محمد إبراهيم', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل', age: 27, photo: '', zone: 'الحي السابع وحدائق أكتوبر', isReady: true, activeOrderId: null, completedCount: 29, gps: { x: 58, y: 55 } },
-      { id: 'rid_3', name: 'أحمد طارق عبد الله محمود', username: 'rider3', password: '123456', phone: '01233445566', vehicle: 'سكوتر', age: 23, photo: '', zone: 'غرب سوميد ومول العرب', isReady: false, activeOrderId: null, completedCount: 18, gps: { x: 66, y: 39 } }
+      { id: 'rid_1', name: 'محمود السيد أحمد حسن', username: 'rider1', password: '123456', phone: '01011223344', vehicle: 'موتوسيكل', age: 25, photo: '', zone: 'ميدان الحصري والأحياء 1-4', isLoggedIn: false, isReady: false, activeOrderId: null, completedCount: 0, gps: { x: 51, y: 47 } },
+      { id: 'rid_2', name: 'كريم عادل محمد إبراهيم', username: 'rider2', password: '123456', phone: '01122334455', vehicle: 'موتوسيكل', age: 27, photo: '', zone: 'الحي السابع وحدائق أكتوبر', isLoggedIn: false, isReady: false, activeOrderId: null, completedCount: 0, gps: { x: 58, y: 55 } },
+      { id: 'rid_3', name: 'أحمد طارق عبد الله محمود', username: 'rider3', password: '123456', phone: '01233445566', vehicle: 'سكوتر', age: 23, photo: '', zone: 'غرب سوميد ومول العرب', isLoggedIn: false, isReady: false, activeOrderId: null, completedCount: 0, gps: { x: 66, y: 39 } }
     ];
 
     const DEFAULT_PROMOS = [
@@ -1024,6 +999,9 @@
       { id: 'pr_2', code: 'OCTOBER50', type: 'fixed', value: 50, minOrder: 200, active: true, title: 'خصم 50 جنيه على الطلبات فوق 200 ج' },
       { id: 'pr_3', code: 'FREEDEL', type: 'free_delivery', value: 0, minOrder: 100, active: true, title: 'توصيل مجاني لكل أحياء أكتوبر' }
     ];
+
+    const ACTIVE_ORDER_STATUSES = ['pending', 'preparing', 'picked_up', 'on_the_way'];
+    const IN_TRANSIT_RIDER_STATUSES = ['preparing', 'picked_up', 'on_the_way'];
 
     let state = {
       view: 'home', // 'home' | 'restaurant' | 'tracking' | 'admin' | 'rider'
@@ -1048,24 +1026,31 @@
       cart: [],
       appliedPromoCode: '',
       paymentMethod: 'cash',
-      orders: [], // Master shared orders queue (each order also has messages: [])
+      orders: [],
       activeCustomerOrderId: null,
-      admins: [...DEFAULT_ADMINS],
-      riders: [...DEFAULT_RIDERS],
-      promoCodes: [...DEFAULT_PROMOS],
+      admins: DEFAULT_ADMINS.map(a => ({ ...a })),
+      riders: DEFAULT_RIDERS.map(r => ({ ...r })),
+      promoCodes: DEFAULT_PROMOS.map(p => ({ ...p })),
       selectedFolderId: 'abou_mazen',
       editingOrderId: null,
-      editingProductCtx: null, // { restId, secIdx, itemId }
+      editingProductCtx: null,
       newProductImageData: '',
-      newRiderPhotoData: ''
+      newRiderPhotoData: '',
+      syncHealthy: true,
+      lastSyncAt: Date.now(),
+      mutationLock: false
     };
 
-    // Real-time Cross-Tab Synchronization Channel (Zero-Latency Multi-Window Sync)
-    const syncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('tayaran_october_realtime_v3') : null;
+    // Cross-Tab BroadcastChannel for multi-tab live sync
+    const syncChannel = typeof BroadcastChannel !== 'undefined'
+      ? new BroadcastChannel('tayaran_october_realtime_v4')
+      : null;
+
     if (syncChannel) {
       syncChannel.onmessage = (event) => {
         if (event.data && event.data.type === 'STATE_UPDATED') {
           loadSharedDatabaseOnly();
+          reconcileRiderAndOrderIntegrity();
           renderApp();
           if (!document.getElementById('cart-drawer').classList.contains('hidden')) {
             renderCartDrawer();
@@ -1074,13 +1059,81 @@
       };
     }
 
-    // Listen to storage events across tabs as backup
     window.addEventListener('storage', (e) => {
       if (e.key && e.key.startsWith('tayaran_db_')) {
         loadSharedDatabaseOnly();
+        reconcileRiderAndOrderIntegrity();
         renderApp();
       }
     });
+
+    window.addEventListener('online', () => {
+      state.syncHealthy = true;
+      updateConnectionBadge();
+      persistState(true);
+      showToast('عاد الاتصال بالشبكة بنجاح وتمت مزامنة البيانات أونلاين 🌐', 'success');
+    });
+
+    window.addEventListener('offline', () => {
+      state.syncHealthy = false;
+      updateConnectionBadge();
+      showToast('تنبيه: انقطع الاتصال بالشبكة مؤقتاً، يتم حفظ التغييرات محلياً حتى عودة الاتصال', 'error');
+    });
+
+    function updateConnectionBadge() {
+      const badge = document.getElementById('server-status-badge');
+      const dot = document.getElementById('server-status-dot');
+      const text = document.getElementById('server-status-text');
+      if (!badge || !dot || !text) return;
+
+      const online = navigator.onLine !== false && state.syncHealthy;
+      if (online) {
+        badge.className = 'hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
+        text.textContent = 'متصل أونلاين';
+      } else {
+        badge.className = 'hidden sm:inline-flex items-center gap-1 text-[9px] font-extrabold bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 rounded-full';
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-red-500';
+        text.textContent = 'وضع غير متصل';
+      }
+    }
+
+    // Strict Integrity Check:
+    // 1) A rider who is NOT logged in (isLoggedIn !== true) can NEVER be READY.
+    // 2) activeOrderId on rider & order must always match real active/non-closed orders.
+    function reconcileRiderAndOrderIntegrity() {
+      for (const r of state.riders) {
+        if (!r.isLoggedIn) {
+          r.isReady = false;
+        }
+        if (r.activeOrderId) {
+          const linkedOrd = state.orders.find(o => o.id === r.activeOrderId);
+          if (!linkedOrd || linkedOrd.status === 'delivered' || linkedOrd.status === 'cancelled' || linkedOrd.riderId !== r.id) {
+            r.activeOrderId = null;
+          }
+        }
+      }
+
+      for (const ord of state.orders) {
+        if (!ord.createdAt) {
+          ord.createdAt = Date.now();
+        }
+        if (ord.riderId) {
+          const rObj = state.riders.find(r => r.id === ord.riderId);
+          if (!rObj || ord.status === 'delivered' || ord.status === 'cancelled') {
+            if (rObj && rObj.activeOrderId === ord.id) {
+              rObj.activeOrderId = null;
+            }
+          } else {
+            rObj.activeOrderId = ord.id;
+            ord.riderName = rObj.name;
+            ord.riderPhone = rObj.phone;
+            ord.riderVehicle = rObj.vehicle;
+            ord.riderPhoto = rObj.photo || '';
+          }
+        }
+      }
+    }
 
     function loadSharedDatabaseOnly() {
       try {
@@ -1090,15 +1143,32 @@
         const promos = localStorage.getItem('tayaran_db_promos');
         const customMenus = localStorage.getItem('tayaran_db_restaurants_menus');
 
-        if (orders) state.orders = JSON.parse(orders);
+        if (orders) {
+          state.orders = JSON.parse(orders);
+        } else {
+          state.orders = [];
+        }
+
         if (admins) {
           const parsedAdmins = JSON.parse(admins);
-          // Ensure temp_admin exists if default list was reset
           const hasTemp = parsedAdmins.some(a => a.id === 'adm_temp_2026' || a.username === 'temp_admin');
           state.admins = hasTemp ? parsedAdmins : [...parsedAdmins, DEFAULT_ADMINS[1]];
+        } else {
+          state.admins = DEFAULT_ADMINS.map(a => ({ ...a }));
         }
-        if (riders) state.riders = JSON.parse(riders);
-        if (promos) state.promoCodes = JSON.parse(promos);
+
+        if (riders) {
+          state.riders = JSON.parse(riders);
+        } else {
+          state.riders = DEFAULT_RIDERS.map(r => ({ ...r }));
+        }
+
+        if (promos) {
+          state.promoCodes = JSON.parse(promos);
+        } else {
+          state.promoCodes = DEFAULT_PROMOS.map(p => ({ ...p }));
+        }
+
         if (customMenus) {
           const parsedMenus = JSON.parse(customMenus);
           Object.keys(parsedMenus).forEach(rId => {
@@ -1107,8 +1177,12 @@
             }
           });
         }
+
+        state.syncHealthy = true;
+        state.lastSyncAt = Date.now();
       } catch (err) {
-        console.warn('Sync read error:', err);
+        console.error('Sync read error:', err);
+        state.syncHealthy = false;
       }
     }
 
@@ -1129,22 +1203,32 @@
         if (savedCart) state.cart = JSON.parse(savedCart);
         if (savedActiveOrderId) state.activeCustomerOrderId = savedActiveOrderId;
         if (savedUser) {
-          state.currentUser = JSON.parse(savedUser);
-          if (state.currentUser.mustChangeCredentials && state.currentUser.role === 'admin') {
-            state.view = 'admin';
-          } else if (state.currentUser.role === 'admin') {
-            state.view = 'admin';
-          } else if (state.currentUser.role === 'rider') {
-            state.view = 'rider';
+          const parsedUser = JSON.parse(savedUser);
+          if (parsedUser.role === 'rider') {
+            const riderRec = state.riders.find(r => r.id === parsedUser.id);
+            if (riderRec) {
+              riderRec.isLoggedIn = true;
+              state.currentUser = parsedUser;
+              state.view = 'rider';
+            }
+          } else if (parsedUser.role === 'admin') {
+            const adminRec = state.admins.find(a => a.id === parsedUser.id);
+            if (adminRec) {
+              state.currentUser = parsedUser;
+              state.view = 'admin';
+            }
           }
         }
+        reconcileRiderAndOrderIntegrity();
       } catch (e) {
-        console.warn('Storage load skipped:', e);
+        console.error('Storage load error:', e);
+        state.syncHealthy = false;
       }
     }
 
     let saveDebounceTimer = null;
     function persistState(broadcast = true) {
+      reconcileRiderAndOrderIntegrity();
       try {
         const menusMap = {};
         Object.keys(RESTAURANTS_DATA).forEach(rId => {
@@ -1172,18 +1256,141 @@
           sessionStorage.removeItem('tayaran_staff_session');
         }
 
+        state.syncHealthy = true;
+        state.lastSyncAt = Date.now();
+        updateConnectionBadge();
+
         if (broadcast && syncChannel) {
           clearTimeout(saveDebounceTimer);
           saveDebounceTimer = setTimeout(() => {
-            syncChannel.postMessage({ type: 'STATE_UPDATED', ts: Date.now() });
-          }, 40);
+            try {
+              syncChannel.postMessage({ type: 'STATE_UPDATED', ts: Date.now() });
+            } catch (bErr) {
+              console.warn('Broadcast warning:', bErr);
+            }
+          }, 30);
         }
+        return true;
       } catch (e) {
-        console.warn('Storage save skipped:', e);
+        console.error('Storage save error:', e);
+        state.syncHealthy = false;
+        updateConnectionBadge();
+        showToast('تعذر حفظ البيانات في قاعدة المزامنة! حاول مرة أخرى', 'error');
+        return false;
       }
     }
 
-    // Helper: Render Rider Avatar (Photo if uploaded/URL, otherwise clean initials badge)
+    // =========================================================================
+    // 5. EXACT ORDER TIMESTAMPS, LIVE ELAPSED TIME & SERVICE LEVEL (SLA %)
+    // =========================================================================
+    function formatOrderClockTime(createdAt) {
+      const ts = typeof createdAt === 'number' ? createdAt : Date.parse(createdAt);
+      if (!ts || Number.isNaN(ts)) return '--:--:--';
+      return new Date(ts).toLocaleTimeString('ar-EG', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    }
+
+    function formatElapsedDuration(createdAt, nowTs = Date.now()) {
+      const ts = typeof createdAt === 'number' ? createdAt : Date.parse(createdAt);
+      if (!ts || Number.isNaN(ts)) return '0 ثانية';
+      const diffSec = Math.max(0, Math.floor((nowTs - ts) / 1000));
+      const hours = Math.floor(diffSec / 3600);
+      const minutes = Math.floor((diffSec % 3600) / 60);
+      const seconds = diffSec % 60;
+
+      if (hours > 0) {
+        return `${hours} س و ${minutes} د و ${seconds} ث`;
+      }
+      if (minutes > 0) {
+        return `${minutes} د و ${seconds} ث`;
+      }
+      return `${seconds} ث`;
+    }
+
+    // Returns order's current rider object if assigned and order is active
+    function getOrderActiveRider(ord) {
+      if (!ord || !ord.riderId) return null;
+      if (ord.status === 'delivered' || ord.status === 'cancelled') return null;
+      return state.riders.find(r => r.id === ord.riderId) || null;
+    }
+
+    // Returns active order currently carried/assigned to a rider
+    function getRiderCurrentOrder(rider) {
+      if (!rider) return null;
+      const found = state.orders.find(o =>
+        o.riderId === rider.id && ACTIVE_ORDER_STATUSES.includes(o.status)
+      );
+      return found || null;
+    }
+
+    // Dynamic Service Level (SLA %) calculation:
+    // - Starts at 100% when there are no overdue unassigned orders.
+    // - Every unassigned waiting order (no rider assigned yet and not delivered/cancelled)
+    //   reduces SLA progressively as it waits past 30 seconds (gentle drop early, steeper after 2+ mins).
+    // - Completed/delivered orders help stabilize historical SLA.
+    function computeServiceLevelMetrics(nowTs = Date.now()) {
+      const waitingOrders = state.orders.filter(o =>
+        ACTIVE_ORDER_STATUSES.includes(o.status) && !o.riderId
+      );
+      const deliveredOrders = state.orders.filter(o => o.status === 'delivered');
+
+      let penalty = 0;
+      let maxWaitSec = 0;
+      let totalWaitSec = 0;
+
+      for (const ord of waitingOrders) {
+        const createdMs = typeof ord.createdAt === 'number' ? ord.createdAt : Date.parse(ord.createdAt || nowTs);
+        const waitSec = Math.max(0, Math.floor((nowTs - createdMs) / 1000));
+        totalWaitSec += waitSec;
+        if (waitSec > maxWaitSec) maxWaitSec = waitSec;
+
+        // After 15 seconds of waiting without a rider, SLA starts dropping gradually
+        if (waitSec > 15) {
+          const overdueSec = waitSec - 15;
+          // ~0.4% per 10 seconds overdue, capped per order at 45%
+          const perOrderPenalty = Math.min(45, (overdueSec / 10) * 0.45);
+          penalty += perOrderPenalty;
+        }
+      }
+
+      // Slight recovery credit for delivered orders (up to +5% if penalty exists)
+      const deliveryCredit = deliveredOrders.length > 0 && penalty > 0
+        ? Math.min(penalty * 0.15, deliveredOrders.length * 0.5)
+        : 0;
+
+      const rawSla = 100 - penalty + deliveryCredit;
+      const slaPercent = Math.max(0, Math.min(100, Math.round(rawSla * 10) / 10));
+      const avgWaitSec = waitingOrders.length > 0 ? Math.round(totalWaitSec / waitingOrders.length) : 0;
+
+      let tier = 'healthy';
+      let label = 'ممتاز (SLA صحي)';
+      if (slaPercent < 75) {
+        tier = 'critical';
+        label = 'حرج — تأخر سحب الأوردرات!';
+      } else if (slaPercent < 90) {
+        tier = 'warning';
+        label = 'تحذير — انخفاض السيرفيس ليفل';
+      }
+
+      return {
+        slaPercent,
+        tier,
+        label,
+        waitingCount: waitingOrders.length,
+        maxWaitSec,
+        avgWaitSec
+      };
+    }
+
+    function getActiveOrdersCount() {
+      return state.orders.filter(o => ACTIVE_ORDER_STATUSES.includes(o.status)).length;
+    }
+
+    // Helper: Render Rider Avatar
     function renderRiderAvatar(rider, sizeClass = 'w-11 h-11 text-lg') {
       if (rider && rider.photo && rider.photo.trim() !== '') {
         return `<img src="${rider.photo}" alt="${rider.name}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="${sizeClass} rounded-2xl object-cover border border-gray-200 shrink-0" />
@@ -1193,7 +1400,6 @@
       return `<div class="${sizeClass} rounded-2xl bg-gradient-to-br from-brand-500 to-orange-600 text-white font-black flex items-center justify-center shrink-0 shadow-xs">${initial}</div>`;
     }
 
-    // Helper: Render Product Thumbnail (Custom image URL/base64 or emoji box)
     function renderProductVisual(item, fallbackEmoji = '🍽️', boxClass = 'w-16 h-16 sm:w-20 sm:h-20 text-3xl sm:text-4xl') {
       if (item && item.image && item.image.trim() !== '') {
         return `<img src="${item.image}" alt="${item.name}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="${boxClass.split(' ').slice(0, 2).join(' ')} rounded-2xl object-cover border border-gray-200 shrink-0" />
@@ -1202,12 +1408,10 @@
       return `<div class="${boxClass} rounded-2xl bg-brand-50/70 flex items-center justify-center shrink-0">${item.emoji || fallbackEmoji}</div>`;
     }
 
-    // Helper: Get current Area Object
     function getCurrentArea() {
       return OCTOBER_AREAS.find(a => a.id === state.selectedAreaId) || OCTOBER_AREAS[0];
     }
 
-    // Helper: Calculate dynamic delivery fee for a restaurant in the user's selected October area
     function getDeliveryFeeForRestaurant(rest) {
       const area = getCurrentArea();
       const coversDirectly = rest.coveredAreas.includes(area.id);
@@ -1217,7 +1421,6 @@
       return Math.max(rest.deliveryFee, area.baseFee);
     }
 
-    // Helper: Get Active Customer Order
     function getCustomerActiveOrder() {
       if (!state.activeCustomerOrderId) {
         const latest = [...state.orders].reverse().find(o => o.status !== 'cancelled');
@@ -1231,18 +1434,33 @@
     }
 
     // =========================================================================
-    // SMART ONE-BY-ONE RIDER DISPATCH QUEUE ENGINE
+    // SMART ONE-BY-ONE RIDER DISPATCH ENGINE (ONLY LOGGED-IN + READY + FREE RIDER)
     // =========================================================================
     function runAutoDispatchQueue() {
+      if (state.mutationLock) return false;
+      state.mutationLock = true;
       let changed = false;
-      const unassignedOrders = state.orders.filter(o =>
-        !o.riderId && (o.status === 'pending' || o.status === 'preparing')
-      );
 
-      for (const order of unassignedOrders) {
-        // One-by-One Rule: Rider must be READY and must NOT have any activeOrderId
-        const availableRider = state.riders.find(r => r.isReady === true && !r.activeOrderId);
-        if (availableRider) {
+      try {
+        reconcileRiderAndOrderIntegrity();
+
+        const unassignedOrders = state.orders
+          .filter(o => !o.riderId && ACTIVE_ORDER_STATUSES.includes(o.status))
+          .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+        for (const order of unassignedOrders) {
+          // Strict Rule: Rider MUST be logged in (isLoggedIn === true), READY (isReady === true),
+          // and must NOT already have an active order assigned!
+          const availableRider = state.riders.find(r =>
+            r.isLoggedIn === true &&
+            r.isReady === true &&
+            !getRiderCurrentOrder(r)
+          );
+
+          if (!availableRider) {
+            break;
+          }
+
           order.riderId = availableRider.id;
           order.riderName = availableRider.name;
           order.riderPhone = availableRider.phone;
@@ -1251,13 +1469,15 @@
           if (order.status === 'pending') {
             order.status = 'preparing';
           }
+
           const restCoords = RESTAURANT_COORDS[order.restaurantId] || { x: 52, y: 48 };
           availableRider.activeOrderId = order.id;
           availableRider.gps = { ...restCoords };
           order.riderGps = { ...restCoords };
+
           if (!Array.isArray(order.messages)) order.messages = [];
           order.messages.push({
-            id: 'msg_sys_' + Date.now(),
+            id: 'msg_sys_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
             senderRole: 'system',
             senderName: 'نظام طيران',
             text: `تم إسناد الطلب #${order.orderNumber} للكابتن (${availableRider.name} - ${availableRider.vehicle}). يمكنك مراسلته مباشرة هنا!`,
@@ -1265,11 +1485,14 @@
           });
           changed = true;
         }
+      } finally {
+        state.mutationLock = false;
       }
 
       if (changed) {
         persistState(true);
       }
+      return changed;
     }
 
     // =========================================================================
@@ -1277,7 +1500,10 @@
     // =========================================================================
     function sendOrderChatMessage(orderId, senderRole, customText = null) {
       const ord = state.orders.find(o => o.id === orderId);
-      if (!ord) return;
+      if (!ord) {
+        showToast('تعذر العثور على الطلب لإرسال الرسالة', 'error');
+        return;
+      }
 
       const inputId = senderRole === 'customer' ? 'customer-chat-input' : 'rider-chat-input';
       const inputEl = document.getElementById(inputId);
@@ -1298,9 +1524,10 @@
       });
 
       if (inputEl && customText === null) inputEl.value = '';
-      persistState(true);
-      renderApp();
-      showToast('تم إرسال الرسالة لحظياً 💬', 'info');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم إرسال الرسالة لحظياً 💬', 'info');
+      }
     }
 
     function renderOrderChatBox(ord, viewerRole) {
@@ -1321,7 +1548,6 @@
             <span class="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">● متصل الآن</span>
           </div>
 
-          <!-- Messages Feed -->
           <div id="chat-messages-${ord.id}" class="p-3.5 space-y-2.5 max-h-56 overflow-y-auto bg-gray-50/70">
             ${msgs.length === 0 ? `
               <div class="text-center text-xs text-gray-400 py-6">لا توجد رسائل بعد. ابدأ المحادثة الآن!</div>
@@ -1348,7 +1574,6 @@
             }).join('')}
           </div>
 
-          <!-- Quick Preset Chips -->
           <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             ${quickPresets.map(qText => `
               <button type="button" onclick="sendOrderChatMessage('${ord.id}', '${viewerRole}', '${qText.replace(/'/g, "\\'")}')" class="text-[10px] font-extrabold bg-white hover:bg-brand-50 text-gray-700 hover:text-brand-600 border border-gray-200 px-2.5 py-1 rounded-full whitespace-nowrap transition shrink-0">
@@ -1357,7 +1582,6 @@
             `).join('')}
           </div>
 
-          <!-- Input Form -->
           <form onsubmit="event.preventDefault(); sendOrderChatMessage('${ord.id}', '${viewerRole}');" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
             <input
               type="text"
@@ -1375,7 +1599,7 @@
     }
 
     // =========================================================================
-    // 5. TOAST NOTIFICATIONS (NO ALERT() USED EVER)
+    // 6. TOAST NOTIFICATIONS (NO ALERT() USED EVER)
     // =========================================================================
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
@@ -1425,9 +1649,11 @@
     }
 
     // =========================================================================
-    // 6. NAVIGATION, STAFF AUTH & FORCED TEMP ADMIN CREDENTIALS CHANGE
+    // 7. HEADER UI, LIVE ORDERS COUNTER & STAFF AUTH
     // =========================================================================
     function updateHeaderUI() {
+      updateConnectionBadge();
+
       const area = getCurrentArea();
       const areaEl = document.getElementById('header-selected-area');
       if (areaEl) areaEl.textContent = area.name;
@@ -1435,6 +1661,21 @@
       const totalQty = state.cart.reduce((sum, item) => sum + item.qty, 0);
       const countEl = document.getElementById('header-cart-count');
       if (countEl) countEl.textContent = totalQty;
+
+      // Live active orders numeric badge next to orders icon/button
+      const liveOrdersCount = getActiveOrdersCount();
+      const liveOrdersBtn = document.getElementById('header-live-orders-btn');
+      const liveOrdersCountEl = document.getElementById('header-live-orders-count');
+      if (liveOrdersBtn && liveOrdersCountEl) {
+        liveOrdersCountEl.textContent = liveOrdersCount;
+        if (liveOrdersCount > 0) {
+          liveOrdersBtn.classList.remove('hidden');
+          liveOrdersBtn.classList.add('flex');
+        } else {
+          liveOrdersBtn.classList.add('hidden');
+          liveOrdersBtn.classList.remove('flex');
+        }
+      }
 
       const activeOrd = getCustomerActiveOrder();
       const trackBtn = document.getElementById('header-track-btn');
@@ -1452,12 +1693,28 @@
       const staffBtn = document.getElementById('header-staff-btn');
       if (staffLabel && staffBtn) {
         if (state.currentUser) {
-          staffLabel.textContent = state.currentUser.role === 'admin' ? `لوحة الأدمن (${state.currentUser.name.split(' ')[0]})` : `لوحة الطيار (${state.currentUser.name.split(' ')[0]})`;
+          staffLabel.textContent = state.currentUser.role === 'admin'
+            ? `لوحة الأدمن (${state.currentUser.name.split(' ')[0]})`
+            : `لوحة الطيار (${state.currentUser.name.split(' ')[0]})`;
           staffBtn.className = 'flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs transition-all shadow-xs';
         } else {
           staffLabel.textContent = 'دخول الإدارة / الطيارين';
           staffBtn.className = 'flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs transition-all shadow-xs';
         }
+      }
+    }
+
+    function handleLiveOrdersCounterClick() {
+      if (state.currentUser && state.currentUser.role === 'admin') {
+        state.view = 'admin';
+        state.adminTab = 'orders';
+        renderApp();
+      } else if (state.currentUser && state.currentUser.role === 'rider') {
+        navigateTo('rider');
+      } else if (getCustomerActiveOrder()) {
+        navigateTo('tracking');
+      } else {
+        openLoginModal();
       }
     }
 
@@ -1524,9 +1781,10 @@
       state.currentUser.mustChangeCredentials = false;
 
       document.getElementById('force-creds-modal').classList.add('hidden');
-      persistState(true);
-      showToast(`تم تغيير اليوزرنيم والباسوورد بنجاح! مرحباً ${newName} 🎉`, 'success');
-      navigateTo('admin');
+      if (persistState(true)) {
+        showToast(`تم تغيير اليوزرنيم والباسوورد بنجاح! مرحباً ${newName} 🎉`, 'success');
+        navigateTo('admin');
+      }
     }
 
     function handleStaffLogin(e) {
@@ -1534,7 +1792,6 @@
       const username = document.getElementById('login-username').value.trim().toLowerCase();
       const password = document.getElementById('login-password').value.trim();
 
-      // Check Admins
       const adminMatch = state.admins.find(a => a.username.toLowerCase() === username && a.password === password);
       if (adminMatch) {
         state.currentUser = {
@@ -1544,7 +1801,7 @@
           role: 'admin',
           mustChangeCredentials: !!adminMatch.mustChangeCredentials
         };
-        persistState(false);
+        persistState(true);
         closeLoginModal();
 
         if (adminMatch.mustChangeCredentials) {
@@ -1560,13 +1817,14 @@
         return;
       }
 
-      // Check Riders
       const riderMatch = state.riders.find(r => r.username.toLowerCase() === username && r.password === password);
       if (riderMatch) {
+        // Rider is now genuinely logged in (stays not-ready until they explicitly toggle READY)
+        riderMatch.isLoggedIn = true;
         state.currentUser = { id: riderMatch.id, name: riderMatch.name, username: riderMatch.username, role: 'rider' };
-        persistState(false);
+        persistState(true);
         closeLoginModal();
-        showToast(`أهلاً بك يا ${riderMatch.name} في تطبيق كباتن طيران 🛵`, 'success');
+        showToast(`تم تسجيل دخولك يا ${riderMatch.name}. فعّل وضع READY لبدء استقبال الأوردرات 🛵`, 'success');
         navigateTo('rider');
         return;
       }
@@ -1575,9 +1833,17 @@
     }
 
     function logoutStaff() {
+      if (state.currentUser && state.currentUser.role === 'rider') {
+        const rObj = state.riders.find(r => r.id === state.currentUser.id);
+        if (rObj) {
+          // Rider logged out -> strictly Offline and NEVER READY
+          rObj.isLoggedIn = false;
+          rObj.isReady = false;
+        }
+      }
       state.currentUser = null;
       document.getElementById('force-creds-modal').classList.add('hidden');
-      persistState(false);
+      persistState(true);
       showToast('تم تسجيل الخروج بنجاح', 'info');
       navigateTo('home');
     }
@@ -1598,9 +1864,10 @@
     }
 
     // =========================================================================
-    // 7. RENDERING VIEWS (HOME, RESTAURANT, LIVE TRACKING, RIDER, ADMIN)
+    // 8. RENDERING VIEWS (HOME, RESTAURANT, LIVE TRACKING, RIDER, ADMIN)
     // =========================================================================
     function renderApp() {
+      reconcileRiderAndOrderIntegrity();
       updateHeaderUI();
       const root = document.getElementById('app-root');
       if (state.view === 'home') {
@@ -1622,6 +1889,35 @@
         }
       }
     }
+
+    // Live 1-second ticker for order elapsed time ("بقاله قد إيه") and dynamic SLA (%)
+    setInterval(() => {
+      const nowTs = Date.now();
+      document.querySelectorAll('[data-order-elapsed]').forEach(el => {
+        const createdAt = Number(el.getAttribute('data-order-elapsed'));
+        if (createdAt) {
+          el.textContent = formatElapsedDuration(createdAt, nowTs);
+        }
+      });
+
+      const slaWidget = document.getElementById('live-sla-widget');
+      if (slaWidget && state.view === 'admin') {
+        const m = computeServiceLevelMetrics(nowTs);
+        const pctEl = document.getElementById('live-sla-percent');
+        const labelEl = document.getElementById('live-sla-label');
+        const waitEl = document.getElementById('live-sla-maxwait');
+        const barEl = document.getElementById('live-sla-bar');
+        if (pctEl) pctEl.textContent = `${m.slaPercent}%`;
+        if (labelEl) labelEl.textContent = m.label;
+        if (waitEl) waitEl.textContent = `أطول انتظار: ${formatElapsedDuration(nowTs - m.maxWaitSec * 1000, nowTs)}`;
+        if (barEl) {
+          barEl.style.width = `${m.slaPercent}%`;
+          barEl.className = `h-2.5 rounded-full transition-all duration-500 ${
+            m.tier === 'healthy' ? 'bg-emerald-500' : m.tier === 'warning' ? 'bg-amber-500' : 'bg-red-500'
+          }`;
+        }
+      }
+    }, 1000);
 
     // --- VIEW A: HOME & DISCOVERY ---
     function renderHomeView() {
@@ -1646,6 +1942,7 @@
       });
 
       const activePromos = state.promoCodes.filter(p => p.active);
+      const genuineReadyCount = state.riders.filter(r => r.isLoggedIn === true && r.isReady === true).length;
 
       return `
         <!-- HERO BANNER -->
@@ -1709,14 +2006,14 @@
                 </div>
               </div>
 
-              <!-- Live Riders & Promo Card -->
+              <!-- Real Ready Riders & Promo Card -->
               <div class="hidden lg:flex lg:col-span-4 justify-center">
                 <div class="bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl p-6 w-full max-w-xs text-center animate-float shadow-2xl">
                   <div class="w-20 h-20 mx-auto rounded-3xl bg-white text-brand-500 flex items-center justify-center text-4xl shadow-lg mb-4">
                     🛵
                   </div>
                   <div class="text-lg font-black mb-1">
-                    ${state.riders.filter(r => r.isReady).length} كباتن طيران جاهزين الآن!
+                    ${genuineReadyCount > 0 ? `${genuineReadyCount} كباتن طيران READY الآن!` : 'بانتظار دخول الكباتن (READY)'}
                   </div>
                   <p class="text-xs text-orange-100 mb-4">متوسط وقت التوصيل الآن في <strong class="text-white">${area.name}</strong> هو <strong class="text-amber-300">${area.deliveryTime}</strong></p>
                   ${activePromos[0] ? `
@@ -2060,7 +2357,7 @@
       `;
     }
 
-    // --- VIEW C: LIVE ORDER TRACKING WITH INTERACTIVE 6TH OF OCTOBER GPS MAP & CHAT ---
+    // --- VIEW C: LIVE ORDER TRACKING WITH TIMESTAMPS, ELAPSED TIME, MAP & CHAT ---
     function renderTrackingView() {
       const ord = getCustomerActiveOrder();
       if (!ord) {
@@ -2074,13 +2371,14 @@
         `;
       }
 
-      const statusOrder = ['pending', 'preparing', 'on_the_way', 'delivered'];
+      const statusOrder = ['pending', 'preparing', 'picked_up', 'on_the_way', 'delivered'];
       const currentStep = ord.status === 'cancelled' ? -1 : Math.max(0, statusOrder.indexOf(ord.status));
 
       const steps = [
         { key: 'pending', title: 'تم استلام طلبك بنجاح', desc: `رقم الطلب #${ord.orderNumber} وصل لنظام طيران والمطعم`, icon: 'fa-receipt' },
         { key: 'preparing', title: 'جاري تجهيز الأوردر في المطعم', desc: `شيف ${ord.restaurantName} بيحضر أكلك طازة وسخن`, icon: 'fa-fire-burner' },
-        { key: 'on_the_way', title: 'الطيار استلم الطلب وفي الطريق إليك!', desc: ord.riderName ? `${ord.riderName} متجه الآن إلى ${ord.areaName}` : 'جاري تحرك الكابتن نحو عنوانك', icon: 'fa-motorcycle' },
+        { key: 'picked_up', title: 'الطيار استلم الأوردر من المطعم', desc: ord.riderName ? `${ord.riderName} استلم الفاتورة والأوردر جاهز للانطلاق` : 'جاري استلام الطلب من المطعم', icon: 'fa-box-open' },
+        { key: 'on_the_way', title: 'الطيار في الطريق إليك الآن!', desc: ord.riderName ? `${ord.riderName} متجه الآن إلى ${ord.areaName}` : 'جاري تحرك الكابتن نحو عنوانك', icon: 'fa-motorcycle' },
         { key: 'delivered', title: 'تم التوصيل بالهنا والشفا!', desc: 'وصل طلبك بنجاح! نتمنى لك وجبة لذيذة مع طيران', icon: 'fa-face-smile-beam' }
       ];
 
@@ -2101,9 +2399,11 @@
             <!-- Top Status Banner -->
             <div class="bg-gradient-to-l ${ord.status === 'cancelled' ? 'from-red-600 to-red-800' : 'from-brand-500 to-orange-600'} text-white p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-extrabold mb-2">
+                <div class="inline-flex flex-wrap items-center gap-2 bg-white/20 px-3 py-1 rounded-full text-xs font-extrabold mb-2">
                   <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
                   <span>تتبع مباشر GPS • أوردر #${ord.orderNumber}</span>
+                  <span>• اتطلب الساعة: ${formatOrderClockTime(ord.createdAt)}</span>
+                  <span>• بقاله: <strong data-order-elapsed="${ord.createdAt}">${formatElapsedDuration(ord.createdAt)}</strong></span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-black">
                   ${ord.status === 'cancelled' ? 'تم إلغاء الطلب' : steps[currentStep].title}
@@ -2117,7 +2417,7 @@
                 <div class="text-xl font-black text-brand-600">
                   ${ord.status === 'delivered' ? 'وصل الآن! 🎉' : ord.status === 'cancelled' ? 'ملغي' : `${minsLeft} دقيقة`}
                 </div>
-                ${ord.status === 'on_the_way' ? `<div class="text-[10px] font-bold text-emerald-600">يبعد ${distKm} كم عنك</div>` : ''}
+                ${(ord.status === 'on_the_way' || ord.status === 'picked_up') ? `<div class="text-[10px] font-bold text-emerald-600">يبعد ${distKm} كم عنك</div>` : ''}
               </div>
             </div>
 
@@ -2180,7 +2480,7 @@
                   </div>
                 ` : `
                   <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs border border-amber-200 px-3 py-2 rounded-2xl text-xs font-extrabold text-amber-800 shadow-sm">
-                    <i class="fa-solid fa-spinner fa-spin ml-1 text-brand-500"></i> جاري إسناد أقرب كابتن طيار متاح...
+                    <i class="fa-solid fa-spinner fa-spin ml-1 text-brand-500"></i> في انتظار إسناد الطلب لكابتن طيار متاح (READY)...
                   </div>
                 `}
               </div>
@@ -2188,7 +2488,6 @@
 
             <!-- Order Progress, Live Chat & Details -->
             <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <!-- Timeline Steps + Live Chat -->
               <div class="lg:col-span-7 space-y-6">
                 <h3 class="font-black text-gray-800 text-base">مراحل توصيل الطلب لحظة بلحظة</h3>
                 <div class="space-y-5 relative before:content-[''] before:absolute before:right-5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
@@ -2209,7 +2508,6 @@
                   }).join('')}
                 </div>
 
-                <!-- LIVE CUSTOMER <-> RIDER CHAT -->
                 ${renderOrderChatBox(ord, 'customer')}
 
                 <div class="pt-4 border-t border-gray-100 flex flex-wrap items-center gap-3">
@@ -2228,7 +2526,6 @@
                 </div>
               </div>
 
-              <!-- Rider & Receipt Info -->
               <div class="lg:col-span-5 space-y-4">
                 <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200/80 flex items-center justify-between">
                   ${ord.riderId ? `
@@ -2249,8 +2546,8 @@
                         <i class="fa-solid fa-hourglass-half fa-spin"></i>
                       </div>
                       <div>
-                        <div class="text-sm font-black text-gray-800">في انتظار قبول كابتن متاح</div>
-                        <div class="text-xs text-gray-500">سيتم إسناد الطلب تلقائياً لأول طيار Ready</div>
+                        <div class="text-sm font-black text-gray-800">في انتظار قبول كابتن متاح (READY)</div>
+                        <div class="text-xs text-gray-500">اتطلب الساعة ${formatOrderClockTime(ord.createdAt)} • بقاله <span data-order-elapsed="${ord.createdAt}">${formatElapsedDuration(ord.createdAt)}</span></div>
                       </div>
                     </div>
                   `}
@@ -2269,6 +2566,10 @@
                   <div class="font-extrabold text-gray-800 border-b border-gray-200 pb-2 flex justify-between">
                     <span>فاتورة (${ord.restaurantName})</span>
                     <span class="text-brand-600">${ord.paymentLabel}</span>
+                  </div>
+                  <div class="flex justify-between text-[11px] text-gray-500 font-bold">
+                    <span>وقت الطلب: ${formatOrderClockTime(ord.createdAt)}</span>
+                    <span>منذ: <span data-order-elapsed="${ord.createdAt}">${formatElapsedDuration(ord.createdAt)}</span></span>
                   </div>
                   ${ord.items.map(it => `
                     <div class="flex justify-between text-gray-700 font-semibold">
@@ -2295,7 +2596,7 @@
     }
 
     // =========================================================================
-    // --- VIEW D: RIDER DASHBOARD (READY / NOT READY + ONE-BY-ONE + CHAT) ---
+    // --- VIEW D: RIDER DASHBOARD (ONLY LOGGED-IN CAN TOGGLE READY + 1-BY-1) ---
     // =========================================================================
     function renderRiderDashboardView() {
       if (!state.currentUser || state.currentUser.role !== 'rider') {
@@ -2303,6 +2604,7 @@
           <div class="max-w-md mx-auto my-16 bg-white p-8 rounded-3xl shadow-card text-center">
             <div class="text-5xl mb-3">🔒</div>
             <h2 class="text-xl font-black mb-2">يجب تسجيل الدخول كطيار</h2>
+            <p class="text-xs text-gray-500 mb-5">الطيار غير المسجل دخول لا يظهر كـ Ready ولا يستقبل طلبات.</p>
             <button onclick="openLoginModal()" class="bg-brand-500 text-white font-bold px-6 py-3 rounded-2xl">تسجيل الدخول</button>
           </div>
         `;
@@ -2314,17 +2616,11 @@
         return '';
       }
 
-      const activeOrder = rider.activeOrderId
-        ? state.orders.find(o => o.id === rider.activeOrderId && o.status !== 'delivered' && o.status !== 'cancelled')
-        : state.orders.find(o => o.riderId === rider.id && o.status !== 'delivered' && o.status !== 'cancelled');
+      rider.isLoggedIn = true;
+      const activeOrder = getRiderCurrentOrder(rider);
+      rider.activeOrderId = activeOrder ? activeOrder.id : null;
 
-      if (activeOrder && !rider.activeOrderId) {
-        rider.activeOrderId = activeOrder.id;
-      } else if (!activeOrder && rider.activeOrderId) {
-        rider.activeOrderId = null;
-      }
-
-      const waitingQueueCount = state.orders.filter(o => !o.riderId && (o.status === 'pending' || o.status === 'preparing')).length;
+      const waitingQueueCount = state.orders.filter(o => !o.riderId && ACTIVE_ORDER_STATUSES.includes(o.status)).length;
       const pastRiderOrders = state.orders.filter(o => o.riderId === rider.id && o.status === 'delivered');
 
       return `
@@ -2336,9 +2632,18 @@
               <div>
                 <div class="flex flex-wrap items-center gap-2">
                   <h1 class="text-lg sm:text-xl font-black">${rider.name}</h1>
-                  <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold ${rider.isReady ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'}">
-                    ${rider.isReady ? '● Ready (متاح للطلبات)' : '○ Not Ready (غير متاح)'}
+                  <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                    ● مسجل دخول أونلاين
                   </span>
+                  ${activeOrder ? `
+                    <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                      🛵 معاه أوردر #${activeOrder.orderNumber}
+                    </span>
+                  ` : `
+                    <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold ${rider.isReady ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-red-500/20 text-red-300 border border-red-500/40'}">
+                      ${rider.isReady ? '● READY (متاح للطلبات)' : '○ NOT READY (غير متاح)'}
+                    </span>
+                  `}
                 </div>
                 <p class="text-xs text-gray-400 mt-1">
                   ${rider.vehicle} ${rider.age ? `• السن: ${rider.age} سنة` : ''} • ${rider.phone} • منطقة: ${rider.zone}
@@ -2368,10 +2673,12 @@
 
           ${activeOrder ? `
             <div class="bg-white rounded-3xl border-2 border-brand-500 shadow-card overflow-hidden">
-              <div class="bg-brand-500 text-white px-6 py-4 flex items-center justify-between">
+              <div class="bg-brand-500 text-white px-6 py-4 flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                   <span class="bg-white text-brand-600 text-xs font-black px-2.5 py-1 rounded-xl">أوردر نشط #${activeOrder.orderNumber}</span>
-                  <span class="text-xs font-bold text-orange-100">نظام التسليم الفردي (1×1)</span>
+                  <span class="text-xs font-bold text-orange-100">
+                    اتطلب الساعة ${formatOrderClockTime(activeOrder.createdAt)} • بقاله: <strong data-order-elapsed="${activeOrder.createdAt}">${formatElapsedDuration(activeOrder.createdAt)}</strong>
+                  </span>
                 </div>
                 <span class="text-sm font-black">تحصيل: ${activeOrder.total} ج.م (${activeOrder.paymentLabel})</span>
               </div>
@@ -2406,18 +2713,22 @@
                   </div>
                 </div>
 
-                <!-- LIVE RIDER <-> CUSTOMER CHAT -->
                 ${renderOrderChatBox(activeOrder, 'rider')}
 
                 <div class="bg-gray-900 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div class="text-xs">
-                    <div class="font-extrabold text-brand-400">تحديث موقعك اللايف للعميل (GPS)</div>
-                    <div class="text-gray-400 mt-0.5">كل خطوة بتحدث الخريطة عند العميل فوراً</div>
+                    <div class="font-extrabold text-brand-400">تحديث حالة الأوردر وموقعك GPS</div>
+                    <div class="text-gray-400 mt-0.5">بعد التسليم يتم إغلاق الأوردر وفتح استقبال الأوردر التالي تلقائياً</div>
                   </div>
                   <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
                     ${activeOrder.status === 'pending' || activeOrder.status === 'preparing' ? `
+                      <button onclick="riderAdvanceOrderStatus('${rider.id}', '${activeOrder.id}', 'picked_up')" class="bg-amber-500 hover:bg-amber-600 text-white font-black text-xs px-4 py-3 rounded-xl transition shadow-md">
+                        <i class="fa-solid fa-box-open ml-1"></i> تم الاستلام من المطعم
+                      </button>
+                    ` : ''}
+                    ${activeOrder.status === 'picked_up' ? `
                       <button onclick="riderAdvanceOrderStatus('${rider.id}', '${activeOrder.id}', 'on_the_way')" class="bg-brand-500 hover:bg-brand-600 text-white font-black text-xs px-4 py-3 rounded-xl transition shadow-md">
-                        <i class="fa-solid fa-box-open ml-1"></i> استلمت الأوردر من المطعم (انطلاق)
+                        <i class="fa-solid fa-motorcycle ml-1"></i> في الطريق للعميل
                       </button>
                     ` : ''}
                     ${activeOrder.status === 'on_the_way' ? `
@@ -2457,11 +2768,13 @@
             </div>
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
               <div class="text-xs text-gray-400 font-bold">حالة الاستقبال</div>
-              <div class="text-lg font-black mt-1 ${rider.isReady ? 'text-emerald-600' : 'text-red-500'}">${rider.isReady ? 'Ready نشط' : 'Not Ready متوقف'}</div>
+              <div class="text-lg font-black mt-1 ${activeOrder ? 'text-amber-600' : rider.isReady ? 'text-emerald-600' : 'text-red-500'}">
+                ${activeOrder ? `مشغول بأوردر #${activeOrder.orderNumber}` : rider.isReady ? 'Ready نشط' : 'Not Ready متوقف'}
+              </div>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-              <div class="text-xs text-gray-400 font-bold">التقييم العام</div>
-              <div class="text-2xl font-black text-amber-500 mt-1">4.95 ★</div>
+              <div class="text-xs text-gray-400 font-bold">حالة الجلسة</div>
+              <div class="text-lg font-black text-sky-600 mt-1">أونلاين (Logged In)</div>
             </div>
           </div>
         </section>
@@ -2469,7 +2782,7 @@
     }
 
     // =========================================================================
-    // --- VIEW E: COMPREHENSIVE ADMIN DASHBOARD (CCPULSE + PRODUCTS + RIDERS) ---
+    // --- VIEW E: ADMIN DASHBOARD (CCPULSE + SLA + TIMESTAMPS + ORDERS/MENU) ---
     // =========================================================================
     function renderAdminDashboardView() {
       if (!state.currentUser || state.currentUser.role !== 'admin') {
@@ -2483,11 +2796,20 @@
       }
 
       const totalRevenue = state.orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0);
-      const readyRiders = state.riders.filter(r => r.isReady);
-      const notReadyRiders = state.riders.filter(r => !r.isReady);
+      const activeOrdersCount = getActiveOrdersCount();
+
+      // STRICT RULE: Only logged-in riders can be READY or NOT READY; unlogged-in riders are OFFLINE
+      const loggedInRiders = state.riders.filter(r => r.isLoggedIn === true);
+      const readyRiders = loggedInRiders.filter(r => r.isReady === true);
+      const notReadyRiders = loggedInRiders.filter(r => !r.isReady);
+      const offlineRiders = state.riders.filter(r => r.isLoggedIn !== true);
+      const busyRidersCount = state.riders.filter(r => !!getRiderCurrentOrder(r)).length;
+
       const waitingForRiderOrders = state.orders.filter(o =>
-        (o.status === 'pending' || o.status === 'preparing') && !o.riderId
+        ACTIVE_ORDER_STATUSES.includes(o.status) && !o.riderId
       );
+
+      const slaMetrics = computeServiceLevelMetrics(Date.now());
 
       return `
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -2498,7 +2820,7 @@
                 <i class="fa-solid fa-crown"></i>
               </div>
               <div>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
                   <h1 class="text-xl sm:text-2xl font-black">لوحة تحكم إدارة طيران - 6 أكتوبر</h1>
                   <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">CCPulse LIVE</span>
                 </div>
@@ -2516,15 +2838,15 @@
             </div>
           </div>
 
-          <!-- CCPulse Live Operations Strip -->
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- CCPulse Live Operations & Service Level Strip -->
+          <div id="live-sla-widget" class="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-emerald-200 hover:border-emerald-400 shadow-xs transition">
               <div class="flex items-center justify-between">
                 <span class="text-xs text-emerald-700 font-extrabold">طيارين READY</span>
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
               </div>
               <div class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">${readyRiders.length}</div>
-              <div class="text-[11px] text-gray-500 font-bold mt-1">جاهزين لاستلام الأوردرات</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">مسجل دخول وجاهز (${busyRidersCount} معاه أوردر)</div>
             </div>
 
             <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-red-200 hover:border-red-400 shadow-xs transition">
@@ -2533,7 +2855,7 @@
                 <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
               </div>
               <div class="text-2xl sm:text-3xl font-black text-red-600 mt-1">${notReadyRiders.length}</div>
-              <div class="text-[11px] text-gray-500 font-bold mt-1">غير متاحين حالياً</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">أوفلاين / غير مسجل دخول: ${offlineRiders.length}</div>
             </div>
 
             <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 border-amber-200 hover:border-amber-400 shadow-xs transition">
@@ -2542,21 +2864,41 @@
                 <i class="fa-solid fa-clock-rotate-left text-amber-500 text-sm"></i>
               </div>
               <div class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">${waitingForRiderOrders.length}</div>
-              <div class="text-[11px] text-gray-500 font-bold mt-1">في انتظار إسناد كابتن</div>
+              <div class="text-[11px] text-gray-500 font-bold mt-1">إجمالي النشطة: ${activeOrdersCount} طلب</div>
             </div>
 
-            <div onclick="switchAdminTab('orders')" class="cursor-pointer bg-white p-5 rounded-3xl border border-gray-100 hover:border-brand-300 shadow-xs transition">
+            <!-- Dynamic Service Level (SLA %) Card -->
+            <div onclick="switchAdminTab('ccpulse')" class="cursor-pointer bg-white p-5 rounded-3xl border-2 ${
+              slaMetrics.tier === 'healthy' ? 'border-emerald-300' : slaMetrics.tier === 'warning' ? 'border-amber-300' : 'border-red-400'
+            } shadow-xs transition">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-extrabold text-gray-700">Service Level (SLA)</span>
+                <i class="fa-solid fa-gauge-high text-brand-500 text-sm"></i>
+              </div>
+              <div id="live-sla-percent" class="text-2xl sm:text-3xl font-black mt-1 ${
+                slaMetrics.tier === 'healthy' ? 'text-emerald-600' : slaMetrics.tier === 'warning' ? 'text-amber-600' : 'text-red-600'
+              }">${slaMetrics.slaPercent}%</div>
+              <div id="live-sla-label" class="text-[10px] font-extrabold text-gray-600 mt-0.5 truncate">${slaMetrics.label}</div>
+              <div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mt-2">
+                <div id="live-sla-bar" style="width: ${slaMetrics.slaPercent}%" class="h-2.5 rounded-full transition-all duration-500 ${
+                  slaMetrics.tier === 'healthy' ? 'bg-emerald-500' : slaMetrics.tier === 'warning' ? 'bg-amber-500' : 'bg-red-500'
+                }"></div>
+              </div>
+              <div id="live-sla-maxwait" class="text-[10px] font-bold text-gray-400 mt-1">أطول انتظار: ${formatElapsedDuration(Date.now() - slaMetrics.maxWaitSec * 1000)}</div>
+            </div>
+
+            <div onclick="switchAdminTab('orders')" class="cursor-pointer bg-white p-5 rounded-3xl border border-gray-100 hover:border-brand-300 shadow-xs transition col-span-2 lg:col-span-1">
               <div class="text-xs text-gray-400 font-bold">إجمالي المبيعات</div>
               <div class="text-2xl sm:text-3xl font-black text-gray-900 mt-1">${totalRevenue} ج.م</div>
-              <div class="text-[11px] text-brand-600 font-bold mt-1">${state.orders.length} طلب إجمالي</div>
+              <div class="text-[11px] text-brand-600 font-bold mt-1">${state.orders.length} طلب مسجل</div>
             </div>
           </div>
 
-          <!-- Admin Navigation Tabs -->
+          <!-- Admin Navigation Tabs with Live Orders Counter -->
           <div class="bg-white p-2 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-2 overflow-x-auto no-scrollbar">
             ${[
-              { id: 'ccpulse', label: 'CCPulse (مراقبة الطيارين والطلبات)', icon: 'fa-chart-line' },
-              { id: 'orders', label: 'إدارة الطلبات والتعديل', icon: 'fa-bag-shopping' },
+              { id: 'ccpulse', label: 'CCPulse والسيرفيس ليفل', icon: 'fa-chart-line' },
+              { id: 'orders', label: 'إدارة الطلبات', icon: 'fa-bag-shopping', badge: activeOrdersCount },
               { id: 'products', label: 'إضافة منتجات وتعديل الصور', icon: 'fa-utensils' },
               { id: 'promos', label: 'البرومو كود', icon: 'fa-tags' },
               { id: 'riders', label: 'إضافة وإدارة الطيارين', icon: 'fa-motorcycle' },
@@ -2565,13 +2907,16 @@
               <button onclick="switchAdminTab('${tab.id}')" class="flex items-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition ${state.adminTab === tab.id ? 'bg-brand-500 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}">
                 <i class="fa-solid ${tab.icon}"></i>
                 <span>${tab.label}</span>
+                ${typeof tab.badge === 'number' && tab.badge > 0 ? `
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-black ${state.adminTab === tab.id ? 'bg-white text-brand-600' : 'bg-brand-500 text-white'}">${tab.badge}</span>
+                ` : ''}
               </button>
             `).join('')}
           </div>
 
           <!-- TAB CONTENT -->
           <div>
-            ${state.adminTab === 'ccpulse' ? renderAdminCcPulseTab(readyRiders, notReadyRiders, waitingForRiderOrders) : ''}
+            ${state.adminTab === 'ccpulse' ? renderAdminCcPulseTab(readyRiders, notReadyRiders, offlineRiders, waitingForRiderOrders, slaMetrics) : ''}
             ${state.adminTab === 'orders' ? renderAdminOrdersTab() : ''}
             ${state.adminTab === 'products' ? renderAdminProductsTab() : ''}
             ${state.adminTab === 'promos' ? renderAdminPromosTab() : ''}
@@ -2582,10 +2927,10 @@
       `;
     }
 
-    // --- ADMIN TAB 0: CCPULSE LIVE COMMAND MONITOR ---
-    function renderAdminCcPulseTab(readyRiders, notReadyRiders, waitingOrders) {
-      const busyRiders = state.riders.filter(r => r.isReady && r.activeOrderId);
-      const freeReadyRiders = state.riders.filter(r => r.isReady && !r.activeOrderId);
+    // --- ADMIN TAB 0: CCPULSE LIVE COMMAND MONITOR + SLA ---
+    function renderAdminCcPulseTab(readyRiders, notReadyRiders, offlineRiders, waitingOrders, slaMetrics) {
+      const busyRiders = state.riders.filter(r => !!getRiderCurrentOrder(r));
+      const freeReadyRiders = state.riders.filter(r => r.isLoggedIn && r.isReady && !getRiderCurrentOrder(r));
 
       return `
         <div class="space-y-6">
@@ -2593,11 +2938,11 @@
             <div>
               <div class="inline-flex items-center gap-2 bg-brand-500/20 border border-brand-500/40 text-brand-300 text-xs font-black px-3 py-1 rounded-full mb-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>CCPulse Real-Time Dispatch & Fleet Monitor</span>
+                <span>CCPulse Real-Time Dispatch • SLA: ${slaMetrics.slaPercent}%</span>
               </div>
               <h2 class="text-xl font-black">شاشة مراقبة العمليات الحية لمدينة 6 أكتوبر</h2>
               <p class="text-xs text-gray-400 mt-1">
-                متابعة فورية لعدد الطيارين <strong>Ready</strong> و<strong>Not Ready</strong>، والطلبات المنتظرة طياراً، وتوزيع الطلبات بنظام واحد ورا التاني.
+                أي طيار غير مسجل دخول يظهر كـ <strong>أوفلاين / غير مسجل</strong> ولا يُحسب <strong>READY</strong>. وكلما زاد انتظار الأوردرات غير المسحوبة ينخفض <strong>Service Level (${slaMetrics.slaPercent}%)</strong> تلقائياً.
               </p>
             </div>
             <button onclick="runAutoDispatchQueue(); renderApp(); showToast('تم تحديث وتوزيع طابور الطلبات الآن ⚡', 'success');" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-black px-5 py-3 rounded-2xl shadow-md transition shrink-0">
@@ -2606,68 +2951,83 @@
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Column 1: READY RIDERS -->
+            <!-- Column 1: READY RIDERS (ONLY LOGGED IN) -->
             <div class="bg-white rounded-3xl border border-emerald-200 shadow-card p-5 space-y-4">
               <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <h3 class="font-black text-emerald-700 text-base flex items-center gap-2">
                   <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
                   <span>طيارين READY (${readyRiders.length})</span>
                 </h3>
-                <span class="text-[11px] font-bold text-gray-500">${freeReadyRiders.length} فاضي • ${busyRiders.length} في توصيل</span>
+                <span class="text-[11px] font-bold text-gray-500">${freeReadyRiders.length} فاضي • ${busyRiders.length} معاه أوردر</span>
               </div>
               <div class="space-y-2.5 max-h-80 overflow-y-auto">
-                ${readyRiders.length === 0 ? `<p class="text-xs text-gray-400 text-center py-6">لا يوجد طيارين في وضع Ready حالياً</p>` : readyRiders.map(r => `
-                  <div class="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                      ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
-                      <div class="min-w-0">
-                        <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
-                        <div class="text-[10px] text-gray-500 font-bold">${r.vehicle} • ${r.activeOrderId ? '🚚 معه أوردر نشط' : '⏳ جاهز لأوردر جديد'}</div>
+                ${readyRiders.length === 0 ? `<p class="text-xs text-gray-400 text-center py-6">لا يوجد طيارين مسجلين دخول وفي وضع Ready حالياً</p>` : readyRiders.map(r => {
+                  const rOrd = getRiderCurrentOrder(r);
+                  return `
+                    <div class="p-3 rounded-2xl ${rOrd ? 'bg-amber-50/70 border border-amber-200' : 'bg-emerald-50/50 border border-emerald-100'} flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
+                        <div class="min-w-0">
+                          <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
+                          <div class="text-[10px] font-extrabold ${rOrd ? 'text-amber-700' : 'text-emerald-700'}">
+                            ${rOrd ? `🛵 معاه أوردر #${rOrd.orderNumber} (${rOrd.restaurantName})` : '✓ جاهز لأوردر جديد (بدون أوردر)'}
+                          </div>
+                        </div>
                       </div>
+                      <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-white hover:bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-xl shrink-0">
+                        تحويل Not Ready
+                      </button>
                     </div>
-                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-white hover:bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-xl shrink-0">
-                      تحويل Not Ready
-                    </button>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
 
-            <!-- Column 2: NOT READY RIDERS -->
+            <!-- Column 2: NOT READY & OFFLINE RIDERS -->
             <div class="bg-white rounded-3xl border border-red-200 shadow-card p-5 space-y-4">
               <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <h3 class="font-black text-red-700 text-base flex items-center gap-2">
                   <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                  <span>طيارين NOT READY (${notReadyRiders.length})</span>
+                  <span>غير جاهزين / أوفلاين (${notReadyRiders.length + offlineRiders.length})</span>
                 </h3>
                 <span class="text-[11px] font-bold text-red-500">لا يستقبلون طلبات</span>
               </div>
               <div class="space-y-2.5 max-h-80 overflow-y-auto">
-                ${notReadyRiders.length === 0 ? `<p class="text-xs text-gray-400 text-center py-6">كل الطيارين في وضع Ready الآن 🎉</p>` : notReadyRiders.map(r => `
-                  <div class="p-3 rounded-2xl bg-red-50/50 border border-red-100 flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                      ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
-                      <div class="min-w-0">
-                        <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
-                        <div class="text-[10px] text-gray-500 font-bold">${r.vehicle} • ${r.zone}</div>
+                ${(notReadyRiders.length + offlineRiders.length) === 0 ? `<p class="text-xs text-gray-400 text-center py-6">كل الطيارين المسجلين دخول في وضع Ready الآن 🎉</p>` : [...notReadyRiders, ...offlineRiders].map(r => {
+                  const rOrd = getRiderCurrentOrder(r);
+                  return `
+                    <div class="p-3 rounded-2xl bg-red-50/50 border border-red-100 flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        ${renderRiderAvatar(r, 'w-10 h-10 text-sm')}
+                        <div class="min-w-0">
+                          <div class="text-xs font-black text-gray-900 truncate">${r.name}</div>
+                          <div class="text-[10px] font-extrabold ${r.isLoggedIn ? 'text-red-600' : 'text-gray-500'}">
+                            ${!r.isLoggedIn ? '○ أوفلاين (غير عامل لوجن - ليس Ready)' : '○ مسجل دخول - وضع Not Ready'}
+                            ${rOrd ? ` • 🛵 معاه أوردر #${rOrd.orderNumber}` : ''}
+                          </div>
+                        </div>
                       </div>
+                      ${r.isLoggedIn ? `
+                        <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl shrink-0">
+                          تفعيل Ready
+                        </button>
+                      ` : `
+                        <span class="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded-lg shrink-0">بانتظار اللوجن</span>
+                      `}
                     </div>
-                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="text-[10px] font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl shrink-0">
-                      تفعيل Ready
-                    </button>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
             </div>
 
-            <!-- Column 3: ORDERS WAITING FOR RIDER -->
+            <!-- Column 3: ORDERS WAITING FOR RIDER (WITH LIVE ELAPSED TIME) -->
             <div class="bg-white rounded-3xl border border-amber-200 shadow-card p-5 space-y-4">
               <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <h3 class="font-black text-amber-800 text-base flex items-center gap-2">
                   <i class="fa-solid fa-bell text-amber-500"></i>
                   <span>طلبات مستنية طيار (${waitingOrders.length})</span>
                 </h3>
-                <span class="text-[11px] font-bold text-amber-700">طابور الانتظار</span>
+                <span class="text-[11px] font-bold text-amber-700">SLA ${slaMetrics.slaPercent}%</span>
               </div>
               <div class="space-y-2.5 max-h-80 overflow-y-auto">
                 ${waitingOrders.length === 0 ? `
@@ -2680,6 +3040,10 @@
                     <div class="flex items-center justify-between">
                       <span class="text-xs font-black text-gray-900">#${ord.orderNumber} • ${ord.restaurantName}</span>
                       <span class="text-xs font-black text-brand-600">${ord.total} ج.م</span>
+                    </div>
+                    <div class="text-[10px] text-gray-600 font-bold flex items-center justify-between">
+                      <span>اتطلب الساعة: ${formatOrderClockTime(ord.createdAt)}</span>
+                      <span class="text-red-600 font-black">بقاله: <span data-order-elapsed="${ord.createdAt}">${formatElapsedDuration(ord.createdAt)}</span></span>
                     </div>
                     <div class="text-[11px] text-gray-600 font-bold">المنطقة: ${ord.areaName}</div>
                     <button onclick="openAdminOrderEditor('${ord.id}')" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-[11px] font-extrabold py-1.5 rounded-xl transition">
@@ -2694,12 +3058,13 @@
       `;
     }
 
-    // --- ADMIN TAB 1: ORDERS MANAGEMENT & EDITING ---
+    // --- ADMIN TAB 1: ORDERS MANAGEMENT WITH EXACT CLOCK TIME & LIVE ELAPSED TIME ---
     function renderAdminOrdersTab() {
       const ordersList = [...state.orders].reverse();
       const statusBadges = {
         pending: { label: 'تم الاستلام', cls: 'bg-amber-100 text-amber-800' },
         preparing: { label: 'جاري التجهيز', cls: 'bg-blue-100 text-blue-800' },
+        picked_up: { label: 'تم الاستلام من المطعم', cls: 'bg-indigo-100 text-indigo-800' },
         on_the_way: { label: 'مع الطيار في الطريق', cls: 'bg-purple-100 text-purple-800' },
         delivered: { label: 'تم التوصيل', cls: 'bg-emerald-100 text-emerald-800' },
         cancelled: { label: 'ملغي', cls: 'bg-red-100 text-red-800' }
@@ -2709,11 +3074,11 @@
         <div class="bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-5">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 class="text-lg font-black text-gray-900">سجل الطلبات الحية (تعديل الحالة، السعر، وإسناد الطيارين)</h2>
-              <p class="text-xs text-gray-500">أي تعديل تقوم به هنا ينعكس فوراً في شاشة العميل ولوحة الطيار</p>
+              <h2 class="text-lg font-black text-gray-900">سجل الطلبات الحية (${ordersList.length} طلب)</h2>
+              <p class="text-xs text-gray-500">كل طلب يعرض وقت طلبه بالثانية والمدة المنقضية لحظياً وحالة الطيار</p>
             </div>
-            <button onclick="runAutoDispatchQueue(); renderApp(); showToast('تم تشغيل التوزيع التلقائي للطيارين المتاحين', 'info');" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shrink-0">
-              <i class="fa-solid fa-wand-magic-sparkles ml-1 text-brand-400"></i> توزيع تلقائي للطيارين Ready
+            <button onclick="runAutoDispatchQueue(); renderApp(); showToast('تم تشغيل التوزيع التلقائي للطيارين READY', 'info');" class="bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles ml-1 text-brand-400"></i> توزيع تلقائي للطيارين READY
             </button>
           </div>
 
@@ -2727,13 +3092,20 @@
             <div class="space-y-4">
               ${ordersList.map(ord => {
                 const st = statusBadges[ord.status] || statusBadges.pending;
+                const activeR = getOrderActiveRider(ord);
                 return `
                   <div class="border border-gray-200 rounded-2xl p-4 hover:border-brand-300 transition space-y-3">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
-                      <div class="flex items-center gap-2.5">
+                      <div class="flex flex-wrap items-center gap-2">
                         <span class="font-black text-sm text-gray-900">#${ord.orderNumber}</span>
                         <span class="text-xs font-extrabold px-2.5 py-0.5 rounded-full ${st.cls}">${st.label}</span>
                         <span class="text-xs font-bold text-gray-500">• ${ord.restaurantName}</span>
+                        <span class="text-[11px] font-extrabold bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-lg">
+                          🕒 اتطلب الساعة: ${formatOrderClockTime(ord.createdAt)}
+                        </span>
+                        <span class="text-[11px] font-black bg-brand-50 text-brand-700 border border-brand-200 px-2.5 py-0.5 rounded-lg">
+                          ⏱️ بقاله: <span data-order-elapsed="${ord.createdAt}">${formatElapsedDuration(ord.createdAt)}</span>
+                        </span>
                       </div>
                       <div class="flex items-center gap-2">
                         <span class="text-sm font-black text-brand-600">${ord.total} ج.م</span>
@@ -2754,10 +3126,16 @@
                         <span class="font-bold text-gray-700">${ord.items.map(i => `${i.qty}× ${i.name}`).join(' ، ')}</span>
                       </div>
                       <div>
-                        <span class="text-gray-400 font-bold block">الطيار المسؤول:</span>
-                        <span class="font-extrabold ${ord.riderId ? 'text-emerald-700' : 'text-amber-600'}">
-                          ${ord.riderId ? `🛵 ${ord.riderName}` : '⏳ غير مسند لطيار بعد'}
-                        </span>
+                        <span class="text-gray-400 font-bold block">حالة الطيار:</span>
+                        ${activeR ? `
+                          <span class="font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-xl inline-block mt-0.5">
+                            🛵 معاه أوردر حالي: ${activeR.name}
+                          </span>
+                        ` : ord.riderName ? `
+                          <span class="font-extrabold text-emerald-700">✓ ${ord.riderName}</span>
+                        ` : `
+                          <span class="font-extrabold text-red-600">⏳ مستني طيار (غير مسند)</span>
+                        `}
                       </div>
                     </div>
                   </div>
@@ -2776,7 +3154,6 @@
 
       return `
         <div class="space-y-6">
-          <!-- Restaurant Selector Bar -->
           <div class="bg-white rounded-3xl border border-gray-100 shadow-xs p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="text-base font-black text-gray-900">إدارة منيو المطاعم وإضافة / تعديل صور المنتجات</h2>
@@ -2788,7 +3165,6 @@
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Add New Product Form -->
             <div class="lg:col-span-5 bg-white rounded-3xl border border-gray-100 shadow-card p-6 h-fit">
               <h3 class="text-lg font-black text-gray-900 mb-1">إضافة منتج جديد إلى (${selectedRest.name})</h3>
               <p class="text-xs text-gray-500 mb-4">هيظهر فوراً في منيو المطعم وفي فولدر المطعم</p>
@@ -2817,7 +3193,6 @@
                   <textarea id="new-prod-desc" rows="2" required placeholder="اكتب مكونات الوجبة أو الصنف..." class="w-full px-3.5 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500"></textarea>
                 </div>
 
-                <!-- Product Image Upload or URL -->
                 <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 space-y-2.5">
                   <label class="block text-xs font-extrabold text-gray-800">صورة المنتج (رفع من الجهاز أو رابط URL)</label>
                   <input type="file" accept="image/*" onchange="handleNewProductImageFile(this)" class="w-full text-[11px] font-bold text-gray-600 file:ml-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:bg-brand-500 file:text-white file:font-extrabold hover:file:bg-brand-600" />
@@ -2833,7 +3208,6 @@
               </form>
             </div>
 
-            <!-- Existing Products List with Quick Change Image Button -->
             <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
               <h3 class="text-lg font-black text-gray-900">منتجات (${selectedRest.name}) — اضغط لتغيير الصورة أو البيانات</h3>
 
@@ -2913,7 +3287,7 @@
       const price = Number(document.getElementById('new-prod-price').value);
       const desc = document.getElementById('new-prod-desc').value.trim();
 
-      if (!name || isNaN(price) || price <= 0) {
+      if (!name || Number.isNaN(price) || price <= 0) {
         showToast('من فضلك أدخل اسم المنتج والسعر بشكل صحيح', 'error');
         return;
       }
@@ -2930,9 +3304,10 @@
       });
 
       state.newProductImageData = '';
-      persistState(true);
-      renderApp();
-      showToast(`تمت إضافة (${name}) إلى منيو ${rest.name} بنجاح 🍽️`, 'success');
+      if (persistState(true)) {
+        renderApp();
+        showToast(`تمت إضافة (${name}) إلى منيو ${rest.name} بنجاح 🍽️`, 'success');
+      }
     }
 
     function openEditProductModal(restId, secIdx, itemId) {
@@ -2971,7 +3346,6 @@
             <textarea id="edit-prod-desc" rows="2" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold outline-none focus:border-brand-500">${item.desc}</textarea>
           </div>
 
-          <!-- Change Product Image Section -->
           <div class="bg-brand-50/60 border border-brand-200 rounded-2xl p-4 space-y-3">
             <div class="flex items-center justify-between">
               <label class="text-xs font-black text-gray-900"><i class="fa-solid fa-camera text-brand-500 ml-1"></i> تغيير صورة المنتج</label>
@@ -3051,19 +3425,21 @@
       item.desc = document.getElementById('edit-prod-desc').value.trim();
       item.image = ctx.tempImage || '';
 
-      persistState(true);
-      closeEditProductModal();
-      renderApp();
-      showToast(`تم تحديث بيانات وصورة (${item.name}) بنجاح ✅`, 'success');
+      if (persistState(true)) {
+        closeEditProductModal();
+        renderApp();
+        showToast(`تم تحديث بيانات وصورة (${item.name}) بنجاح ✅`, 'success');
+      }
     }
 
     function deleteMenuProduct(restId, secIdx, itemId) {
       const rest = RESTAURANTS_DATA[restId];
       if (!rest || !rest.menu[secIdx]) return;
       rest.menu[secIdx].items = rest.menu[secIdx].items.filter(i => i.id !== itemId);
-      persistState(true);
-      renderApp();
-      showToast('تم حذف المنتج من المنيو', 'info');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم حذف المنتج من المنيو', 'info');
+      }
     }
 
     // --- ADMIN TAB 3: PROMO CODES CREATOR & MANAGER ---
@@ -3144,7 +3520,7 @@
       `;
     }
 
-    // --- ADMIN TAB 4: CREATE NEW RIDER (QUADRUPLE NAME, PHONE, VEHICLE, AGE, OPTIONAL PHOTO) ---
+    // --- ADMIN TAB 4: CREATE NEW RIDER (SHOWS REAL LOGIN & ACTIVE ORDER STATUS) ---
     function renderAdminRidersTab() {
       return `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -3185,7 +3561,6 @@
                 </div>
               </div>
 
-              <!-- Optional Rider Photo -->
               <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200 space-y-2">
                 <label class="block text-xs font-extrabold text-gray-700">صورة الطيار (اختياري)</label>
                 <input type="file" accept="image/*" onchange="handleNewRiderPhotoFile(this)" class="w-full text-[11px] font-bold text-gray-600 file:ml-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:bg-gray-800 file:text-white file:font-bold" />
@@ -3212,36 +3587,46 @@
           <div class="lg:col-span-7 bg-white rounded-3xl border border-gray-100 shadow-card p-6 space-y-4">
             <h3 class="text-lg font-black text-gray-900">أسطول كباتن طيران (${state.riders.length} طيار)</h3>
             <div class="space-y-3">
-              ${state.riders.map(r => `
-                <div class="p-4 rounded-2xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div class="flex items-center gap-3">
-                    ${renderRiderAvatar(r, 'w-12 h-12 text-lg')}
-                    <div>
-                      <div class="flex flex-wrap items-center gap-2">
-                        <h4 class="text-sm font-black text-gray-900">${r.name}</h4>
-                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full ${r.isReady ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}">
-                          ${r.isReady ? 'READY' : 'NOT READY'}
-                        </span>
-                      </div>
-                      <div class="text-xs text-gray-500 mt-0.5">
-                        يوزر: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.username}</code> • باسوورد: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.password}</code>
-                      </div>
-                      <div class="text-[11px] text-gray-400 mt-0.5">
-                        تليفون: ${r.phone} • مركبة: ${r.vehicle} ${r.age ? `• السن: ${r.age} سنة` : ''} • ${r.zone}
+              ${state.riders.map(r => {
+                const rOrd = getRiderCurrentOrder(r);
+                const statusBadge = !r.isLoggedIn
+                  ? '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-gray-200 text-gray-700">○ أوفلاين (غير مسجل دخول)</span>'
+                  : r.isReady
+                    ? '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">● READY</span>'
+                    : '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 text-red-700">○ NOT READY</span>';
+
+                return `
+                  <div class="p-4 rounded-2xl border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                      ${renderRiderAvatar(r, 'w-12 h-12 text-lg')}
+                      <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                          <h4 class="text-sm font-black text-gray-900">${r.name}</h4>
+                          ${statusBadge}
+                          ${rOrd ? `<span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">🛵 معاه أوردر #${rOrd.orderNumber} (${rOrd.restaurantName})</span>` : ''}
+                        </div>
+                        <div class="text-xs text-gray-500 mt-0.5">
+                          يوزر: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.username}</code> • باسوورد: <code class="bg-gray-100 px-1.5 rounded font-bold text-gray-800">${r.password}</code>
+                        </div>
+                        <div class="text-[11px] text-gray-400 mt-0.5">
+                          تليفون: ${r.phone} • مركبة: ${r.vehicle} ${r.age ? `• السن: ${r.age} سنة` : ''} • ${r.zone}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div class="flex items-center gap-2 shrink-0">
-                    <button onclick="toggleRiderReadyStatus('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold border ${r.isReady ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-emerald-300 text-emerald-700 bg-emerald-50'}">
-                      تبديل الحالة
-                    </button>
-                    <button onclick="deleteRiderAccount('${r.id}')" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center">
-                      <i class="fa-solid fa-trash text-xs"></i>
-                    </button>
+                    <div class="flex items-center gap-2 shrink-0">
+                      ${r.isLoggedIn ? `
+                        <button onclick="toggleRiderReadyStatus('${r.id}')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold border ${r.isReady ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-emerald-300 text-emerald-700 bg-emerald-50'}">
+                          تبديل Ready
+                        </button>
+                      ` : ''}
+                      <button onclick="deleteRiderAccount('${r.id}')" class="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         </div>
@@ -3321,7 +3706,7 @@
     }
 
     // =========================================================================
-    // ADMIN & RIDER INTERACTIVE HANDLERS
+    // 9. ADMIN & RIDER INTERACTIVE HANDLERS WITH CONCURRENCY GUARDS
     // =========================================================================
     function switchAdminTab(tabId) {
       state.adminTab = tabId;
@@ -3329,17 +3714,29 @@
     }
 
     function toggleRiderReadyStatus(riderId) {
-      const rider = state.riders.find(r => r.id === riderId);
-      if (!rider) return;
-      rider.isReady = !rider.isReady;
-      if (rider.isReady) {
-        runAutoDispatchQueue();
-        showToast(`${rider.name} الآن في وضع READY لاستقبال الطلبات 🟢`, 'success');
-      } else {
-        showToast(`${rider.name} الآن في وضع NOT READY ولن يستقبل طلبات 🔴`, 'info');
+      if (state.mutationLock) return;
+      state.mutationLock = true;
+      try {
+        const rider = state.riders.find(r => r.id === riderId);
+        if (!rider) return;
+
+        if (!rider.isLoggedIn) {
+          showToast('لا يمكن تفعيل وضع READY لطيار غير مسجل دخول (أوفلاين)', 'error');
+          return;
+        }
+
+        rider.isReady = !rider.isReady;
+        if (rider.isReady) {
+          runAutoDispatchQueue();
+          showToast(`${rider.name} الآن في وضع READY لاستقبال الطلبات 🟢`, 'success');
+        } else {
+          showToast(`${rider.name} الآن في وضع NOT READY ولن يستقبل طلبات 🔴`, 'info');
+        }
+        persistState(true);
+        renderApp();
+      } finally {
+        state.mutationLock = false;
       }
-      persistState(true);
-      renderApp();
     }
 
     function riderMoveCloserGps(riderId, orderId) {
@@ -3356,37 +3753,50 @@
         y: Math.round((cur.y + (target.y - cur.y) * 0.45) * 10) / 10
       };
       ord.riderGps = { ...rider.gps };
-      persistState(true);
-      showToast('تم تحديث موقعك GPS على خريطة العميل 📍', 'info');
-      renderApp();
+      if (persistState(true)) {
+        showToast('تم تحديث موقعك GPS على خريطة العميل 📍', 'info');
+        renderApp();
+      }
     }
 
     function riderAdvanceOrderStatus(riderId, orderId, nextStatus) {
-      const rider = state.riders.find(r => r.id === riderId);
-      const ord = state.orders.find(o => o.id === orderId);
-      if (!rider || !ord) return;
+      if (state.mutationLock) return;
+      state.mutationLock = true;
+      try {
+        const rider = state.riders.find(r => r.id === riderId);
+        const ord = state.orders.find(o => o.id === orderId);
+        if (!rider || !ord) return;
 
-      ord.status = nextStatus;
-      const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || OCTOBER_AREAS[0];
+        ord.status = nextStatus;
+        const areaObj = OCTOBER_AREAS.find(a => a.id === ord.areaId) || OCTOBER_AREAS[0];
 
-      if (nextStatus === 'on_the_way') {
-        const restCoords = RESTAURANT_COORDS[ord.restaurantId] || { x: 52, y: 48 };
-        rider.gps = {
-          x: Math.round((restCoords.x + (areaObj.coords.x - restCoords.x) * 0.35) * 10) / 10,
-          y: Math.round((restCoords.y + (areaObj.coords.y - restCoords.y) * 0.35) * 10) / 10
-        };
-        ord.riderGps = { ...rider.gps };
-        showToast('تم تحديث الحالة: الأوردر معك وفي الطريق للعميل 🛵', 'success');
-      } else if (nextStatus === 'delivered') {
-        rider.gps = { ...areaObj.coords };
-        ord.riderGps = { ...areaObj.coords };
-        rider.activeOrderId = null;
-        rider.completedCount = (rider.completedCount || 0) + 1;
-        showToast('عاش يا كابتن! تم تسليم الأوردر بنجاح 🎉', 'success');
-        runAutoDispatchQueue();
+        if (nextStatus === 'picked_up') {
+          showToast('تم تأكيد استلام الأوردر من المطعم 📦', 'success');
+        } else if (nextStatus === 'on_the_way') {
+          const restCoords = RESTAURANT_COORDS[ord.restaurantId] || { x: 52, y: 48 };
+          rider.gps = {
+            x: Math.round((restCoords.x + (areaObj.coords.x - restCoords.x) * 0.35) * 10) / 10,
+            y: Math.round((restCoords.y + (areaObj.coords.y - restCoords.y) * 0.35) * 10) / 10
+          };
+          ord.riderGps = { ...rider.gps };
+          showToast('تم تحديث الحالة: الأوردر معك وفي الطريق للعميل 🛵', 'success');
+        } else if (nextStatus === 'delivered') {
+          rider.gps = { ...areaObj.coords };
+          ord.riderGps = { ...areaObj.coords };
+          ord.deliveredAt = Date.now();
+          rider.activeOrderId = null;
+          rider.completedCount = (rider.completedCount || 0) + 1;
+          showToast('عاش يا كابتن! تم تسليم الأوردر بنجاح 🎉', 'success');
+        }
+
+        persistState(true);
+      } finally {
+        state.mutationLock = false;
       }
 
-      persistState(true);
+      if (nextStatus === 'delivered') {
+        runAutoDispatchQueue();
+      }
       renderApp();
     }
 
@@ -3399,7 +3809,10 @@
       const content = document.getElementById('admin-order-modal-content');
       content.innerHTML = `
         <div class="bg-gray-900 text-white px-6 py-4 flex items-center justify-between">
-          <h3 class="font-black text-base">تعديل الطلب #${ord.orderNumber} (${ord.restaurantName})</h3>
+          <div>
+            <h3 class="font-black text-base">تعديل الطلب #${ord.orderNumber} (${ord.restaurantName})</h3>
+            <p class="text-[11px] text-gray-400">وقت الطلب: ${formatOrderClockTime(ord.createdAt)} • بقاله: ${formatElapsedDuration(ord.createdAt)}</p>
+          </div>
           <button onclick="closeAdminOrderEditor()" class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
@@ -3410,6 +3823,7 @@
               <select id="edit-ord-status" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white">
                 <option value="pending" ${ord.status === 'pending' ? 'selected' : ''}>تم الاستلام (Pending)</option>
                 <option value="preparing" ${ord.status === 'preparing' ? 'selected' : ''}>جاري التجهيز (Preparing)</option>
+                <option value="picked_up" ${ord.status === 'picked_up' ? 'selected' : ''}>تم الاستلام من المطعم</option>
                 <option value="on_the_way" ${ord.status === 'on_the_way' ? 'selected' : ''}>في الطريق (On The Way)</option>
                 <option value="delivered" ${ord.status === 'delivered' ? 'selected' : ''}>تم التوصيل (Delivered)</option>
                 <option value="cancelled" ${ord.status === 'cancelled' ? 'selected' : ''}>ملغي (Cancelled)</option>
@@ -3421,7 +3835,7 @@
               <select id="edit-ord-rider" class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs font-extrabold bg-white">
                 <option value="">-- بدون طيار (توزيع تلقائي) --</option>
                 ${state.riders.map(r => `
-                  <option value="${r.id}" ${ord.riderId === r.id ? 'selected' : ''}>${r.name} (${r.isReady ? 'Ready' : 'Not Ready'})</option>
+                  <option value="${r.id}" ${ord.riderId === r.id ? 'selected' : ''}>${r.name} (${!r.isLoggedIn ? 'أوفلاين' : r.isReady ? 'Ready' : 'Not Ready'})</option>
                 `).join('')}
               </select>
             </div>
@@ -3458,48 +3872,54 @@
 
     function saveAdminOrderEdits(e) {
       e.preventDefault();
-      const ord = state.orders.find(o => o.id === state.editingOrderId);
-      if (!ord) return;
+      if (state.mutationLock) return;
+      state.mutationLock = true;
+      try {
+        const ord = state.orders.find(o => o.id === state.editingOrderId);
+        if (!ord) return;
 
-      const newStatus = document.getElementById('edit-ord-status').value;
-      const newRiderId = document.getElementById('edit-ord-rider').value;
-      const newStreet = document.getElementById('edit-ord-street').value.trim();
-      const newTotal = Number(document.getElementById('edit-ord-total').value);
-      const newNote = document.getElementById('edit-ord-note').value.trim();
+        const newStatus = document.getElementById('edit-ord-status').value;
+        const newRiderId = document.getElementById('edit-ord-rider').value;
+        const newStreet = document.getElementById('edit-ord-street').value.trim();
+        const newTotal = Number(document.getElementById('edit-ord-total').value);
+        const newNote = document.getElementById('edit-ord-note').value.trim();
 
-      if (ord.riderId && ord.riderId !== newRiderId) {
-        const oldR = state.riders.find(r => r.id === ord.riderId);
-        if (oldR && oldR.activeOrderId === ord.id) oldR.activeOrderId = null;
-      }
-
-      ord.status = newStatus;
-      ord.address.street = newStreet;
-      if (!isNaN(newTotal) && newTotal >= 0) ord.total = newTotal;
-      ord.adminNote = newNote;
-
-      if (newRiderId) {
-        const rObj = state.riders.find(r => r.id === newRiderId);
-        if (rObj) {
-          ord.riderId = rObj.id;
-          ord.riderName = rObj.name;
-          ord.riderPhone = rObj.phone;
-          ord.riderVehicle = rObj.vehicle;
-          ord.riderPhoto = rObj.photo || '';
-          if (newStatus !== 'delivered' && newStatus !== 'cancelled') {
-            rObj.activeOrderId = ord.id;
-          } else if (rObj.activeOrderId === ord.id) {
-            rObj.activeOrderId = null;
-          }
+        if (ord.riderId && ord.riderId !== newRiderId) {
+          const oldR = state.riders.find(r => r.id === ord.riderId);
+          if (oldR && oldR.activeOrderId === ord.id) oldR.activeOrderId = null;
         }
-      } else {
-        ord.riderId = null;
-        ord.riderName = null;
-      }
 
-      persistState(true);
-      closeAdminOrderEditor();
-      renderApp();
-      showToast(`تم تحديث الطلب #${ord.orderNumber} بنجاح ✅`, 'success');
+        ord.status = newStatus;
+        ord.address.street = newStreet;
+        if (!Number.isNaN(newTotal) && newTotal >= 0) ord.total = newTotal;
+        ord.adminNote = newNote;
+
+        if (newRiderId) {
+          const rObj = state.riders.find(r => r.id === newRiderId);
+          if (rObj) {
+            ord.riderId = rObj.id;
+            ord.riderName = rObj.name;
+            ord.riderPhone = rObj.phone;
+            ord.riderVehicle = rObj.vehicle;
+            ord.riderPhoto = rObj.photo || '';
+            if (ACTIVE_ORDER_STATUSES.includes(newStatus)) {
+              rObj.activeOrderId = ord.id;
+            } else if (rObj.activeOrderId === ord.id) {
+              rObj.activeOrderId = null;
+            }
+          }
+        } else {
+          ord.riderId = null;
+          ord.riderName = null;
+        }
+
+        persistState(true);
+        closeAdminOrderEditor();
+        renderApp();
+        showToast(`تم تحديث الطلب #${ord.orderNumber} بنجاح ✅`, 'success');
+      } finally {
+        state.mutationLock = false;
+      }
     }
 
     function handleCreatePromoCode(e) {
@@ -3525,24 +3945,27 @@
         active: true
       });
 
-      persistState(true);
-      renderApp();
-      showToast(`تم إنشاء البرومو كود (${code}) وتفعيله للعملاء 🎉`, 'success');
+      if (persistState(true)) {
+        renderApp();
+        showToast(`تم إنشاء البرومو كود (${code}) وتفعيله للعملاء 🎉`, 'success');
+      }
     }
 
     function togglePromoActive(promoId) {
       const p = state.promoCodes.find(x => x.id === promoId);
       if (!p) return;
       p.active = !p.active;
-      persistState(true);
-      renderApp();
+      if (persistState(true)) {
+        renderApp();
+      }
     }
 
     function deletePromoCode(promoId) {
       state.promoCodes = state.promoCodes.filter(x => x.id !== promoId);
-      persistState(true);
-      renderApp();
-      showToast('تم حذف البرومو كود', 'info');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم حذف البرومو كود', 'info');
+      }
     }
 
     function handleNewRiderPhotoFile(input) {
@@ -3574,6 +3997,7 @@
         return;
       }
 
+      // Created rider starts offline & not ready until they log in
       state.riders.push({
         id: 'rid_' + Date.now(),
         name,
@@ -3584,24 +4008,26 @@
         vehicle,
         photo: finalPhoto,
         zone,
-        isReady: true,
+        isLoggedIn: false,
+        isReady: false,
         activeOrderId: null,
         completedCount: 0,
         gps: { x: 52, y: 48 }
       });
 
       state.newRiderPhotoData = '';
-      runAutoDispatchQueue();
-      persistState(true);
-      renderApp();
-      showToast(`تم إنشاء حساب الكابتن (${name}) بنجاح 🛵`, 'success');
+      if (persistState(true)) {
+        renderApp();
+        showToast(`تم إنشاء حساب الكابتن (${name}) بنجاح 🛵`, 'success');
+      }
     }
 
     function deleteRiderAccount(riderId) {
       state.riders = state.riders.filter(r => r.id !== riderId);
-      persistState(true);
-      renderApp();
-      showToast('تم حذف حساب الطيار', 'info');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم حذف حساب الطيار', 'info');
+      }
     }
 
     function handleUpdateOwnAdminCredentials(e) {
@@ -3623,9 +4049,10 @@
       state.currentUser.username = newUser;
       state.currentUser.mustChangeCredentials = false;
 
-      persistState(true);
-      renderApp();
-      showToast('تم تحديث اليوزرنيم والباسوورد بنجاح 🔐', 'success');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم تحديث اليوزرنيم والباسوورد بنجاح 🔐', 'success');
+      }
     }
 
     function handleCreateNewAdmin(e) {
@@ -3649,20 +4076,22 @@
         mustChangeCredentials: false
       });
 
-      persistState(true);
-      renderApp();
-      showToast(`تم إنشاء حساب أدمن جديد (${username}) بنجاح 👑`, 'success');
+      if (persistState(true)) {
+        renderApp();
+        showToast(`تم إنشاء حساب أدمن جديد (${username}) بنجاح 👑`, 'success');
+      }
     }
 
     function deleteAdminAccount(adminId) {
       state.admins = state.admins.filter(a => a.id !== adminId);
-      persistState(true);
-      renderApp();
-      showToast('تم حذف حساب الأدمن', 'info');
+      if (persistState(true)) {
+        renderApp();
+        showToast('تم حذف حساب الأدمن', 'info');
+      }
     }
 
     // =========================================================================
-    // 8. FILTER & SEARCH HANDLERS
+    // 10. FILTER & SEARCH HANDLERS
     // =========================================================================
     function handleSearchInput(val) {
       state.searchQuery = val;
@@ -3692,7 +4121,7 @@
     }
 
     // =========================================================================
-    // 9. 6TH OF OCTOBER AREA MODAL & ADDRESS FORM HANDLERS
+    // 11. 6TH OF OCTOBER AREA MODAL & ADDRESS FORM HANDLERS
     // =========================================================================
     function openAddressModal() {
       state.tempSelectedAreaId = state.selectedAreaId;
@@ -3770,7 +4199,7 @@
     }
 
     // =========================================================================
-    // 10. ITEM CUSTOMIZATION & CART ADDITION MODAL
+    // 12. ITEM CUSTOMIZATION & CART ADDITION MODAL
     // =========================================================================
     let modalItemCtx = { restId: null, item: null, sizeIdx: 0, qty: 1 };
 
@@ -3869,7 +4298,6 @@
       const item = modalItemCtx.item;
       const notes = (document.getElementById('item-custom-notes')?.value || '').trim();
 
-      // Prevent mixing items from different restaurants in same cart
       if (state.cart.length > 0 && state.cart[0].restaurantId !== rest.id) {
         state.cart = [];
         showToast(`تم تفريغ السلة وبدء طلب جديد من (${rest.name})`, 'info');
@@ -3901,7 +4329,7 @@
     }
 
     // =========================================================================
-    // 11. CART DRAWER & DYNAMIC PROMO CODES + CHECKOUT LOGIC
+    // 13. CART DRAWER, DYNAMIC PROMO CODES & ORDER SUBMISSION
     // =========================================================================
     function toggleCartDrawer(open) {
       const backdrop = document.getElementById('cart-drawer-backdrop');
@@ -3925,7 +4353,7 @@
       if (state.cart[idx].qty <= 0) {
         state.cart.splice(idx, 1);
       }
-      persistState();
+      persistState(false);
       updateHeaderUI();
       renderCartDrawer();
     }
@@ -3989,7 +4417,6 @@
       const area = getCurrentArea();
       restLabel.textContent = `من ${rest.name} • إلى ${area.name}`;
 
-      // Calculate totals with Dynamic Admin Promo Codes
       const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
       const rawDeliveryFee = getDeliveryFeeForRestaurant(rest);
       let isFreeDelivery = subtotal >= rest.freeDeliveryOver;
@@ -4013,7 +4440,6 @@
       const availablePromoHints = state.promoCodes.filter(p => p.active).slice(0, 2).map(p => p.code).join(' أو ');
 
       body.innerHTML = `
-        <!-- Delivery Destination Mini Box -->
         <div class="bg-brand-50/80 border border-brand-200 rounded-2xl p-3.5 flex items-center justify-between gap-2">
           <div class="text-xs">
             <div class="font-extrabold text-gray-900 flex items-center gap-1.5">
@@ -4027,7 +4453,6 @@
           </button>
         </div>
 
-        <!-- Cart Items List -->
         <div class="space-y-3">
           ${state.cart.map(item => `
             <div class="bg-white border border-gray-100 rounded-2xl p-3 shadow-2xs flex items-center justify-between gap-3">
@@ -4050,7 +4475,6 @@
           `).join('')}
         </div>
 
-        <!-- Promo Code Box -->
         <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200/80">
           <label class="block text-[11px] font-extrabold text-gray-700 mb-1.5">
             عندك كود خصم؟ ${availablePromoHints ? `(جرب ${availablePromoHints})` : ''}
@@ -4062,14 +4486,12 @@
           ${activePromo ? `<div class="text-[11px] text-emerald-600 font-extrabold mt-1.5">✓ مطبق: ${activePromo.title}</div>` : ''}
         </div>
 
-        <!-- Phone & Quick Address Confirmation -->
         <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200/80 space-y-2.5">
           <div class="text-xs font-extrabold text-gray-800">بيانات التواصل للتوصيل في 6 أكتوبر</div>
           <input type="tel" id="checkout-phone" value="${state.addressDetails.phone || ''}" oninput="state.addressDetails.phone = this.value" placeholder="رقم الموبايل للتواصل (مثال: 010xxxxxxxx) *" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
           <input type="text" id="checkout-street" value="${state.addressDetails.street || ''}" oninput="state.addressDetails.street = this.value" placeholder="الشارع / المجاورة / رقم العمارة والشقة *" class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-xs font-bold outline-none focus:border-brand-500" />
         </div>
 
-        <!-- Payment Method -->
         <div class="space-y-2">
           <div class="text-xs font-extrabold text-gray-800">طريقة الدفع</div>
           <div class="grid grid-cols-3 gap-2">
@@ -4086,7 +4508,6 @@
           </div>
         </div>
 
-        <!-- Bill Breakdown -->
         <div class="border-t border-gray-200 pt-3 space-y-1.5 text-xs">
           <div class="flex justify-between text-gray-600 font-semibold">
             <span>المجموع الفرعي</span>
@@ -4123,7 +4544,7 @@
     }
 
     function placeOrderNow(totalAmount, discountAmount = 0) {
-      if (state.cart.length === 0) return;
+      if (state.cart.length === 0 || state.mutationLock) return;
 
       const phone = (state.addressDetails.phone || '').trim();
       const street = (state.addressDetails.street || '').trim();
@@ -4139,50 +4560,56 @@
         return;
       }
 
-      const rest = RESTAURANTS_DATA[state.cart[0].restaurantId];
-      const area = getCurrentArea();
-      const paymentLabels = {
-        cash: 'كاش عند الاستلام',
-        card: 'بطاقة بنكية',
-        wallet: 'محفظة إلكترونية'
-      };
+      state.mutationLock = true;
+      try {
+        const rest = RESTAURANTS_DATA[state.cart[0].restaurantId];
+        const area = getCurrentArea();
+        const paymentLabels = {
+          cash: 'كاش عند الاستلام',
+          card: 'بطاقة بنكية',
+          wallet: 'محفظة إلكترونية'
+        };
 
-      const newOrderId = 'ord_' + Date.now();
-      const newOrder = {
-        id: newOrderId,
-        orderNumber: Math.floor(100000 + Math.random() * 900000),
-        restaurantId: rest.id,
-        restaurantName: rest.name,
-        areaId: area.id,
-        areaName: area.name,
-        eta: rest.deliveryTime,
-        address: { ...state.addressDetails },
-        paymentLabel: paymentLabels[state.paymentMethod] || 'كاش',
-        items: [...state.cart],
-        discount: discountAmount,
-        promoCode: state.appliedPromoCode,
-        total: totalAmount,
-        status: 'pending',
-        riderId: null,
-        riderName: null,
-        riderPhone: null,
-        riderVehicle: null,
-        riderGps: RESTAURANT_COORDS[rest.id] || { x: 52, y: 48 },
-        createdAt: new Date().toISOString()
-      };
+        const nowTs = Date.now();
+        const newOrderId = 'ord_' + nowTs + '_' + Math.random().toString(36).slice(2, 5);
+        const newOrder = {
+          id: newOrderId,
+          orderNumber: Math.floor(100000 + Math.random() * 900000),
+          restaurantId: rest.id,
+          restaurantName: rest.name,
+          areaId: area.id,
+          areaName: area.name,
+          eta: rest.deliveryTime,
+          address: { ...state.addressDetails },
+          paymentLabel: paymentLabels[state.paymentMethod] || 'كاش',
+          items: [...state.cart],
+          discount: discountAmount,
+          promoCode: state.appliedPromoCode,
+          total: totalAmount,
+          status: 'pending',
+          riderId: null,
+          riderName: null,
+          riderPhone: null,
+          riderVehicle: null,
+          riderGps: RESTAURANT_COORDS[rest.id] || { x: 52, y: 48 },
+          messages: [],
+          createdAt: nowTs,
+          orderedTimeFormatted: formatOrderClockTime(nowTs)
+        };
 
-      state.orders.push(newOrder);
-      state.activeCustomerOrderId = newOrderId;
+        state.orders.push(newOrder);
+        state.activeCustomerOrderId = newOrderId;
+        state.cart = [];
+        state.appliedPromoCode = '';
 
-      // Dispatch automatically to first Ready Rider in One-by-One queue
+        persistState(true);
+      } finally {
+        state.mutationLock = false;
+      }
+
       runAutoDispatchQueue();
-
-      // Clear cart after placing order
-      state.cart = [];
-      state.appliedPromoCode = '';
-      persistState(true);
       toggleCartDrawer(false);
-      showToast('تم إرسال طلبك بنجاح! وتوجيهه لأقرب طيار متاح 🚀', 'success');
+      showToast('تم إرسال طلبك بنجاح! وتوجيهه لأقرب طيار متاح (READY) 🚀', 'success');
       navigateTo('tracking');
     }
 
@@ -4194,7 +4621,7 @@
     }
 
     // =========================================================================
-    // 12. RESTAURANT FOLDERS & FULL MENUS EXPLORER MODAL
+    // 14. RESTAURANT FOLDERS & FULL MENUS EXPLORER MODAL
     // =========================================================================
     function openFoldersModal(initialRestId = null) {
       if (initialRestId && RESTAURANTS_DATA[initialRestId]) {
@@ -4235,7 +4662,6 @@
       const pane = document.getElementById('folder-detail-pane');
       pane.innerHTML = `
         <div class="space-y-5">
-          <!-- Folder Breadcrumb Header -->
           <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div class="text-[11px] font-mono text-gray-500 mb-1">
@@ -4252,7 +4678,6 @@
             </button>
           </div>
 
-          <!-- Covered Areas Inside Folder -->
           <div>
             <div class="text-xs font-extrabold text-gray-700 mb-2">
               <i class="fa-solid fa-file-lines text-brand-500 ml-1"></i> ملف مناطق التغطية في 6 أكتوبر (covered_areas.txt):
@@ -4265,7 +4690,6 @@
             </div>
           </div>
 
-          <!-- Full Menu Table Inside Folder -->
           <div>
             <div class="text-xs font-extrabold text-gray-700 mb-2">
               <i class="fa-solid fa-utensils text-brand-500 ml-1"></i> المنيو الكامل بالأسعار (full_menu.csv):
@@ -4299,7 +4723,7 @@
     }
 
     // =========================================================================
-    // 13. INITIALIZE APPLICATION ON LOAD
+    // 15. INITIALIZE APPLICATION ON LOAD
     // =========================================================================
     window.addEventListener('DOMContentLoaded', () => {
       loadSavedState();
